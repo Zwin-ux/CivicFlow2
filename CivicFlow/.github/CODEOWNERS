@@ -1,0 +1,24 @@
+# Code Owners for Government Lending CRM Platform
+# These owners will be requested for review when someone opens a pull request
+
+# Default owners for everything in the repo
+* @devops-team @tech-leads
+
+# CI/CD workflows require DevOps approval
+/.github/workflows/ @devops-team
+
+# Kubernetes configurations require DevOps approval
+/k8s/ @devops-team
+
+# Database migrations require database team approval
+/src/database/migrations/ @database-team @tech-leads
+
+# Security-related files require security team approval
+/src/utils/encryption.ts @security-team
+/src/utils/keyManagement.ts @security-team
+/src/middleware/authenticate.ts @security-team
+/src/middleware/authorize.ts @security-team
+
+# Documentation requires technical writer review
+/docs/ @tech-writers @tech-leads
+README.md @tech-writers @tech-leads

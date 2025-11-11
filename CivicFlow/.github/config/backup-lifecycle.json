@@ -1,0 +1,30 @@
+{
+  "Rules": [
+    {
+      "Id": "DeleteOldBackups",
+      "Status": "Enabled",
+      "Prefix": "backup-",
+      "Expiration": {
+        "Days": 90
+      },
+      "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 30
+      }
+    },
+    {
+      "Id": "TransitionToGlacier",
+      "Status": "Enabled",
+      "Prefix": "backup-",
+      "Transitions": [
+        {
+          "Days": 30,
+          "StorageClass": "STANDARD_IA"
+        },
+        {
+          "Days": 60,
+          "StorageClass": "GLACIER"
+        }
+      ]
+    }
+  ]
+}
