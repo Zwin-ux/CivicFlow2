@@ -146,7 +146,10 @@ v
     - Calculate fraud risk scores and generate fraud flags
     - _Requirements: 3.5, 2.3_
   
-  - [-] 6.4 Write unit tests for data validator
+  - [x] 6.4 Write unit tests for data validator
+
+
+
 
 
 

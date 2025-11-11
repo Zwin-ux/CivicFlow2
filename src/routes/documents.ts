@@ -6,6 +6,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import documentService from '../services/documentService';
+import documentProcessingQueueService, { ProcessingJobType } from '../services/documentProcessingQueueService';
 import { authenticate } from '../middleware/authenticate';
 import { authorize } from '../middleware/authorize';
 import logger from '../utils/logger';
@@ -217,6 +218,173 @@ router.delete(
 
       res.status(200).json({
         message: 'Document deleted successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * POST /api/v1/documents/batch-process
+ * Create a batch processing job for multiple documents
+ */
+router.post(
+  '/batch-process',
+  authenticate,
+  authorize('Reviewer', 'Approver', 'Administrator'),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { documentIds, type, options } = req.body;
+
+      // Validate request
+      if (!documentIds || !Array.isArray(documentIds) || documentIds.length === 0) {
+        res.status(400).json({
+          error: {
+            code: 'INVALID_DOCUMENT_IDS',
+            message: 'documentIds must be a non-empty array',
+          },
+        });
+        return;
+      }
+
+      if (documentIds.length > 50) {
+        res.status(400).json({
+          error: {
+            code: 'BATCH_SIZE_EXCEEDED',
+            message: 'Maximum batch size is 50 documents',
+          },
+        });
+        return;
+      }
+
+      // Validate job type
+      const jobType = type || ProcessingJobType.FULL_ANALYSIS;
+      if (!Object.values(ProcessingJobType).includes(jobType)) {
+        res.status(400).json({
+          error: {
+            code: 'INVALID_JOB_TYPE',
+            message: `Invalid job type. Must be one of: ${Object.values(ProcessingJobType).join(', ')}`,
+          },
+        });
+        return;
+      }
+
+      // Create processing job
+      const jobId = await documentProcessingQueueService.createJob(
+        documentIds,
+        jobType,
+        options || {}
+      );
+
+      logger.info('Batch processing job created', {
+        jobId,
+        documentCount: documentIds.length,
+        type: jobType,
+        userId: req.user!.userId,
+      });
+
+      res.status(202).json({
+        data: {
+          jobId,
+          status: 'PENDING',
+          documentCount: documentIds.length,
+          type: jobType,
+        },
+        message: 'Batch processing job created successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * GET /api/v1/documents/batch-process/:jobId
+ * Get batch processing job status
+ */
+router.get(
+  '/batch-process/:jobId',
+  authenticate,
+  authorize('Reviewer', 'Approver', 'Administrator'),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { jobId } = req.params;
+
+      const job = documentProcessingQueueService.getJobStatus(jobId);
+
+      if (!job) {
+        res.status(404).json({
+          error: {
+            code: 'JOB_NOT_FOUND',
+            message: `Job not found: ${jobId}`,
+          },
+        });
+        return;
+      }
+
+      res.status(200).json({
+        data: job,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * POST /api/v1/documents/batch-process/:jobId/cancel
+ * Cancel a batch processing job
+ */
+router.post(
+  '/batch-process/:jobId/cancel',
+  authenticate,
+  authorize('Reviewer', 'Approver', 'Administrator'),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { jobId } = req.params;
+
+      const cancelled = await documentProcessingQueueService.cancelJob(jobId);
+
+      if (!cancelled) {
+        res.status(400).json({
+          error: {
+            code: 'CANNOT_CANCEL_JOB',
+            message: 'Job cannot be cancelled (not found or already completed)',
+          },
+        });
+        return;
+      }
+
+      logger.info('Batch processing job cancelled', {
+        jobId,
+        userId: req.user!.userId,
+      });
+
+      res.status(200).json({
+        message: 'Job cancelled successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * GET /api/v1/documents/batch-process
+ * Get all batch processing jobs
+ */
+router.get(
+  '/batch-process',
+  authenticate,
+  authorize('Reviewer', 'Approver', 'Administrator'),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const jobs = documentProcessingQueueService.getAllJobs();
+
+      res.status(200).json({
+        data: jobs,
+        total: jobs.length,
       });
     } catch (error) {
       next(error);

@@ -513,6 +513,111 @@ class CommunicationService {
 
     return reasoning;
   }
+
+  /**
+   * Send document request to applicant
+   * @param applicationId - Application ID
+   * @param documentTypes - Array of document types to request
+   * @param message - Custom message to include
+   */
+  async sendDocumentRequest(
+    applicationId: string,
+    documentTypes: string[],
+    message: string
+  ): Promise<Communication> {
+    try {
+      const application = await this.getApplicationWithApplicant(applicationId);
+      if (!application) {
+        throw new Error('Application not found');
+      }
+
+      // Create communication record
+      const communication = await communicationRepository.create({
+        applicationId,
+        recipient: application.applicant.email,
+        type: CommunicationType.EMAIL,
+        templateType: EmailTemplateType.DOCUMENT_REQUEST,
+        subject: `Document Request for Application ${applicationId}`,
+        body: message,
+        metadata: {
+          documentTypes,
+        },
+      });
+
+      // Queue email for sending
+      await messageQueue.enqueue(this.EMAIL_QUEUE, {
+        communicationId: communication.id,
+        to: application.applicant.email,
+        subject: communication.subject,
+        html: `<p>${message}</p><p>Required documents:</p><ul>${documentTypes.map(d => `<li>${d}</li>`).join('')}</ul>`,
+        text: `${message}\n\nRequired documents:\n${documentTypes.map(d => `- ${d}`).join('\n')}`,
+      });
+
+      logger.info('Document request sent', {
+        communicationId: communication.id,
+        applicationId,
+        documentTypes,
+      });
+
+      return communication;
+    } catch (error) {
+      logger.error('Failed to send document request', { error, applicationId });
+      throw error;
+    }
+  }
+
+  /**
+   * Send internal note
+   * @param applicationId - Application ID
+   * @param note - Note content
+   * @param userId - User ID who created the note
+   * @param isInternal - Whether the note is internal only
+   */
+  async sendInternalNote(
+    applicationId: string,
+    note: string,
+    userId: string,
+    isInternal: boolean = true
+  ): Promise<Communication> {
+    try {
+      // Create communication record
+      const communication = await communicationRepository.create({
+        applicationId,
+        recipient: 'INTERNAL',
+        type: CommunicationType.INTERNAL_NOTE,
+        templateType: EmailTemplateType.STAFF_SUMMARY,
+        subject: 'Internal Note',
+        body: note,
+        metadata: {
+          userId,
+          isInternal,
+        },
+      });
+
+      // Log audit
+      await auditLogRepository.create({
+        actionType: 'INTERNAL_NOTE_ADDED',
+        entityType: EntityType.COMMUNICATION,
+        entityId: communication.id,
+        performedBy: userId,
+        details: {
+          applicationId,
+          noteLength: note.length,
+        },
+      });
+
+      logger.info('Internal note added', {
+        communicationId: communication.id,
+        applicationId,
+        userId,
+      });
+
+      return communication;
+    } catch (error) {
+      logger.error('Failed to send internal note', { error, applicationId });
+      throw error;
+    }
+  }
 }
 
 export default new CommunicationService();

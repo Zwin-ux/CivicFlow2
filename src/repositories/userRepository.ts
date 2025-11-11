@@ -8,6 +8,7 @@ class UserRepository {
         id, email, password_hash as "passwordHash", 
         first_name as "firstName", last_name as "lastName",
         role, is_active as "isActive", 
+        aad_object_id as "aadObjectId",
         last_login_at as "lastLoginAt",
         created_at as "createdAt", updated_at as "updatedAt"
       FROM users
@@ -24,6 +25,7 @@ class UserRepository {
         id, email, password_hash as "passwordHash", 
         first_name as "firstName", last_name as "lastName",
         role, is_active as "isActive", 
+        aad_object_id as "aadObjectId",
         last_login_at as "lastLoginAt",
         created_at as "createdAt", updated_at as "updatedAt"
       FROM users
@@ -31,6 +33,23 @@ class UserRepository {
     `;
     
     const result = await database.query(query, [id]);
+    return (result.rows[0] as User) || null;
+  }
+
+  async findByAadObjectId(aadObjectId: string): Promise<User | null> {
+    const query = `
+      SELECT 
+        id, email, password_hash as "passwordHash", 
+        first_name as "firstName", last_name as "lastName",
+        role, is_active as "isActive", 
+        aad_object_id as "aadObjectId",
+        last_login_at as "lastLoginAt",
+        created_at as "createdAt", updated_at as "updatedAt"
+      FROM users
+      WHERE aad_object_id = $1
+    `;
+    
+    const result = await database.query(query, [aadObjectId]);
     return (result.rows[0] as User) || null;
   }
 

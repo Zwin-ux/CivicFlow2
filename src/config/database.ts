@@ -7,17 +7,31 @@ class Database {
   private static instance: Database;
 
   private constructor() {
-    this.pool = new Pool({
-      host: config.database.host,
-      port: config.database.port,
-      database: config.database.name,
-      user: config.database.user,
-      password: config.database.password,
-      min: config.database.pool.min,
-      max: config.database.pool.max,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    });
+    // Support both connection string and individual parameters
+    const connectionString = process.env.DATABASE_URL;
+    
+    this.pool = new Pool(
+      connectionString
+        ? {
+            connectionString,
+            ssl: true, // Enable SSL for cloud databases
+            min: config.database.pool.min,
+            max: config.database.pool.max,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 10000, // Increased for cloud databases
+          }
+        : {
+            host: config.database.host,
+            port: config.database.port,
+            database: config.database.name,
+            user: config.database.user,
+            password: config.database.password,
+            min: config.database.pool.min,
+            max: config.database.pool.max,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 2000,
+          }
+    );
 
     // Handle pool errors
     this.pool.on('error', (err: Error) => {

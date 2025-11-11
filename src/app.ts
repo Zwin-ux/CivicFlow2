@@ -18,6 +18,9 @@ import { validatorRouter } from './routes/validator';
 import metricsRoutes from './routes/metrics';
 import swaggerRoutes from './routes/swagger';
 import keyManagementRoutes from './routes/keyManagement';
+import teamsRoutes from './routes/teams';
+import dashboardRoutes from './routes/dashboard';
+import teamsConfigRoutes from './routes/admin/teamsConfig';
 
 const app: Application = express();
 
@@ -71,11 +74,16 @@ app.use(`/api/${config.apiVersion}/reporting`, reportingRoutes);
 app.use(`/api/${config.apiVersion}/validator`, validatorRouter);
 app.use(`/api/${config.apiVersion}/metrics`, metricsRoutes);
 app.use(`/api/${config.apiVersion}/key-management`, keyManagementRoutes);
+app.use(`/api/${config.apiVersion}/teams`, teamsRoutes);
+app.use(`/api/${config.apiVersion}/dashboard`, dashboardRoutes);
+app.use(`/api/${config.apiVersion}/admin/teams/config`, teamsConfigRoutes);
 
 // Convenience routes without version prefix for frontend
 app.use('/api/applications', applicationRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/admin/teams/config', teamsConfigRoutes);
 
 // 404 handler
 app.use(notFoundHandler);

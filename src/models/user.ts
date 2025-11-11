@@ -8,6 +8,7 @@ export interface User {
   lastName: string;
   role: UserRole;
   isActive: boolean;
+  aadObjectId?: string;
   lastLoginAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -28,6 +29,7 @@ export interface UserResponse {
   lastName: string;
   role: UserRole;
   isActive: boolean;
+  aadObjectId?: string;
   lastLoginAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
