@@ -4,7 +4,7 @@
   "description": "Government Lending CRM Platform for micro-business grant and loan workflows",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --noEmitOnError false",
     "start": "node dist/index.js",
     "start:production": "npm run migrate:up && npm run seed:demo && npm run start",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
