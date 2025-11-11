@@ -1,3 +1,8 @@
+// Initialize theme system
+if (typeof initThemeSystem === 'function') {
+    initThemeSystem();
+}
+
 // Tab switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -14,6 +19,111 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.getElementById(`${tabName}-tab`).classList.add('active');
     });
 });
+
+// AI-powered document recommendations
+let currentApplicationData = null;
+let recommendedDocuments = [];
+
+// Listen for program type changes to get AI recommendations
+document.getElementById('programType')?.addEventListener('change', async (e) => {
+    const programType = e.target.value;
+    if (programType) {
+        await fetchDocumentRecommendations(programType);
+    }
+});
+
+async function fetchDocumentRecommendations(programType) {
+    try {
+        // Create temporary application data for recommendations
+        const tempAppData = {
+            programType: programType,
+            requestedAmount: document.getElementById('requestedAmount')?.value || 0
+        };
+
+        const response = await fetch('/api/ai/recommendations/documents', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tempAppData)
+        });
+
+        if (response.ok) {
+            const recommendations = await response.json();
+            displayDocumentRecommendations(recommendations);
+            recommendedDocuments = recommendations.documents || [];
+            updateUploadProgress();
+        }
+    } catch (error) {
+        console.error('Error fetching document recommendations:', error);
+    }
+}
+
+function displayDocumentRecommendations(recommendations) {
+    const recommendationsContainer = document.getElementById('ai-recommendations');
+    const recommendationsList = document.getElementById('recommendations-list');
+
+    if (!recommendations.documents || recommendations.documents.length === 0) {
+        recommendationsContainer.style.display = 'none';
+        return;
+    }
+
+    recommendationsList.innerHTML = recommendations.documents.map(doc => `
+        <div class="recommendation-item ${doc.required ? 'required' : 'optional'}">
+            <div class="recommendation-icon">
+                ${doc.required ? '📄' : '📋'}
+            </div>
+            <div class="recommendation-content">
+                <div class="recommendation-title">
+                    ${doc.documentType}
+                    ${doc.required ? '<span class="badge badge-error">Required</span>' : '<span class="badge badge-neutral">Optional</span>'}
+                </div>
+                <div class="recommendation-description">${doc.description || ''}</div>
+                ${doc.reason ? `<div class="recommendation-reason"><strong>Why:</strong> ${doc.reason}</div>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    recommendationsContainer.style.display = 'block';
+}
+
+function updateUploadProgress() {
+    const progressIndicator = document.getElementById('upload-progress-indicator');
+    const completionPercentage = document.getElementById('completion-percentage');
+    const completionProgressBar = document.getElementById('completion-progress-bar');
+    const documentsUploaded = document.getElementById('documents-uploaded');
+    const documentsRequired = document.getElementById('documents-required');
+
+    if (recommendedDocuments.length === 0) {
+        progressIndicator.style.display = 'none';
+        return;
+    }
+
+    const requiredDocs = recommendedDocuments.filter(doc => doc.required);
+    const uploadedTypes = new Set(selectedFiles.map(f => classifyDocumentType(f.name)));
+    const uploadedRequired = requiredDocs.filter(doc => uploadedTypes.has(doc.documentType));
+
+    const percentage = requiredDocs.length > 0 
+        ? Math.round((uploadedRequired.length / requiredDocs.length) * 100)
+        : 0;
+
+    completionPercentage.textContent = `${percentage}%`;
+    completionProgressBar.style.width = `${percentage}%`;
+    documentsUploaded.textContent = uploadedRequired.length;
+    documentsRequired.textContent = requiredDocs.length;
+
+    progressIndicator.style.display = 'block';
+}
+
+function classifyDocumentType(filename) {
+    const lower = filename.toLowerCase();
+    if (lower.includes('w-9') || lower.includes('w9')) return 'W-9 Form';
+    if (lower.includes('ein')) return 'EIN Verification';
+    if (lower.includes('bank') || lower.includes('statement')) return 'Bank Statements';
+    if (lower.includes('tax')) return 'Tax Returns';
+    if (lower.includes('license')) return 'Business License';
+    return 'Other Document';
+}
 
 // File upload handling
 const uploadArea = document.getElementById('upload-area');
@@ -60,6 +170,9 @@ function addFileToList(file) {
         <div class="file-info">
             <span class="file-name">${file.name}</span>
             <span class="file-size">(${formatFileSize(file.size)})</span>
+            <span class="file-quality" data-filename="${file.name}">
+                <span class="spinner-small"></span> Analyzing...
+            </span>
         </div>
         <div class="file-progress">
             <div class="file-progress-bar" style="width: 0%"></div>
@@ -74,8 +187,85 @@ function addFileToList(file) {
         const filename = e.target.dataset.filename;
         selectedFiles = selectedFiles.filter(f => f.name !== filename);
         fileItem.remove();
+        updateUploadProgress();
     });
+
+    // Simulate AI quality analysis
+    setTimeout(() => {
+        performQualityAnalysis(file, fileItem);
+    }, 1000);
+
+    updateUploadProgress();
 }
+
+async function performQualityAnalysis(file, fileItem) {
+    const qualitySpan = fileItem.querySelector('.file-quality');
+    
+    try {
+        // Simulate quality check (in real implementation, this would call the AI API)
+        const quality = simulateQualityCheck(file);
+        
+        let qualityHTML = '';
+        if (quality.score >= 80) {
+            qualityHTML = `<span class="badge badge-success">✓ Good Quality (${quality.score})</span>`;
+        } else if (quality.score >= 60) {
+            qualityHTML = `<span class="badge badge-warning">⚠ Fair Quality (${quality.score})</span>`;
+        } else {
+            qualityHTML = `<span class="badge badge-error">✗ Poor Quality (${quality.score})</span>`;
+        }
+
+        if (quality.suggestions.length > 0) {
+            qualityHTML += `<button class="btn-link" onclick="showQualitySuggestions('${file.name}', ${JSON.stringify(quality.suggestions).replace(/"/g, '&quot;')})">View Suggestions</button>`;
+        }
+
+        qualitySpan.innerHTML = qualityHTML;
+
+        // Show toast for poor quality
+        if (quality.score < 60 && typeof showToast === 'function') {
+            showToast(`Document "${file.name}" has quality issues. Click "View Suggestions" for improvements.`, 'warning', 5000);
+        }
+    } catch (error) {
+        qualitySpan.innerHTML = '<span class="badge badge-neutral">Quality check unavailable</span>';
+    }
+}
+
+function simulateQualityCheck(file) {
+    // Simulate quality scoring based on file properties
+    let score = 70 + Math.floor(Math.random() * 30);
+    const suggestions = [];
+
+    if (file.size < 50000) {
+        score -= 20;
+        suggestions.push('File size is very small. Ensure the document is complete and readable.');
+    }
+
+    if (file.size > 5000000) {
+        score -= 10;
+        suggestions.push('Large file size detected. Consider compressing the document.');
+    }
+
+    if (!file.type.includes('pdf') && file.size > 2000000) {
+        suggestions.push('For better quality, consider converting images to PDF format.');
+    }
+
+    return { score: Math.max(0, Math.min(100, score)), suggestions };
+}
+
+window.showQualitySuggestions = function(filename, suggestions) {
+    if (typeof showModal === 'function') {
+        const content = `
+            <h3>Quality Improvement Suggestions</h3>
+            <p><strong>Document:</strong> ${filename}</p>
+            <ul style="text-align: left; margin: 1rem 0;">
+                ${suggestions.map(s => `<li>${s}</li>`).join('')}
+            </ul>
+            <p style="margin-top: 1rem;">Please consider re-uploading this document with the suggested improvements for better processing accuracy.</p>
+        `;
+        showModal('Document Quality Feedback', content, [
+            { text: 'Close', variant: 'secondary', onClick: () => {} }
+        ]);
+    }
+};
 
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
@@ -275,6 +465,13 @@ function displayApplicationStatus(application) {
 }
 
 function showAlert(type, message) {
+    // Use toast system if available
+    if (typeof showToast === 'function') {
+        showToast(message, type, 5000);
+        return;
+    }
+
+    // Fallback to inline alert
     const alert = document.createElement('div');
     alert.className = `alert alert-${type}`;
     alert.textContent = message;

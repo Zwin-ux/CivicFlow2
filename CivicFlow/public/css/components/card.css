@@ -1,0 +1,113 @@
+/**
+ * Enhanced Card Component
+ * Flexible card component with hover effects and variants
+ */
+
+.ds-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-1);
+  overflow: hidden;
+  transition: var(--transition-all);
+}
+
+/* Hover effect */
+.ds-card.hoverable {
+  cursor: pointer;
+}
+
+.ds-card.hoverable:hover {
+  box-shadow: var(--elevation-3);
+  transform: translateY(-2px);
+}
+
+/* Card variants */
+.ds-card.outlined {
+  box-shadow: none;
+  border: 1px solid var(--color-border-light);
+}
+
+.ds-card.elevated {
+  box-shadow: var(--elevation-2);
+}
+
+.ds-card.elevated:hover {
+  box-shadow: var(--elevation-4);
+}
+
+/* Card sections */
+.ds-card-header {
+  padding: var(--spacing-6);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.ds-card-header.no-border {
+  border-bottom: none;
+}
+
+.ds-card-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.ds-card-subtitle {
+  margin: var(--spacing-1) 0 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.ds-card-body {
+  padding: var(--spacing-6);
+}
+
+.ds-card-body.compact {
+  padding: var(--spacing-4);
+}
+
+.ds-card-footer {
+  padding: var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+  background-color: var(--color-background-secondary);
+}
+
+.ds-card-footer.no-border {
+  border-top: none;
+  background-color: transparent;
+}
+
+/* Card actions */
+.ds-card-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
+}
+
+.ds-card-actions.justify-end {
+  justify-content: flex-end;
+}
+
+.ds-card-actions.justify-between {
+  justify-content: space-between;
+}
+
+/* Card media */
+.ds-card-media {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ds-card-media.cover {
+  object-fit: cover;
+}
+
+/* Compact card */
+.ds-card.compact .ds-card-header,
+.ds-card.compact .ds-card-body,
+.ds-card.compact .ds-card-footer {
+  padding: var(--spacing-4);
+}

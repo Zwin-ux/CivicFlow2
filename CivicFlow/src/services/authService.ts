@@ -15,7 +15,7 @@ import logger from '../utils/logger';
 class AuthService {
   private readonly ACCESS_TOKEN_EXPIRY = '15m'; // 15 minutes
   private readonly REFRESH_TOKEN_EXPIRY = '7d'; // 7 days
-  private readonly SALT_ROUNDS = 10;
+  private readonly SALT_ROUNDS = 12; // Production-grade bcrypt rounds
 
   /**
    * Register a new user
@@ -28,7 +28,7 @@ class AuthService {
     }
 
     // Hash password
-    const passwordHash = await bcrypt.hash(userData.password, this.SALT_ROUNDS);
+    const passwordHash = await bcrypt.hash(userData.password, config.security.bcryptRounds || this.SALT_ROUNDS);
 
     // Create user
     const user = await userRepository.create({
@@ -189,7 +189,7 @@ class AuthService {
     }
 
     // Hash new password
-    const passwordHash = await bcrypt.hash(newPassword, this.SALT_ROUNDS);
+    const passwordHash = await bcrypt.hash(newPassword, config.security.bcryptRounds || this.SALT_ROUNDS);
 
     // Update password
     await userRepository.updatePassword(userId, passwordHash);

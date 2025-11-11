@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Government Lending CRM</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/design-system-all.css">
+    <link rel="stylesheet" href="/css/components/admin-dashboard.css">
+    <link rel="stylesheet" href="/css/components/demo-banner.css">
 </head>
 <body>
     <nav class="navbar">
@@ -16,8 +19,12 @@
                 <li><a href="/staff-portal.html">Staff Portal</a></li>
                 <li><a href="/admin-dashboard.html" class="active">Admin Dashboard</a></li>
                 <li><a href="/teams-config.html">Teams Config</a></li>
+                <li><a href="/demo-landing.html">Demo Mode</a></li>
                 <li><a href="#" id="admin-logout-btn">Logout</a></li>
             </ul>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
         </div>
     </nav>
 
@@ -77,9 +84,133 @@
                 </div>
             </div>
 
+            <!-- AI Performance Metrics Dashboard -->
+            <div class="chart-container">
+                <div class="section-header">
+                    <h3>AI Performance Metrics</h3>
+                    <span class="ai-badge">AI Powered</span>
+                </div>
+                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="metric-card ai-metric">
+                        <div class="metric-icon">🎯</div>
+                        <div class="metric-label">AI Prediction Accuracy</div>
+                        <div class="metric-value" id="ai-prediction-accuracy">--</div>
+                        <div class="metric-change" id="ai-accuracy-trend"></div>
+                    </div>
+                    <div class="metric-card ai-metric">
+                        <div class="metric-label">Avg Processing Time</div>
+                        <div class="metric-value" id="ai-processing-time">--</div>
+                        <div class="metric-change" id="ai-processing-trend"></div>
+                    </div>
+                    <div class="metric-card ai-metric">
+                        <div class="metric-label">Documents Analyzed</div>
+                        <div class="metric-value" id="ai-documents-analyzed">--</div>
+                        <div class="metric-change positive" id="ai-documents-trend"></div>
+                    </div>
+                    <div class="metric-card ai-metric">
+                        <div class="metric-label">Anomalies Detected</div>
+                        <div class="metric-value" id="ai-anomalies-detected">--</div>
+                        <div class="metric-change" id="ai-anomalies-trend"></div>
+                    </div>
+                    <div class="metric-card ai-metric">
+                        <div class="metric-label">Human Overrides</div>
+                        <div class="metric-value" id="ai-human-overrides">--</div>
+                        <div class="metric-change" id="ai-overrides-trend"></div>
+                    </div>
+                    <div class="metric-card ai-metric">
+                        <div class="metric-label">Confidence Score Avg</div>
+                        <div class="metric-value" id="ai-confidence-avg">--</div>
+                        <div class="metric-change" id="ai-confidence-trend"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Monitoring Charts -->
+            <div class="chart-container">
+                <h3>AI Model Performance Trends</h3>
+                <div class="chart-tabs">
+                    <button class="chart-tab-btn active" data-chart="accuracy">Accuracy</button>
+                    <button class="chart-tab-btn" data-chart="processing">Processing Time</button>
+                    <button class="chart-tab-btn" data-chart="confidence">Confidence Distribution</button>
+                </div>
+                <div id="model-performance-chart" class="chart-placeholder">
+                    <canvas id="performance-chart-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Anomaly Management Interface -->
+            <div class="chart-container">
+                <div class="section-header">
+                    <h3>Anomaly Management</h3>
+                    <div class="anomaly-filters">
+                        <select id="anomaly-severity-filter" class="filter-select">
+                            <option value="">All Severities</option>
+                            <option value="CRITICAL">Critical</option>
+                            <option value="HIGH">High</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="LOW">Low</option>
+                        </select>
+                        <select id="anomaly-status-filter" class="filter-select">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="REVIEWED">Reviewed</option>
+                            <option value="RESOLVED">Resolved</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="anomaly-management-grid" class="anomaly-management-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Demo Mode Controls -->
+            <div class="chart-container">
+                <div class="section-header">
+                    <h3>Demo Mode Controls</h3>
+                    <span class="badge badge-neutral" id="demo-status">Inactive</span>
+                </div>
+                <div class="demo-controls">
+                    <div class="demo-control-card">
+                        <h4>Demo Session Management</h4>
+                        <p>Manage demo mode sessions and data</p>
+                        <div class="demo-stats">
+                            <div class="demo-stat">
+                                <span class="demo-stat-label">Active Sessions:</span>
+                                <span class="demo-stat-value" id="demo-active-sessions">0</span>
+                            </div>
+                            <div class="demo-stat">
+                                <span class="demo-stat-label">Total Demo Applications:</span>
+                                <span class="demo-stat-value" id="demo-total-apps">0</span>
+                            </div>
+                        </div>
+                        <div class="demo-actions">
+                            <button class="btn btn-primary" onclick="refreshDemoData()">Refresh Demo Data</button>
+                            <button class="btn btn-secondary" onclick="clearDemoSessions()">Clear All Sessions</button>
+                        </div>
+                    </div>
+                    <div class="demo-control-card">
+                        <h4>Demo Analytics</h4>
+                        <p>View demo mode usage statistics</p>
+                        <div class="demo-stats">
+                            <div class="demo-stat">
+                                <span class="demo-stat-label">Total Demo Views:</span>
+                                <span class="demo-stat-value" id="demo-total-views">0</span>
+                            </div>
+                            <div class="demo-stat">
+                                <span class="demo-stat-label">Avg Session Duration:</span>
+                                <span class="demo-stat-value" id="demo-avg-duration">0 min</span>
+                            </div>
+                        </div>
+                        <div class="demo-actions">
+                            <button class="btn btn-secondary" onclick="viewDemoAnalytics()">View Full Analytics</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Performance Metrics -->
             <div class="chart-container">
-                <h3>Performance Metrics</h3>
+                <h3>System Performance Metrics</h3>
                 <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="metric-card">
                         <div class="metric-label">Document Classification Accuracy</div>
@@ -212,6 +343,17 @@
         </div>
     </footer>
 
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <script src="/js/theme-system.js"></script>
+    <script src="/js/components/theme-toggle.js"></script>
+    <script src="/js/components/toast.js"></script>
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/components/demo-banner.js"></script>
     <script src="/js/admin-dashboard.js"></script>
 </body>
 </html>

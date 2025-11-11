@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System Demo - Government Lending CRM</title>
+  <link rel="stylesheet" href="/css/design-system-all.css">
+</head>
+<body>
+  <div class="ds-container" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <!-- Header -->
+    <header class="ds-flex ds-justify-between ds-items-center" style="margin-bottom: 3rem;">
+      <div>
+        <h1 style="margin-bottom: 0.5rem;">Design System Demo</h1>
+        <p class="text-secondary" style="margin: 0;">Enhanced Visual Design System</p>
+      </div>
+      <div data-theme-toggle></div>
+    </header>
+
+    <!-- Buttons Section -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Buttons</h2>
+      <div class="ds-flex ds-flex-wrap ds-gap-3" style="margin-bottom: 1rem;">
+        <button class="ds-btn ds-btn-primary">Primary</button>
+        <button class="ds-btn ds-btn-secondary">Secondary</button>
+        <button class="ds-btn ds-btn-success">Success</button>
+        <button class="ds-btn ds-btn-warning">Warning</button>
+        <button class="ds-btn ds-btn-error">Error</button>
+        <button class="ds-btn ds-btn-outlined">Outlined</button>
+        <button class="ds-btn ds-btn-text">Text</button>
+      </div>
+      <div class="ds-flex ds-flex-wrap ds-gap-3">
+        <button class="ds-btn ds-btn-primary ds-btn-sm">Small</button>
+        <button class="ds-btn ds-btn-primary">Default</button>
+        <button class="ds-btn ds-btn-primary ds-btn-lg">Large</button>
+        <button class="ds-btn ds-btn-primary loading">Loading</button>
+      </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Cards</h2>
+      <div class="ds-grid ds-grid-cols-1 md:ds-grid-cols-3 ds-grid-gap-4">
+        <div class="ds-card hoverable">
+          <div class="ds-card-header">
+            <h3 class="ds-card-title">Card Title</h3>
+            <p class="ds-card-subtitle">Card subtitle</p>
+          </div>
+          <div class="ds-card-body">
+            <p>This is a hoverable card with elevation effect.</p>
+          </div>
+          <div class="ds-card-footer">
+            <button class="ds-btn ds-btn-primary ds-btn-sm">Action</button>
+          </div>
+        </div>
+
+        <div class="ds-card outlined">
+          <div class="ds-card-header no-border">
+            <h3 class="ds-card-title">Outlined Card</h3>
+          </div>
+          <div class="ds-card-body">
+            <p>This card has an outlined style instead of shadow.</p>
+          </div>
+        </div>
+
+        <div class="ds-card elevated">
+          <div class="ds-card-body">
+            <h3 class="ds-card-title">Elevated Card</h3>
+            <p>This card has higher elevation for emphasis.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Badges & Tags -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Badges & Tags</h2>
+      <div style="margin-bottom: 1rem;">
+        <h4>Badges</h4>
+        <div class="ds-flex ds-flex-wrap ds-gap-2">
+          <span class="ds-badge ds-badge-primary">Primary</span>
+          <span class="ds-badge ds-badge-success">Success</span>
+          <span class="ds-badge ds-badge-warning">Warning</span>
+          <span class="ds-badge ds-badge-error">Error</span>
+          <span class="ds-badge ds-badge-info">Info</span>
+          <span class="ds-badge ds-badge-neutral">Neutral</span>
+        </div>
+      </div>
+      <div>
+        <h4>Tags</h4>
+        <div class="ds-flex ds-flex-wrap ds-gap-2">
+          <span class="ds-tag ds-tag-primary">React</span>
+          <span class="ds-tag ds-tag-secondary">TypeScript</span>
+          <span class="ds-tag ds-tag-success">Approved</span>
+          <span class="ds-tag ds-tag-outlined ds-tag-info">JavaScript</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Indicators -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Progress Indicators</h2>
+      <div style="margin-bottom: 2rem;">
+        <h4>Linear Progress</h4>
+        <div class="ds-progress" style="margin-bottom: 1rem;">
+          <div class="ds-progress-bar" style="width: 60%"></div>
+        </div>
+        <div class="ds-progress-labeled">
+          <div class="ds-progress">
+            <div class="ds-progress-bar success" style="width: 75%"></div>
+          </div>
+          <span class="ds-progress-label">75%</span>
+        </div>
+      </div>
+      <div>
+        <h4>Spinner</h4>
+        <div class="ds-flex ds-gap-4">
+          <div class="ds-spinner ds-spinner-sm"></div>
+          <div class="ds-spinner"></div>
+          <div class="ds-spinner ds-spinner-lg"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Forms -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Forms</h2>
+      <div class="ds-card" style="max-width: 600px;">
+        <div class="ds-card-body">
+          <div class="ds-form-group">
+            <label class="ds-form-label required">Email</label>
+            <input type="email" class="ds-form-input" placeholder="Enter your email">
+            <span class="ds-form-help">We'll never share your email.</span>
+          </div>
+
+          <div class="ds-form-group">
+            <label class="ds-form-label">Message</label>
+            <textarea class="ds-form-textarea" placeholder="Enter your message"></textarea>
+          </div>
+
+          <div class="ds-form-group">
+            <label class="ds-form-switch">
+              <input type="checkbox" class="ds-form-switch-input">
+              <span class="ds-form-switch-label">Enable notifications</span>
+            </label>
+          </div>
+
+          <div class="ds-flex ds-gap-3">
+            <button class="ds-btn ds-btn-primary">Submit</button>
+            <button class="ds-btn ds-btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Animations -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Animations</h2>
+      <div class="ds-grid ds-grid-cols-1 md:ds-grid-cols-3 ds-grid-gap-4">
+        <div class="ds-card animate-fade-in">
+          <div class="ds-card-body">
+            <h4>Fade In</h4>
+            <p>This card fades in</p>
+          </div>
+        </div>
+        <div class="ds-card animate-slide-in-up delay-100">
+          <div class="ds-card-body">
+            <h4>Slide Up</h4>
+            <p>This card slides up</p>
+          </div>
+        </div>
+        <div class="ds-card animate-scale-in delay-200">
+          <div class="ds-card-body">
+            <h4>Scale In</h4>
+            <p>This card scales in</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skeleton Loaders -->
+    <section style="margin-bottom: 3rem;">
+      <h2>Skeleton Loaders</h2>
+      <div class="ds-card" style="max-width: 600px;">
+        <div class="ds-card-body">
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-text" style="width: 60%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Demo -->
+    <section>
+      <h2>Interactive Demo</h2>
+      <div class="ds-flex ds-gap-3">
+        <button class="ds-btn ds-btn-primary" onclick="showToast()">Show Toast</button>
+        <button class="ds-btn ds-btn-secondary" onclick="showModal()">Show Modal</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/theme-system.js"></script>
+  <script src="/js/components/theme-toggle.js"></script>
+  <script src="/js/components/toast.js"></script>
+  <script src="/js/components/modal.js"></script>
+
+  <script>
+    // Toast demo
+    function showToast() {
+      toast.success('This is a success toast!', 'Success');
+    }
+
+    // Modal demo
+    let demoModal;
+    function showModal() {
+      if (!demoModal) {
+        demoModal = new Modal({
+          title: 'Demo Modal',
+          content: `
+            <p>This is a demo modal with the new design system.</p>
+            <p>It includes smooth animations and proper styling.</p>
+          `,
+          footer: `
+            <button class="ds-btn ds-btn-secondary" onclick="demoModal.close()">Close</button>
+            <button class="ds-btn ds-btn-primary" onclick="demoModal.close(); toast.success('Action confirmed!')">Confirm</button>
+          `
+        });
+      }
+      demoModal.open();
+    }
+  </script>
+</body>
+</html>

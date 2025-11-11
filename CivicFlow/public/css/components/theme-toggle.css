@@ -1,0 +1,67 @@
+/**
+ * Theme Toggle Component Styles
+ */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-1);
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-colors);
+  white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+}
+
+.theme-toggle-btn.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.theme-toggle-btn svg {
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn.active svg {
+  stroke: var(--color-text-inverse);
+}
+
+/* Compact variant (icon only) */
+.theme-toggle.compact .theme-label {
+  display: none;
+}
+
+.theme-toggle.compact .theme-toggle-btn {
+  padding: var(--spacing-2);
+}
+
+/* Responsive: Hide labels on small screens */
+@media (max-width: 640px) {
+  .theme-label {
+    display: none;
+  }
+  
+  .theme-toggle-btn {
+    padding: var(--spacing-2);
+  }
+}

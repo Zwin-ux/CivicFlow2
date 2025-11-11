@@ -5,42 +5,63 @@ import logger from '../utils/logger';
 class Database {
   private pool: Pool;
   private static instance: Database;
+  private maxRetries = 3;
+  private retryDelay = 1000; // 1 second
 
   private constructor() {
     // Support both connection string and individual parameters
     const connectionString = process.env.DATABASE_URL;
+    const isProduction = config.env === 'production';
     
-    this.pool = new Pool(
-      connectionString
-        ? {
-            connectionString,
-            ssl: true, // Enable SSL for cloud databases
-            min: config.database.pool.min,
-            max: config.database.pool.max,
-            idleTimeoutMillis: 30000,
-            connectionTimeoutMillis: 10000, // Increased for cloud databases
-          }
-        : {
-            host: config.database.host,
-            port: config.database.port,
-            database: config.database.name,
-            user: config.database.user,
-            password: config.database.password,
-            min: config.database.pool.min,
-            max: config.database.pool.max,
-            idleTimeoutMillis: 30000,
-            connectionTimeoutMillis: 2000,
-          }
-    );
+    // Railway-optimized pool configuration
+    const poolConfig = connectionString
+      ? {
+          connectionString,
+          ssl: isProduction ? { rejectUnauthorized: false } : false, // SSL for cloud databases
+          min: config.database.pool.min,
+          max: isProduction ? 5 : config.database.pool.max, // Railway free tier: limit to 5 connections
+          idleTimeoutMillis: 30000, // Close idle connections after 30s
+          connectionTimeoutMillis: isProduction ? 10000 : 2000, // 10s timeout for cloud
+          statement_timeout: 30000, // 30s query timeout
+          query_timeout: 30000, // 30s query timeout
+          application_name: 'government-lending-crm',
+        }
+      : {
+          host: config.database.host,
+          port: config.database.port,
+          database: config.database.name,
+          user: config.database.user,
+          password: config.database.password,
+          min: config.database.pool.min,
+          max: config.database.pool.max,
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 2000,
+          statement_timeout: 30000,
+          query_timeout: 30000,
+          application_name: 'government-lending-crm',
+        };
+    
+    this.pool = new Pool(poolConfig);
 
-    // Handle pool errors
+    // Handle pool errors with retry logic
     this.pool.on('error', (err: Error) => {
       logger.error('Unexpected database pool error', { error: err });
+      // Pool will automatically try to reconnect
     });
 
     // Handle pool connection
-    this.pool.on('connect', () => {
+    this.pool.on('connect', (client) => {
       logger.info('New database connection established');
+      
+      // Set connection-level parameters for better performance
+      client.query('SET statement_timeout = 30000').catch((err) => {
+        logger.warn('Failed to set statement_timeout', { error: err });
+      });
+    });
+
+    // Handle pool removal (connection closed)
+    this.pool.on('remove', () => {
+      logger.debug('Database connection removed from pool');
     });
   }
 
@@ -52,14 +73,49 @@ class Database {
   }
 
   public async query(text: string, params?: any[]): Promise<QueryResult> {
+    return this.queryWithRetry(text, params, this.maxRetries);
+  }
+
+  private async queryWithRetry(text: string, params: any[] | undefined, retriesLeft: number): Promise<QueryResult> {
     const start = Date.now();
     try {
       const result = await this.pool.query(text, params);
       const duration = Date.now() - start;
-      logger.debug('Executed query', { text, duration, rows: result.rowCount });
+      
+      // Log slow queries (> 1 second)
+      if (duration > 1000) {
+        logger.warn('Slow query detected', { text, duration, rows: result.rowCount });
+      } else {
+        logger.debug('Executed query', { text, duration, rows: result.rowCount });
+      }
+      
       return result;
-    } catch (error) {
-      logger.error('Database query error', { text, error });
+    } catch (error: any) {
+      const duration = Date.now() - start;
+      
+      // Check if error is retryable (connection issues)
+      const isRetryable = error.code === 'ECONNREFUSED' || 
+                          error.code === 'ENOTFOUND' || 
+                          error.code === 'ETIMEDOUT' ||
+                          error.code === '57P03' || // cannot_connect_now
+                          error.code === '08006' || // connection_failure
+                          error.code === '08001';   // sqlclient_unable_to_establish_sqlconnection
+      
+      if (isRetryable && retriesLeft > 0) {
+        logger.warn('Database query failed, retrying...', { 
+          text, 
+          error: error.message, 
+          retriesLeft,
+          duration 
+        });
+        
+        // Wait before retrying (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, this.retryDelay * (this.maxRetries - retriesLeft + 1)));
+        
+        return this.queryWithRetry(text, params, retriesLeft - 1);
+      }
+      
+      logger.error('Database query error', { text, error, duration });
       throw error;
     }
   }
@@ -69,7 +125,34 @@ class Database {
   }
 
   public async getClient(): Promise<PoolClient> {
-    return await this.pool.connect();
+    return this.getClientWithRetry(this.maxRetries);
+  }
+
+  private async getClientWithRetry(retriesLeft: number): Promise<PoolClient> {
+    try {
+      return await this.pool.connect();
+    } catch (error: any) {
+      const isRetryable = error.code === 'ECONNREFUSED' || 
+                          error.code === 'ENOTFOUND' || 
+                          error.code === 'ETIMEDOUT' ||
+                          error.code === '57P03' ||
+                          error.code === '08006' ||
+                          error.code === '08001';
+      
+      if (isRetryable && retriesLeft > 0) {
+        logger.warn('Failed to get database client, retrying...', { 
+          error: error.message, 
+          retriesLeft 
+        });
+        
+        await new Promise(resolve => setTimeout(resolve, this.retryDelay * (this.maxRetries - retriesLeft + 1)));
+        
+        return this.getClientWithRetry(retriesLeft - 1);
+      }
+      
+      logger.error('Failed to get database client', { error });
+      throw error;
+    }
   }
 
   public async transaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Mode - Government Lending CRM</title>
+  <link rel="stylesheet" href="/css/components/demo-mode.css">
+  <link rel="stylesheet" href="/css/components/toast.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-landing">
+    <div class="demo-landing__container">
+      <div class="demo-landing__icon">🎭</div>
+      <h1 class="demo-landing__title">Welcome to Demo Mode</h1>
+      <p class="demo-landing__subtitle">
+        Experience the full power of our AI-powered Government Lending CRM with realistic sample data.
+        Choose a role below to start exploring.
+      </p>
+
+      <div class="demo-landing__features">
+        <div class="demo-landing__feature">
+          <div class="demo-landing__feature-icon">🤖</div>
+          <h3 class="demo-landing__feature-title">AI Document Analysis</h3>
+          <p class="demo-landing__feature-text">
+            Automatic document processing with quality scoring and data extraction
+          </p>
+        </div>
+
+        <div class="demo-landing__feature">
+          <div class="demo-landing__feature-icon">🔍</div>
+          <h3 class="demo-landing__feature-title">Fraud Detection</h3>
+          <p class="demo-landing__feature-text">
+            Advanced anomaly detection and risk assessment powered by AI
+          </p>
+        </div>
+
+        <div class="demo-landing__feature">
+          <div class="demo-landing__feature-icon">📊</div>
+          <h3 class="demo-landing__feature-title">Smart Insights</h3>
+          <p class="demo-landing__feature-text">
+            AI-generated summaries and recommendations for faster decisions
+          </p>
+        </div>
+
+        <div class="demo-landing__feature">
+          <div class="demo-landing__feature-icon">⚡</div>
+          <h3 class="demo-landing__feature-title">Real-time Updates</h3>
+          <p class="demo-landing__feature-text">
+            Live dashboard with WebSocket updates and instant notifications
+          </p>
+        </div>
+      </div>
+
+      <h2 style="font-size: 20px; color: #333; margin-bottom: 20px;">Select Your Role</h2>
+      
+      <div class="demo-landing__roles">
+        <button class="demo-landing__role-button" onclick="startDemo('APPLICANT')">
+          👤 Applicant Portal
+        </button>
+        <button class="demo-landing__role-button" onclick="startDemo('REVIEWER')">
+          👨‍💼 Staff Portal
+        </button>
+        <button class="demo-landing__role-button" onclick="startDemo('APPROVER')">
+          ✅ Approver Dashboard
+        </button>
+        <button class="demo-landing__role-button" onclick="startDemo('ADMIN')">
+          ⚙️ Admin Dashboard
+        </button>
+      </div>
+
+      <p class="demo-landing__disclaimer">
+        <strong>Note:</strong> This is a demonstration environment with sample data.
+        No real data will be stored or processed. Sessions automatically expire after 30 minutes of inactivity.
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script src="/js/components/toast.js"></script>
+  <script>
+    // Initialize toast manager
+    window.toastManager = new ToastManager();
+
+    async function startDemo(role) {
+      try {
+        // Show loading state
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = 'Starting...';
+        button.disabled = true;
+
+        // Create demo session
+        const response = await fetch('/api/v1/demo/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userRole: role }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to start demo session');
+        }
+
+        const data = await response.json();
+
+        // Store session info
+        sessionStorage.setItem('demo_session', data.sessionId);
+        sessionStorage.setItem('demo_role', data.userRole);
+        sessionStorage.setItem('demo_expires', data.expiresAt);
+
+        // Show success message
+        window.toastManager.show('Demo session started successfully!', 'success');
+
+        // Redirect based on role
+        setTimeout(() => {
+          switch (role) {
+            case 'APPLICANT':
+              window.location.href = '/applicant-portal.html';
+              break;
+            case 'REVIEWER':
+              window.location.href = '/staff-portal.html';
+              break;
+            case 'APPROVER':
+              window.location.href = '/loan-ops-dashboard.html';
+              break;
+            case 'ADMIN':
+              window.location.href = '/admin-dashboard.html';
+              break;
+            default:
+              window.location.href = '/index.html';
+          }
+        }, 500);
+
+      } catch (error) {
+        console.error('Error starting demo:', error);
+        window.toastManager.show('Failed to start demo session. Please try again.', 'error');
+        
+        // Reset button
+        button.textContent = originalText;
+        button.disabled = false;
+      }
+    }
+
+    // Check if already in demo mode
+    if (sessionStorage.getItem('demo_session')) {
+      const role = sessionStorage.getItem('demo_role');
+      window.toastManager.show('You already have an active demo session', 'info');
+      
+      // Redirect to appropriate page
+      setTimeout(() => {
+        switch (role) {
+          case 'APPLICANT':
+            window.location.href = '/applicant-portal.html';
+            break;
+          case 'REVIEWER':
+            window.location.href = '/staff-portal.html';
+            break;
+          case 'APPROVER':
+            window.location.href = '/loan-ops-dashboard.html';
+            break;
+          case 'ADMIN':
+            window.location.href = '/admin-dashboard.html';
+            break;
+          default:
+            window.location.href = '/index.html';
+        }
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

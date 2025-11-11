@@ -1,5 +1,11 @@
+// Initialize theme system
+if (typeof initThemeSystem === 'function') {
+    initThemeSystem();
+}
+
 let authToken = null;
 let currentApplicationId = null;
+let currentAIAnalysis = null;
 
 // Check if already logged in
 const storedToken = localStorage.getItem('staffToken');
@@ -413,3 +419,310 @@ function showAlert(type, message) {
 // Make reviewApplication available globally
 window.reviewApplication = reviewApplication;
 window.viewDocument = viewDocument;
+
+
+// AI Analysis Functions
+async function loadAIAnalysis(applicationId) {
+    try {
+        const response = await fetch(`/api/applications/${applicationId}/ai-analysis`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (response.ok) {
+            currentAIAnalysis = await response.json();
+            displayAIAnalysis(currentAIAnalysis);
+            displayAnomalyAlerts(currentAIAnalysis.anomalies);
+        }
+    } catch (error) {
+        console.error('Error loading AI analysis:', error);
+    }
+}
+
+function displayAIAnalysis(analysis) {
+    // Document Quality Score
+    const qualityScore = document.getElementById('ai-quality-score');
+    const qualityStatus = document.getElementById('ai-quality-status');
+    
+    if (analysis.qualityScore !== undefined) {
+        qualityScore.textContent = analysis.qualityScore + '/100';
+        if (analysis.qualityScore >= 80) {
+            qualityStatus.textContent = 'Excellent';
+            qualityStatus.className = 'metric-status success';
+        } else if (analysis.qualityScore >= 60) {
+            qualityStatus.textContent = 'Good';
+            qualityStatus.className = 'metric-status warning';
+        } else {
+            qualityStatus.textContent = 'Needs Improvement';
+            qualityStatus.className = 'metric-status error';
+        }
+    }
+
+    // Extraction Confidence
+    const extractionConfidence = document.getElementById('ai-extraction-confidence');
+    const extractionStatus = document.getElementById('ai-extraction-status');
+    
+    if (analysis.extractionConfidence !== undefined) {
+        const confidence = Math.round(analysis.extractionConfidence * 100);
+        extractionConfidence.textContent = confidence + '%';
+        if (confidence >= 85) {
+            extractionStatus.textContent = 'High Confidence';
+            extractionStatus.className = 'metric-status success';
+        } else if (confidence >= 70) {
+            extractionStatus.textContent = 'Medium Confidence';
+            extractionStatus.className = 'metric-status warning';
+        } else {
+            extractionStatus.textContent = 'Low Confidence';
+            extractionStatus.className = 'metric-status error';
+        }
+    }
+
+    // Risk Score
+    const riskScore = document.getElementById('ai-risk-score');
+    const riskStatus = document.getElementById('ai-risk-status');
+    
+    if (analysis.riskScore !== undefined) {
+        riskScore.textContent = analysis.riskScore + '/100';
+        if (analysis.riskScore < 30) {
+            riskStatus.textContent = 'Low Risk';
+            riskStatus.className = 'metric-status success';
+        } else if (analysis.riskScore < 70) {
+            riskStatus.textContent = 'Medium Risk';
+            riskStatus.className = 'metric-status warning';
+        } else {
+            riskStatus.textContent = 'High Risk';
+            riskStatus.className = 'metric-status error';
+        }
+    }
+
+    // AI Recommendation
+    const aiRecommendation = document.getElementById('ai-recommendation');
+    const aiRecommendationConfidence = document.getElementById('ai-recommendation-confidence');
+    
+    if (analysis.recommendation) {
+        aiRecommendation.textContent = analysis.recommendation.decision || 'REVIEW';
+        if (analysis.recommendation.confidence) {
+            const confidence = Math.round(analysis.recommendation.confidence * 100);
+            aiRecommendationConfidence.textContent = `${confidence}% confidence`;
+        }
+    }
+}
+
+function displayAnomalyAlerts(anomalies) {
+    const anomalySection = document.getElementById('anomaly-alerts-section');
+    const anomalyCount = document.getElementById('anomaly-count');
+    const anomalyList = document.getElementById('anomaly-alerts-list');
+
+    if (!anomalies || anomalies.length === 0) {
+        anomalySection.style.display = 'none';
+        return;
+    }
+
+    anomalyCount.textContent = anomalies.length;
+    anomalyList.innerHTML = anomalies.map(anomaly => `
+        <div class="anomaly-alert ${anomaly.severity.toLowerCase()}">
+            <div class="anomaly-header">
+                <div class="anomaly-type">
+                    <span class="anomaly-icon">${getSeverityIcon(anomaly.severity)}</span>
+                    <span class="anomaly-type-text">${anomaly.type.replace(/_/g, ' ')}</span>
+                </div>
+                <span class="badge badge-${getSeverityBadgeClass(anomaly.severity)}">${anomaly.severity}</span>
+            </div>
+            <div class="anomaly-description">${anomaly.description}</div>
+            ${anomaly.evidence && anomaly.evidence.length > 0 ? `
+                <div class="anomaly-evidence">
+                    <strong>Evidence:</strong>
+                    <ul>
+                        ${anomaly.evidence.map(e => `<li>${e}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            <div class="anomaly-confidence">
+                Confidence: ${Math.round((anomaly.confidence || 0) * 100)}%
+            </div>
+            <div class="anomaly-actions">
+                <button class="btn btn-sm btn-secondary" onclick="reviewAnomaly('${anomaly.id}')">
+                    Review
+                </button>
+                <button class="btn btn-sm btn-success" onclick="resolveAnomaly('${anomaly.id}')">
+                    Mark Resolved
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    anomalySection.style.display = 'block';
+}
+
+function getSeverityIcon(severity) {
+    const icons = {
+        'CRITICAL': '🚨',
+        'HIGH': '⚠️',
+        'MEDIUM': '⚡',
+        'LOW': 'ℹ️'
+    };
+    return icons[severity] || 'ℹ️';
+}
+
+function getSeverityBadgeClass(severity) {
+    const classes = {
+        'CRITICAL': 'error',
+        'HIGH': 'error',
+        'MEDIUM': 'warning',
+        'LOW': 'neutral'
+    };
+    return classes[severity] || 'neutral';
+}
+
+// Document viewer with annotations
+window.viewDocument = function(documentId) {
+    if (typeof DocumentViewer !== 'undefined') {
+        const viewer = new DocumentViewer({
+            documentId: documentId,
+            showAnnotations: true,
+            enableInteraction: true
+        });
+        viewer.open();
+    } else {
+        if (typeof showToast === 'function') {
+            showToast('Document viewer not available', 'error');
+        }
+    }
+};
+
+// View all documents with annotations
+document.getElementById('view-with-annotations')?.addEventListener('click', () => {
+    if (!currentApplicationId) return;
+    
+    if (typeof showModal === 'function') {
+        const content = `
+            <div class="document-viewer-container">
+                <p>Loading documents with AI annotations...</p>
+                <div id="annotation-viewer"></div>
+            </div>
+        `;
+        showModal('Documents with AI Annotations', content, [
+            { text: 'Close', variant: 'secondary', onClick: () => {} }
+        ]);
+        
+        // Load documents with annotations
+        loadDocumentsWithAnnotations(currentApplicationId);
+    }
+});
+
+async function loadDocumentsWithAnnotations(applicationId) {
+    try {
+        const response = await fetch(`/api/applications/${applicationId}/documents`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (response.ok) {
+            const documents = await response.json();
+            const viewer = document.getElementById('annotation-viewer');
+            if (viewer && documents.length > 0) {
+                viewer.innerHTML = documents.map(doc => `
+                    <div class="document-preview">
+                        <h4>${doc.fileName}</h4>
+                        <button class="btn btn-primary" onclick="viewDocument('${doc.id}')">
+                            View with Annotations
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading documents:', error);
+    }
+}
+
+// Anomaly management functions
+window.reviewAnomaly = async function(anomalyId) {
+    if (typeof showModal === 'function') {
+        const content = `
+            <div class="anomaly-review-form">
+                <p>Review this anomaly and provide your assessment:</p>
+                <textarea id="review-notes" rows="4" placeholder="Enter your review notes..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            </div>
+        `;
+        showModal('Review Anomaly', content, [
+            {
+                text: 'Submit Review',
+                variant: 'primary',
+                onClick: async () => {
+                    const notes = document.getElementById('review-notes')?.value;
+                    await submitAnomalyReview(anomalyId, notes);
+                }
+            },
+            { text: 'Cancel', variant: 'secondary', onClick: () => {} }
+        ]);
+    }
+};
+
+async function submitAnomalyReview(anomalyId, notes) {
+    try {
+        const response = await fetch(`/api/anomalies/${anomalyId}/review`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ notes, status: 'REVIEWED' })
+        });
+
+        if (response.ok) {
+            if (typeof showToast === 'function') {
+                showToast('Anomaly review submitted successfully', 'success');
+            }
+            // Reload AI analysis
+            if (currentApplicationId) {
+                await loadAIAnalysis(currentApplicationId);
+            }
+        }
+    } catch (error) {
+        console.error('Error submitting anomaly review:', error);
+        if (typeof showToast === 'function') {
+            showToast('Failed to submit review', 'error');
+        }
+    }
+}
+
+window.resolveAnomaly = async function(anomalyId) {
+    try {
+        const response = await fetch(`/api/anomalies/${anomalyId}/review`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'RESOLVED' })
+        });
+
+        if (response.ok) {
+            if (typeof showToast === 'function') {
+                showToast('Anomaly marked as resolved', 'success');
+            }
+            // Reload AI analysis
+            if (currentApplicationId) {
+                await loadAIAnalysis(currentApplicationId);
+            }
+        }
+    } catch (error) {
+        console.error('Error resolving anomaly:', error);
+        if (typeof showToast === 'function') {
+            showToast('Failed to resolve anomaly', 'error');
+        }
+    }
+};
+
+// Enhance the existing displayApplicationDetails function to load AI analysis
+const originalDisplayApplicationDetails = window.displayApplicationDetails;
+if (originalDisplayApplicationDetails) {
+    window.displayApplicationDetails = async function(app) {
+        await originalDisplayApplicationDetails(app);
+        // Load AI analysis after displaying application details
+        await loadAIAnalysis(app.id);
+    };
+}

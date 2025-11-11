@@ -26,7 +26,12 @@ interface Config {
   };
   security: {
     jwtSecret: string;
+    jwtAccessTokenExpiry: string;
+    jwtRefreshTokenExpiry: string;
+    jwtIssuer: string;
+    jwtAudience: string;
     encryptionKey: string;
+    bcryptRounds: number;
   };
   email: {
     provider: string;
@@ -92,7 +97,12 @@ const config: Config = {
   },
   security: {
     jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
+    jwtAccessTokenExpiry: process.env.JWT_ACCESS_TOKEN_EXPIRY || '15m',
+    jwtRefreshTokenExpiry: process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d',
+    jwtIssuer: process.env.JWT_ISSUER || 'government-lending-crm',
+    jwtAudience: process.env.JWT_AUDIENCE || 'government-lending-crm-api',
     encryptionKey: process.env.ENCRYPTION_KEY || 'dev-encryption-key-change-in-production',
+    bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '12', 10), // Higher rounds for production
   },
   email: {
     provider: process.env.EMAIL_SERVICE_PROVIDER || 'sendgrid',

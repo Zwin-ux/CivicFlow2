@@ -1,0 +1,154 @@
+/**
+ * Modal/Dialog Component with Animations
+ */
+
+.ds-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-surface-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-index-modal-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-medium) var(--transition-timing-ease-in-out),
+              visibility var(--transition-medium) var(--transition-timing-ease-in-out);
+  padding: var(--spacing-4);
+  overflow-y: auto;
+}
+
+.ds-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ds-modal {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elevation-5);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition: transform var(--transition-medium) var(--transition-timing-ease-out),
+              opacity var(--transition-medium) var(--transition-timing-ease-out);
+  z-index: var(--z-index-modal);
+}
+
+.ds-modal-overlay.show .ds-modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Modal sizes */
+.ds-modal-sm {
+  max-width: 400px;
+}
+
+.ds-modal-lg {
+  max-width: 800px;
+}
+
+.ds-modal-xl {
+  max-width: 1200px;
+}
+
+.ds-modal-full {
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+/* Modal header */
+.ds-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-6);
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.ds-modal-title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.ds-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  flex-shrink: 0;
+}
+
+.ds-modal-close:hover {
+  background-color: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+}
+
+.ds-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal body */
+.ds-modal-body {
+  padding: var(--spacing-6);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ds-modal-body.compact {
+  padding: var(--spacing-4);
+}
+
+/* Modal footer */
+.ds-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding: var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.ds-modal-footer.space-between {
+  justify-content: space-between;
+}
+
+/* Prevent body scroll when modal is open */
+body.ds-modal-open {
+  overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ds-modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .ds-modal-overlay {
+    padding: 0;
+  }
+}

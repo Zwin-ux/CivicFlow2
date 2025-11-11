@@ -1,0 +1,266 @@
+/**
+ * Form Components with Validation Feedback
+ */
+
+/* Form group */
+.ds-form-group {
+  margin-bottom: var(--spacing-6);
+}
+
+.ds-form-group.compact {
+  margin-bottom: var(--spacing-4);
+}
+
+/* Form label */
+.ds-form-label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.ds-form-label.required::after {
+  content: ' *';
+  color: var(--color-error);
+}
+
+/* Form input */
+.ds-form-input,
+.ds-form-select,
+.ds-form-textarea {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  transition: var(--transition-all);
+  line-height: var(--line-height-normal);
+}
+
+.ds-form-input:focus,
+.ds-form-select:focus,
+.ds-form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.ds-form-input::placeholder,
+.ds-form-textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.ds-form-input:disabled,
+.ds-form-select:disabled,
+.ds-form-textarea:disabled {
+  background-color: var(--color-background-tertiary);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Textarea */
+.ds-form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Input sizes */
+.ds-form-input-sm,
+.ds-form-select-sm {
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.ds-form-input-lg,
+.ds-form-select-lg {
+  padding: var(--spacing-4) var(--spacing-5);
+  font-size: var(--font-size-lg);
+}
+
+/* Validation states */
+.ds-form-input.valid,
+.ds-form-select.valid,
+.ds-form-textarea.valid {
+  border-color: var(--color-success);
+}
+
+.ds-form-input.valid:focus,
+.ds-form-select.valid:focus,
+.ds-form-textarea.valid:focus {
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.ds-form-input.invalid,
+.ds-form-select.invalid,
+.ds-form-textarea.invalid {
+  border-color: var(--color-error);
+}
+
+.ds-form-input.invalid:focus,
+.ds-form-select.invalid:focus,
+.ds-form-textarea.invalid:focus {
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+/* Feedback messages */
+.ds-form-feedback {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.ds-form-feedback.success {
+  color: var(--color-success);
+}
+
+.ds-form-feedback.error {
+  color: var(--color-error);
+}
+
+.ds-form-feedback.warning {
+  color: var(--color-warning);
+}
+
+.ds-form-feedback.info {
+  color: var(--color-info);
+}
+
+/* Help text */
+.ds-form-help {
+  display: block;
+  margin-top: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  line-height: var(--line-height-normal);
+}
+
+/* Checkbox and Radio */
+.ds-form-check {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+}
+
+.ds-form-check-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.ds-form-check-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Input group (with icons or buttons) */
+.ds-input-group {
+  display: flex;
+  align-items: stretch;
+}
+
+.ds-input-group .ds-form-input {
+  flex: 1;
+}
+
+.ds-input-group .ds-form-input:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.ds-input-group .ds-form-input:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ds-input-group-prepend,
+.ds-input-group-append {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-background-tertiary);
+  border: 1px solid var(--color-border-medium);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.ds-input-group-prepend {
+  border-right: none;
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.ds-input-group-append {
+  border-left: none;
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+/* Form row (inline fields) */
+.ds-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+}
+
+/* Switch toggle */
+.ds-form-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ds-form-switch-input {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  appearance: none;
+  background-color: var(--color-neutral-400);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.ds-form-switch-input::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: var(--transition-all);
+}
+
+.ds-form-switch-input:checked {
+  background-color: var(--color-primary);
+}
+
+.ds-form-switch-input:checked::before {
+  transform: translateX(20px);
+}
+
+.ds-form-switch-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+.ds-form-switch-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
