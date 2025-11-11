@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Viewer & Comparison Demo - Government Lending CRM</title>
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/animations.css">
+  
+  <!-- Component CSS -->
+  <link rel="stylesheet" href="/css/components/button.css">
+  <link rel="stylesheet" href="/css/components/form.css">
+  <link rel="stylesheet" href="/css/components/badge.css">
+  <link rel="stylesheet" href="/css/components/modal.css">
+  <link rel="stylesheet" href="/css/components/toast.css">
+  <link rel="stylesheet" href="/css/components/document-viewer.css">
+  <link rel="stylesheet" href="/css/components/document-comparison.css">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family-primary);
+      background: var(--color-background-secondary);
+      color: var(--color-text-primary);
+    }
+
+    .demo-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing-6);
+    }
+
+    .demo-header {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .demo-header h1 {
+      margin: 0 0 var(--spacing-2) 0;
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+    }
+
+    .demo-header p {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      color: var(--color-text-secondary);
+    }
+
+    .demo-tabs {
+      display: flex;
+      gap: var(--spacing-2);
+      margin-bottom: var(--spacing-6);
+      border-bottom: 2px solid var(--color-border-light);
+    }
+
+    .demo-tab {
+      padding: var(--spacing-3) var(--spacing-6);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: var(--transition-colors);
+    }
+
+    .demo-tab:hover {
+      color: var(--color-primary);
+    }
+
+    .demo-tab--active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    .demo-content {
+      display: none;
+    }
+
+    .demo-content--active {
+      display: block;
+    }
+
+    .viewer-container,
+    .comparison-container {
+      height: 800px;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-4);
+      padding: var(--spacing-4);
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .demo-controls__group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+    }
+
+    .demo-controls__group label {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>📄 Document Viewer & Comparison Demo</h1>
+      <p>Interactive document viewer with AI annotations and side-by-side comparison</p>
+    </div>
+
+    <div class="demo-tabs">
+      <button class="demo-tab demo-tab--active" data-tab="viewer">Document Viewer</button>
+      <button class="demo-tab" data-tab="comparison">Document Comparison</button>
+    </div>
+
+    <!-- Document Viewer Tab -->
+    <div class="demo-content demo-content--active" data-content="viewer">
+      <div class="demo-controls">
+        <div class="demo-controls__group">
+          <label>Select Document:</label>
+          <select class="form-input" id="document-select">
+            <option value="">-- Select a document --</option>
+            <option value="demo-1">Bank Statement (PDF)</option>
+            <option value="demo-2">Tax Return (PDF)</option>
+            <option value="demo-3">ID Document (Image)</option>
+            <option value="demo-4">Business License (Image)</option>
+          </select>
+        </div>
+        <div class="demo-controls__group">
+          <label>Options:</label>
+          <div style="display: flex; gap: var(--spacing-3);">
+            <label class="form-checkbox">
+              <input type="checkbox" id="enable-annotations" checked>
+              <span>Show Annotations</span>
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" id="enable-fullscreen" checked>
+              <span>Enable Fullscreen</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="viewer-container" id="document-viewer"></div>
+    </div>
+
+    <!-- Document Comparison Tab -->
+    <div class="demo-content" data-content="comparison">
+      <div class="demo-controls">
+        <div class="demo-controls__group">
+          <label>Original Document:</label>
+          <select class="form-input" id="comparison-doc1">
+            <option value="">-- Select document --</option>
+            <option value="demo-1">Bank Statement v1</option>
+            <option value="demo-2">Tax Return 2023</option>
+            <option value="demo-3">ID Document Original</option>
+          </select>
+        </div>
+        <div class="demo-controls__group">
+          <label>Comparison Document:</label>
+          <select class="form-input" id="comparison-doc2">
+            <option value="">-- Select document --</option>
+            <option value="demo-1-v2">Bank Statement v2</option>
+            <option value="demo-2-v2">Tax Return 2024</option>
+            <option value="demo-3-v2">ID Document Updated</option>
+          </select>
+        </div>
+        <div class="demo-controls__group">
+          <label>&nbsp;</label>
+          <button class="btn btn--primary" id="load-comparison">Load Comparison</button>
+        </div>
+      </div>
+
+      <div class="comparison-container" id="document-comparison"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/theme-system.js"></script>
+  <script src="/js/components/toast.js"></script>
+  <script src="/js/components/document-viewer.js"></script>
+  <script src="/js/components/document-comparison.js"></script>
+  
+  <script>
+    // Initialize components
+    let documentViewer = null;
+    let documentComparison = null;
+
+    // Tab switching
+    document.querySelectorAll('.demo-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        
+        // Update tabs
+        document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('demo-tab--active'));
+        tab.classList.add('demo-tab--active');
+        
+        // Update content
+        document.querySelectorAll('.demo-content').forEach(c => c.classList.remove('demo-content--active'));
+        document.querySelector(`[data-content="${tabName}"]`).classList.add('demo-content--active');
+      });
+    });
+
+    // Initialize Document Viewer
+    function initDocumentViewer() {
+      const enableAnnotations = document.getElementById('enable-annotations').checked;
+      const enableFullscreen = document.getElementById('enable-fullscreen').checked;
+
+      if (documentViewer) {
+        documentViewer.destroy();
+      }
+
+      documentViewer = new DocumentViewer('document-viewer', {
+        enableAnnotations,
+        enableFullscreen,
+        enableComparison: false
+      });
+
+      // Load demo document
+      const selectedDoc = document.getElementById('document-select').value;
+      if (selectedDoc) {
+        documentViewer.loadDocument(selectedDoc, 'pdf');
+        Toast.show('Document loaded successfully', 'success');
+      }
+    }
+
+    // Document selection
+    document.getElementById('document-select').addEventListener('change', initDocumentViewer);
+    document.getElementById('enable-annotations').addEventListener('change', initDocumentViewer);
+    document.getElementById('enable-fullscreen').addEventListener('change', initDocumentViewer);
+
+    // Initialize Document Comparison
+    document.getElementById('load-comparison').addEventListener('click', () => {
+      const doc1 = document.getElementById('comparison-doc1').value;
+      const doc2 = document.getElementById('comparison-doc2').value;
+
+      if (!doc1 || !doc2) {
+        Toast.show('Please select both documents', 'warning');
+        return;
+      }
+
+      if (documentComparison) {
+        documentComparison.destroy();
+      }
+
+      documentComparison = new DocumentComparison('document-comparison');
+      documentComparison.loadDocuments(doc1, doc2);
+      Toast.show('Loading documents for comparison...', 'info');
+    });
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default document
+      document.getElementById('document-select').value = 'demo-1';
+      initDocumentViewer();
+    });
+  </script>
+</body>
+</html>

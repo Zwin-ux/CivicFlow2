@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Applicant Portal - Government Lending CRM</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/design-system-all.css">
+    <link rel="stylesheet" href="/css/components/document-viewer.css">
+    <link rel="stylesheet" href="/css/components/applicant-portal.css">
+    <link rel="stylesheet" href="/css/components/demo-banner.css">
 </head>
 <body>
     <nav class="navbar">
@@ -15,7 +19,11 @@
                 <li><a href="/applicant-portal.html" class="active">Applicant Portal</a></li>
                 <li><a href="/staff-portal.html">Staff Portal</a></li>
                 <li><a href="/admin-dashboard.html">Admin Dashboard</a></li>
+                <li><a href="/demo-landing.html">Demo Mode</a></li>
             </ul>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
         </div>
     </nav>
 
@@ -91,6 +99,30 @@
 
                     <div class="form-section">
                         <h3>Required Documents</h3>
+                        
+                        <!-- AI Document Recommendations -->
+                        <div id="ai-recommendations" class="ai-recommendations" style="display: none;">
+                            <div class="recommendation-header">
+                                <span class="ai-badge">AI Powered</span>
+                                <h4>Recommended Documents</h4>
+                            </div>
+                            <div id="recommendations-list" class="recommendations-list"></div>
+                        </div>
+
+                        <!-- Document Upload Progress Indicator -->
+                        <div id="upload-progress-indicator" class="upload-progress-indicator" style="display: none;">
+                            <div class="progress-header">
+                                <span>Document Completion</span>
+                                <span id="completion-percentage">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div id="completion-progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-details">
+                                <span id="documents-uploaded">0</span> of <span id="documents-required">0</span> required documents uploaded
+                            </div>
+                        </div>
+
                         <div class="upload-area" id="upload-area">
                             <div class="upload-instructions">
                                 <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -99,7 +131,7 @@
                                     <line x1="12" y1="3" x2="12" y2="15"></line>
                                 </svg>
                                 <p>Drag and drop files here or click to browse</p>
-                                <p class="upload-hint">Required: W-9, EIN Verification, Bank Statements</p>
+                                <p class="upload-hint">Supported: PDF, JPG, PNG (Max 10MB per file)</p>
                             </div>
                             <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                         </div>
@@ -172,6 +204,17 @@
         </div>
     </footer>
 
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <script src="/js/theme-system.js"></script>
+    <script src="/js/components/theme-toggle.js"></script>
+    <script src="/js/components/toast.js"></script>
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/components/demo-banner.js"></script>
     <script src="/js/applicant-portal.js"></script>
 </body>
 </html>

@@ -75,40 +75,55 @@ router.get('/', (_req: Request, res: Response) => {
  *                       type: object
  */
 router.get('/detailed', async (_req: Request, res: Response) => {
+  const startTime = Date.now();
   const health: any = {
-    status: 'ok',
+    status: 'healthy',
     timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: process.env.npm_package_version || '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
     services: {},
   };
 
-  // Check database
+  // Check database with latency measurement
   try {
-    const result = await database.query('SELECT NOW()');
+    const dbStart = Date.now();
+    const result = await database.query('SELECT NOW() as current_time, version() as db_version');
+    const dbLatency = Date.now() - dbStart;
+    
     health.services.database = {
       status: 'ok',
-      responseTime: result.rows[0].now,
+      latency: dbLatency,
+      timestamp: result.rows[0].current_time,
+      version: result.rows[0].db_version.split(' ')[0] + ' ' + result.rows[0].db_version.split(' ')[1],
     };
   } catch (error: any) {
-    health.status = 'degraded';
+    health.status = 'unhealthy';
     health.services.database = {
       status: 'error',
       error: error.message,
+      code: error.code,
     };
     logger.error('Database health check failed', { error });
   }
 
-  // Check Redis
+  // Check Redis with latency measurement
   try {
+    const redisStart = Date.now();
     const isHealthy = await redisClient.healthCheck();
-    health.services.cache = {
+    const redisLatency = Date.now() - redisStart;
+    
+    health.services.redis = {
       status: isHealthy ? 'ok' : 'error',
+      latency: redisLatency,
     };
+    
     if (!isHealthy) {
-      health.status = 'degraded';
+      health.status = health.status === 'healthy' ? 'degraded' : 'unhealthy';
     }
   } catch (error: any) {
-    health.status = 'degraded';
-    health.services.cache = {
+    health.status = health.status === 'healthy' ? 'degraded' : 'unhealthy';
+    health.services.redis = {
       status: 'error',
       error: error.message,
     };
@@ -126,10 +141,25 @@ router.get('/detailed', async (_req: Request, res: Response) => {
     health.services.externalServices.einVerification.state === 'OPEN' ||
     health.services.externalServices.emailService.state === 'OPEN'
   ) {
-    health.status = 'degraded';
+    health.status = health.status === 'healthy' ? 'degraded' : health.status;
   }
 
-  res.json(health);
+  // Add system metrics
+  health.system = {
+    memory: {
+      used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+      total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+      unit: 'MB',
+    },
+    cpu: process.cpuUsage(),
+  };
+
+  // Add response time
+  health.responseTime = Date.now() - startTime;
+
+  // Set HTTP status code based on health
+  const statusCode = health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503;
+  res.status(statusCode).json(health);
 });
 
 /**

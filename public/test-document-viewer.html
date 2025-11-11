@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Viewer Integration Tests</title>
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components/button.css">
+  <link rel="stylesheet" href="/css/components/form.css">
+  <link rel="stylesheet" href="/css/components/badge.css">
+  <link rel="stylesheet" href="/css/components/toast.css">
+  <link rel="stylesheet" href="/css/components/document-viewer.css">
+  <link rel="stylesheet" href="/css/components/document-comparison.css">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: var(--spacing-6);
+      font-family: var(--font-family-primary);
+      background: var(--color-background-secondary);
+      color: var(--color-text-primary);
+    }
+
+    .test-container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .test-header {
+      margin-bottom: var(--spacing-6);
+      padding: var(--spacing-6);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .test-header h1 {
+      margin: 0 0 var(--spacing-2) 0;
+      font-size: var(--font-size-3xl);
+      color: var(--color-text-primary);
+    }
+
+    .test-section {
+      margin-bottom: var(--spacing-6);
+      padding: var(--spacing-6);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .test-section h2 {
+      margin: 0 0 var(--spacing-4) 0;
+      font-size: var(--font-size-2xl);
+      color: var(--color-text-primary);
+      border-bottom: 2px solid var(--color-border-light);
+      padding-bottom: var(--spacing-3);
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .test-card {
+      padding: var(--spacing-4);
+      background: var(--color-background-secondary);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .test-card h3 {
+      margin: 0 0 var(--spacing-2) 0;
+      font-size: var(--font-size-lg);
+      color: var(--color-text-primary);
+    }
+
+    .test-card p {
+      margin: 0 0 var(--spacing-3) 0;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .test-result {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-3);
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .test-result--pending {
+      background: var(--color-neutral-100);
+      color: var(--color-text-secondary);
+    }
+
+    .test-result--pass {
+      background: var(--color-success-50);
+      color: var(--color-success-700);
+    }
+
+    .test-result--fail {
+      background: var(--color-error-50);
+      color: var(--color-error-700);
+    }
+
+    .test-actions {
+      display: flex;
+      gap: var(--spacing-2);
+      flex-wrap: wrap;
+    }
+
+    .viewer-test-area {
+      height: 600px;
+      margin-top: var(--spacing-4);
+      border: 2px dashed var(--color-border-medium);
+      border-radius: var(--radius-lg);
+    }
+
+    .test-log {
+      margin-top: var(--spacing-4);
+      padding: var(--spacing-4);
+      background: var(--color-neutral-900);
+      color: var(--color-neutral-100);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .test-log-entry {
+      margin-bottom: var(--spacing-1);
+      padding: var(--spacing-1);
+    }
+
+    .test-log-entry--info {
+      color: var(--color-info-300);
+    }
+
+    .test-log-entry--success {
+      color: var(--color-success-300);
+    }
+
+    .test-log-entry--error {
+      color: var(--color-error-300);
+    }
+
+    .test-summary {
+      display: flex;
+      gap: var(--spacing-6);
+      padding: var(--spacing-4);
+      background: var(--color-background-tertiary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .test-summary-item {
+      text-align: center;
+    }
+
+    .test-summary-value {
+      display: block;
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--spacing-1);
+    }
+
+    .test-summary-label {
+      display: block;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>🧪 Document Viewer Integration Tests</h1>
+      <p>Comprehensive testing suite for document viewer and comparison features</p>
+      
+      <div class="test-summary">
+        <div class="test-summary-item">
+          <span class="test-summary-value" id="total-tests">0</span>
+          <span class="test-summary-label">Total Tests</span>
+        </div>
+        <div class="test-summary-item">
+          <span class="test-summary-value" style="color: var(--color-success);" id="passed-tests">0</span>
+          <span class="test-summary-label">Passed</span>
+        </div>
+        <div class="test-summary-item">
+          <span class="test-summary-value" style="color: var(--color-error);" id="failed-tests">0</span>
+          <span class="test-summary-label">Failed</span>
+        </div>
+        <div class="test-summary-item">
+          <span class="test-summary-value" style="color: var(--color-warning);" id="pending-tests">0</span>
+          <span class="test-summary-label">Pending</span>
+        </div>
+      </div>
+
+      <div class="test-actions">
+        <button class="btn btn--primary" id="run-all-tests">Run All Tests</button>
+        <button class="btn btn--secondary" id="run-viewer-tests">Run Viewer Tests</button>
+        <button class="btn btn--secondary" id="run-comparison-tests">Run Comparison Tests</button>
+        <button class="btn btn--secondary" id="clear-log">Clear Log</button>
+      </div>
+    </div>
+
+    <!-- Document Viewer Tests -->
+    <div class="test-section">
+      <h2>📄 Document Viewer Tests</h2>
+      
+      <div class="test-grid">
+        <div class="test-card">
+          <h3>Initialization</h3>
+          <p>Test component initialization and rendering</p>
+          <span class="test-result test-result--pending" data-test="viewer-init">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-init')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Zoom Controls</h3>
+          <p>Test zoom in, zoom out, and fit to width</p>
+          <span class="test-result test-result--pending" data-test="viewer-zoom">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-zoom')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Page Navigation</h3>
+          <p>Test next, previous, and jump to page</p>
+          <span class="test-result test-result--pending" data-test="viewer-navigation">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-navigation')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Pan Functionality</h3>
+          <p>Test pan and drag when zoomed in</p>
+          <span class="test-result test-result--pending" data-test="viewer-pan">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-pan')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Fullscreen Mode</h3>
+          <p>Test fullscreen toggle functionality</p>
+          <span class="test-result test-result--pending" data-test="viewer-fullscreen">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-fullscreen')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Annotation Loading</h3>
+          <p>Test loading and parsing annotations</p>
+          <span class="test-result test-result--pending" data-test="viewer-annotations">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-annotations')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Annotation Rendering</h3>
+          <p>Test rendering bounding boxes and tooltips</p>
+          <span class="test-result test-result--pending" data-test="viewer-annotation-render">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-annotation-render')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Annotation Interactions</h3>
+          <p>Test accept, reject, edit, and comment</p>
+          <span class="test-result test-result--pending" data-test="viewer-annotation-interact">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-annotation-interact')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Keyboard Shortcuts</h3>
+          <p>Test keyboard navigation and controls</p>
+          <span class="test-result test-result--pending" data-test="viewer-keyboard">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('viewer-keyboard')">Run Test</button>
+        </div>
+      </div>
+
+      <div class="viewer-test-area" id="viewer-test-container"></div>
+    </div>
+
+    <!-- Document Comparison Tests -->
+    <div class="test-section">
+      <h2>🔄 Document Comparison Tests</h2>
+      
+      <div class="test-grid">
+        <div class="test-card">
+          <h3>Initialization</h3>
+          <p>Test comparison component initialization</p>
+          <span class="test-result test-result--pending" data-test="comparison-init">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-init')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Document Loading</h3>
+          <p>Test loading two documents for comparison</p>
+          <span class="test-result test-result--pending" data-test="comparison-load">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-load')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>View Modes</h3>
+          <p>Test side-by-side, overlay, and diff-only modes</p>
+          <span class="test-result test-result--pending" data-test="comparison-views">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-views')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Difference Detection</h3>
+          <p>Test detecting changes between documents</p>
+          <span class="test-result test-result--pending" data-test="comparison-diff">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-diff')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Difference Navigation</h3>
+          <p>Test navigating through detected differences</p>
+          <span class="test-result test-result--pending" data-test="comparison-nav">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-nav')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Highlighting</h3>
+          <p>Test difference highlighting on documents</p>
+          <span class="test-result test-result--pending" data-test="comparison-highlight">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-highlight')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Scroll Sync</h3>
+          <p>Test synchronized scrolling between panels</p>
+          <span class="test-result test-result--pending" data-test="comparison-scroll">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-scroll')">Run Test</button>
+        </div>
+
+        <div class="test-card">
+          <h3>Change History</h3>
+          <p>Test displaying change metadata and history</p>
+          <span class="test-result test-result--pending" data-test="comparison-history">⏳ Pending</span>
+          <button class="btn btn--sm btn--primary" onclick="runTest('comparison-history')">Run Test</button>
+        </div>
+      </div>
+
+      <div class="viewer-test-area" id="comparison-test-container"></div>
+    </div>
+
+    <!-- Test Log -->
+    <div class="test-section">
+      <h2>📋 Test Log</h2>
+      <div class="test-log" id="test-log">
+        <div class="test-log-entry test-log-entry--info">Ready to run tests...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/theme-system.js"></script>
+  <script src="/js/components/toast.js"></script>
+  <script src="/js/components/document-viewer.js"></script>
+  <script src="/js/components/document-comparison.js"></script>
+
+  <script>
+    // Test Framework
+    const TestRunner = {
+      results: {
+        total: 0,
+        passed: 0,
+        failed: 0,
+        pending: 0
+      },
+
+      log(message, type = 'info') {
+        const logContainer = document.getElementById('test-log');
+        const entry = document.createElement('div');
+        entry.className = `test-log-entry test-log-entry--${type}`;
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logContainer.appendChild(entry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+      },
+
+      updateSummary() {
+        document.getElementById('total-tests').textContent = this.results.total;
+        document.getElementById('passed-tests').textContent = this.results.passed;
+        document.getElementById('failed-tests').textContent = this.results.failed;
+        document.getElementById('pending-tests').textContent = this.results.pending;
+      },
+
+      pass(testName) {
+        const element = document.querySelector(`[data-test="${testName}"]`);
+        if (element) {
+          element.className = 'test-result test-result--pass';
+          element.textContent = '✅ Passed';
+        }
+        this.results.passed++;
+        this.results.pending--;
+        this.updateSummary();
+        this.log(`Test "${testName}" passed`, 'success');
+      },
+
+      fail(testName, error) {
+        const element = document.querySelector(`[data-test="${testName}"]`);
+        if (element) {
+          element.className = 'test-result test-result--fail';
+          element.textContent = '❌ Failed';
+        }
+        this.results.failed++;
+        this.results.pending--;
+        this.updateSummary();
+        this.log(`Test "${testName}" failed: ${error}`, 'error');
+      },
+
+      async runTest(testName) {
+        this.log(`Running test: ${testName}`, 'info');
+        
+        try {
+          switch(testName) {
+            // Viewer Tests
+            case 'viewer-init':
+              await this.testViewerInit();
+              break;
+            case 'viewer-zoom':
+              await this.testViewerZoom();
+              break;
+            case 'viewer-navigation':
+              await this.testViewerNavigation();
+              break;
+            case 'viewer-pan':
+              await this.testViewerPan();
+              break;
+            case 'viewer-fullscreen':
+              await this.testViewerFullscreen();
+              break;
+            case 'viewer-annotations':
+              await this.testViewerAnnotations();
+              break;
+            case 'viewer-annotation-render':
+              await this.testViewerAnnotationRender();
+              break;
+            case 'viewer-annotation-interact':
+              await this.testViewerAnnotationInteract();
+              break;
+            case 'viewer-keyboard':
+              await this.testViewerKeyboard();
+              break;
+
+            // Comparison Tests
+            case 'comparison-init':
+              await this.testComparisonInit();
+              break;
+            case 'comparison-load':
+              await this.testComparisonLoad();
+              break;
+            case 'comparison-views':
+              await this.testComparisonViews();
+              break;
+            case 'comparison-diff':
+              await this.testComparisonDiff();
+              break;
+            case 'comparison-nav':
+              await this.testComparisonNav();
+              break;
+            case 'comparison-highlight':
+              await this.testComparisonHighlight();
+              break;
+            case 'comparison-scroll':
+              await this.testComparisonScroll();
+              break;
+            case 'comparison-history':
+              await this.testComparisonHistory();
+              break;
+
+            default:
+              throw new Error('Unknown test');
+          }
+          this.pass(testName);
+        } catch (error) {
+          this.fail(testName, error.message);
+        }
+      },
+
+      // Viewer Test Implementations
+      async testViewerInit() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer', {
+          enableAnnotations: true,
+          enableFullscreen: true
+        });
+
+        if (!viewer) throw new Error('Viewer not initialized');
+        if (!container.querySelector('.document-viewer')) throw new Error('Viewer not rendered');
+      },
+
+      async testViewerZoom() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer');
+        const initialZoom = viewer.state.zoom;
+        
+        viewer.zoomIn();
+        if (viewer.state.zoom <= initialZoom) throw new Error('Zoom in failed');
+        
+        viewer.zoomOut();
+        viewer.zoomOut();
+        if (viewer.state.zoom >= initialZoom) throw new Error('Zoom out failed');
+      },
+
+      async testViewerNavigation() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer');
+        viewer.state.totalPages = 5;
+        viewer.state.currentPage = 1;
+        
+        viewer.nextPage();
+        if (viewer.state.currentPage !== 2) throw new Error('Next page failed');
+        
+        viewer.previousPage();
+        if (viewer.state.currentPage !== 1) throw new Error('Previous page failed');
+        
+        viewer.goToPage(3);
+        if (viewer.state.currentPage !== 3) throw new Error('Go to page failed');
+      },
+
+      async testViewerPan() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer');
+        viewer.state.zoom = 1.5;
+        
+        const initialOffset = { ...viewer.state.panOffset };
+        viewer.state.panOffset.x += 10;
+        viewer.state.panOffset.y += 20;
+        
+        if (viewer.state.panOffset.x === initialOffset.x) throw new Error('Pan X failed');
+        if (viewer.state.panOffset.y === initialOffset.y) throw new Error('Pan Y failed');
+      },
+
+      async testViewerFullscreen() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer');
+        const initialState = viewer.state.isFullscreen;
+        
+        viewer.state.isFullscreen = !initialState;
+        if (viewer.state.isFullscreen === initialState) throw new Error('Fullscreen toggle failed');
+      },
+
+      async testViewerAnnotations() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer', { enableAnnotations: true });
+        
+        const mockAnnotations = [
+          {
+            id: 'test-1',
+            type: 'entity',
+            value: 'Test Entity',
+            confidence: 0.95,
+            boundingBox: { x: 10, y: 20, width: 100, height: 50 }
+          }
+        ];
+        
+        viewer.state.annotations = mockAnnotations;
+        if (viewer.state.annotations.length !== 1) throw new Error('Annotations not loaded');
+      },
+
+      async testViewerAnnotationRender() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer', { enableAnnotations: true });
+        viewer.state.annotations = [
+          {
+            id: 'test-1',
+            type: 'entity',
+            value: 'Test',
+            confidence: 0.9,
+            boundingBox: { x: 10, y: 20, width: 100, height: 50 },
+            severity: 'info'
+          }
+        ];
+        
+        viewer.renderAnnotations();
+        
+        const annotationBox = container.querySelector('.annotation-box');
+        if (!annotationBox) throw new Error('Annotation box not rendered');
+      },
+
+      async testViewerAnnotationInteract() {
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer', { enableAnnotations: true });
+        viewer.state.annotations = [
+          {
+            id: 'test-1',
+            type: 'entity',
+            value: 'Test',
+            confidence: 0.9,
+            editable: true,
+            accepted: null
+          }
+        ];
+        
+        await viewer.acceptAnnotation('test-1');
+        if (viewer.state.annotations[0].accepted !== true) throw new Error('Accept annotation failed');
+        
+        await viewer.rejectAnnotation('test-1');
+        if (viewer.state.annotations[0].accepted !== false) throw new Error('Reject annotation failed');
+      },
+
+      async testViewerKeyboard() {
+        // Test keyboard shortcuts are properly bound
+        const container = document.getElementById('viewer-test-container');
+        container.innerHTML = '<div id="test-viewer"></div>';
+        
+        const viewer = new DocumentViewer('test-viewer');
+        if (typeof viewer.handleKeyboard !== 'function') throw new Error('Keyboard handler not found');
+      },
+
+      // Comparison Test Implementations
+      async testComparisonInit() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        if (!comparison) throw new Error('Comparison not initialized');
+        if (!container.querySelector('.document-comparison')) throw new Error('Comparison not rendered');
+      },
+
+      async testComparisonLoad() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        comparison.state.document1 = { id: 'doc-1', fileName: 'test1.pdf' };
+        comparison.state.document2 = { id: 'doc-2', fileName: 'test2.pdf' };
+        
+        if (!comparison.state.document1) throw new Error('Document 1 not loaded');
+        if (!comparison.state.document2) throw new Error('Document 2 not loaded');
+      },
+
+      async testComparisonViews() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        
+        comparison.changeViewMode('side-by-side');
+        if (comparison.state.viewMode !== 'side-by-side') throw new Error('Side-by-side view failed');
+        
+        comparison.changeViewMode('overlay');
+        if (comparison.state.viewMode !== 'overlay') throw new Error('Overlay view failed');
+        
+        comparison.changeViewMode('diff-only');
+        if (comparison.state.viewMode !== 'diff-only') throw new Error('Diff-only view failed');
+      },
+
+      async testComparisonDiff() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        comparison.state.document1 = { 
+          id: 'doc-1', 
+          fileName: 'old.pdf',
+          analysis: { extractedData: { entities: [] } }
+        };
+        comparison.state.document2 = { 
+          id: 'doc-2', 
+          fileName: 'new.pdf',
+          analysis: { extractedData: { entities: [] } }
+        };
+        
+        const differences = comparison.compareExtractedData();
+        if (!Array.isArray(differences)) throw new Error('Difference detection failed');
+      },
+
+      async testComparisonNav() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        comparison.state.differences = [
+          { type: 'test1' },
+          { type: 'test2' },
+          { type: 'test3' }
+        ];
+        comparison.state.currentDiffIndex = 0;
+        
+        comparison.navigateToDifference(1);
+        if (comparison.state.currentDiffIndex !== 1) throw new Error('Navigate to difference failed');
+      },
+
+      async testComparisonHighlight() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        comparison.state.differences = [
+          {
+            type: 'entity_modified',
+            location1: { x: 10, y: 20, width: 100, height: 50 },
+            location2: { x: 15, y: 25, width: 100, height: 50 },
+            severity: 'high'
+          }
+        ];
+        
+        comparison.render();
+        comparison.renderDifferences();
+        
+        // Check if highlights are rendered
+        const highlights = container.querySelectorAll('.comparison-highlight');
+        if (highlights.length === 0) throw new Error('Highlights not rendered');
+      },
+
+      async testComparisonScroll() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison', { syncScroll: true });
+        if (!comparison.options.syncScroll) throw new Error('Scroll sync not enabled');
+      },
+
+      async testComparisonHistory() {
+        const container = document.getElementById('comparison-test-container');
+        container.innerHTML = '<div id="test-comparison"></div>';
+        
+        const comparison = new DocumentComparison('test-comparison');
+        comparison.state.differences = [
+          {
+            type: 'entity_modified',
+            value1: 'Old Value',
+            value2: 'New Value',
+            severity: 'medium'
+          }
+        ];
+        
+        if (comparison.state.differences[0].value1 === comparison.state.differences[0].value2) {
+          throw new Error('Change history not tracked');
+        }
+      }
+    };
+
+    // Initialize test counts
+    window.addEventListener('DOMContentLoaded', () => {
+      const testElements = document.querySelectorAll('[data-test]');
+      TestRunner.results.total = testElements.length;
+      TestRunner.results.pending = testElements.length;
+      TestRunner.updateSummary();
+    });
+
+    // Global test runner function
+    function runTest(testName) {
+      TestRunner.runTest(testName);
+    }
+
+    // Run all tests
+    document.getElementById('run-all-tests').addEventListener('click', async () => {
+      TestRunner.log('Starting all tests...', 'info');
+      const testElements = document.querySelectorAll('[data-test]');
+      
+      for (const element of testElements) {
+        const testName = element.getAttribute('data-test');
+        await TestRunner.runTest(testName);
+        await new Promise(resolve => setTimeout(resolve, 100)); // Small delay between tests
+      }
+      
+      TestRunner.log('All tests completed!', 'success');
+      Toast.show(`Tests completed: ${TestRunner.results.passed} passed, ${TestRunner.results.failed} failed`, 
+        TestRunner.results.failed === 0 ? 'success' : 'warning');
+    });
+
+    // Run viewer tests only
+    document.getElementById('run-viewer-tests').addEventListener('click', async () => {
+      TestRunner.log('Starting viewer tests...', 'info');
+      const viewerTests = ['viewer-init', 'viewer-zoom', 'viewer-navigation', 'viewer-pan', 
+                          'viewer-fullscreen', 'viewer-annotations', 'viewer-annotation-render',
+                          'viewer-annotation-interact', 'viewer-keyboard'];
+      
+      for (const testName of viewerTests) {
+        await TestRunner.runTest(testName);
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      TestRunner.log('Viewer tests completed!', 'success');
+    });
+
+    // Run comparison tests only
+    document.getElementById('run-comparison-tests').addEventListener('click', async () => {
+      TestRunner.log('Starting comparison tests...', 'info');
+      const comparisonTests = ['comparison-init', 'comparison-load', 'comparison-views',
+                              'comparison-diff', 'comparison-nav', 'comparison-highlight',
+                              'comparison-scroll', 'comparison-history'];
+      
+      for (const testName of comparisonTests) {
+        await TestRunner.runTest(testName);
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      TestRunner.log('Comparison tests completed!', 'success');
+    });
+
+    // Clear log
+    document.getElementById('clear-log').addEventListener('click', () => {
+      document.getElementById('test-log').innerHTML = 
+        '<div class="test-log-entry test-log-entry--info">Log cleared. Ready to run tests...</div>';
+    });
+  </script>
+</body>
+</html>

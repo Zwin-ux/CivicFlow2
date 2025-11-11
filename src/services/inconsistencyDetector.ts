@@ -5,7 +5,6 @@
  */
 
 import smartExtractionService from './smartExtractionService';
-import aiAnalysisRepository from '../repositories/aiAnalysisRepository';
 import documentRepository from '../repositories/documentRepository';
 import logger from '../utils/logger';
 

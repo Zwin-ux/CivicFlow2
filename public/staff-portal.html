@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Portal - Government Lending CRM</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/design-system-all.css">
+    <link rel="stylesheet" href="/css/components/document-viewer.css">
+    <link rel="stylesheet" href="/css/components/staff-portal.css">
+    <link rel="stylesheet" href="/css/components/demo-banner.css">
 </head>
 <body>
     <nav class="navbar">
@@ -16,8 +20,12 @@
                 <li><a href="/staff-portal.html" class="active">Staff Portal</a></li>
                 <li><a href="/loan-ops-dashboard.html">Loan Ops Dashboard</a></li>
                 <li><a href="/admin-dashboard.html">Admin Dashboard</a></li>
+                <li><a href="/demo-landing.html">Demo Mode</a></li>
                 <li><a href="#" id="logout-btn">Logout</a></li>
             </ul>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
         </div>
     </nav>
 
@@ -158,6 +166,48 @@
                             </div>
                         </div>
 
+                        <!-- AI Analysis Results -->
+                        <div class="review-section">
+                            <div class="section-header">
+                                <h3>AI Analysis Results</h3>
+                                <span class="ai-badge">AI Powered</span>
+                            </div>
+                            <div id="ai-analysis-results" class="ai-analysis-grid">
+                                <div class="ai-metric-card">
+                                    <div class="metric-icon">📊</div>
+                                    <div class="metric-content">
+                                        <div class="metric-label">Document Quality</div>
+                                        <div class="metric-value" id="ai-quality-score">--</div>
+                                        <div class="metric-status" id="ai-quality-status"></div>
+                                    </div>
+                                </div>
+                                <div class="ai-metric-card">
+                                    <div class="metric-icon">🎯</div>
+                                    <div class="metric-content">
+                                        <div class="metric-label">Extraction Confidence</div>
+                                        <div class="metric-value" id="ai-extraction-confidence">--</div>
+                                        <div class="metric-status" id="ai-extraction-status"></div>
+                                    </div>
+                                </div>
+                                <div class="ai-metric-card">
+                                    <div class="metric-icon">⚠️</div>
+                                    <div class="metric-content">
+                                        <div class="metric-label">Risk Score</div>
+                                        <div class="metric-value" id="ai-risk-score">--</div>
+                                        <div class="metric-status" id="ai-risk-status"></div>
+                                    </div>
+                                </div>
+                                <div class="ai-metric-card">
+                                    <div class="metric-icon">✓</div>
+                                    <div class="metric-content">
+                                        <div class="metric-label">AI Recommendation</div>
+                                        <div class="metric-value" id="ai-recommendation">--</div>
+                                        <div class="metric-status" id="ai-recommendation-confidence"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Eligibility Score -->
                         <div class="review-section">
                             <h3>Eligibility Assessment</h3>
@@ -178,6 +228,15 @@
                             </div>
                         </div>
 
+                        <!-- Anomaly Alerts -->
+                        <div id="anomaly-alerts-section" class="review-section" style="display: none;">
+                            <div class="section-header">
+                                <h3>⚠️ Anomaly Alerts</h3>
+                                <span class="badge badge-error" id="anomaly-count">0</span>
+                            </div>
+                            <div id="anomaly-alerts-list" class="anomaly-alerts"></div>
+                        </div>
+
                         <!-- Fraud Flags -->
                         <div id="fraud-flags-section" class="review-section" style="display: none;">
                             <h3>⚠️ Fraud Alerts</h3>
@@ -192,11 +251,19 @@
                             </div>
                         </div>
 
-                        <!-- Uploaded Documents -->
+                        <!-- Uploaded Documents with AI Annotations -->
                         <div class="review-section">
-                            <h3>Uploaded Documents</h3>
+                            <div class="section-header">
+                                <h3>Uploaded Documents</h3>
+                                <button id="view-with-annotations" class="btn btn-secondary btn-sm">
+                                    View with AI Annotations
+                                </button>
+                            </div>
                             <div id="review-documents" class="documents-grid"></div>
                         </div>
+
+                        <!-- Document Viewer Modal (will be populated dynamically) -->
+                        <div id="document-viewer-modal" style="display: none;"></div>
 
                         <!-- Recommended Action -->
                         <div class="review-section">
@@ -263,6 +330,18 @@
         </div>
     </footer>
 
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <script src="/js/theme-system.js"></script>
+    <script src="/js/components/theme-toggle.js"></script>
+    <script src="/js/components/toast.js"></script>
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/components/document-viewer.js"></script>
+    <script src="/js/components/demo-banner.js"></script>
     <script src="/js/staff-portal.js"></script>
 </body>
 </html>

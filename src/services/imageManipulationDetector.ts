@@ -247,7 +247,7 @@ class ImageManipulationDetector {
     if (analysisResult.pages) {
       for (const page of analysisResult.pages) {
         // Analyze each page for quality metrics
-        const pageQuality = this.calculatePageQuality(page);
+        // const pageQuality = this.calculatePageQuality(page);
 
         // Check for regions with significantly different quality
         if (page.lines) {
@@ -347,7 +347,7 @@ class ImageManipulationDetector {
     let hasFontInconsistencies = false;
 
     if (analysisResult.pages) {
-      const fontSizes = new Set<number>();
+      // const fontSizes = new Set<number>();
       const fontStyles = new Set<string>();
 
       for (const page of analysisResult.pages) {
@@ -479,7 +479,7 @@ class ImageManipulationDetector {
     }
 
     // Find duplicates
-    for (const [content, matchingLines] of contentMap.entries()) {
+    for (const [_content, matchingLines] of contentMap.entries()) {
       if (matchingLines.length > 1) {
         // Potential clone detected
         for (let i = 1; i < matchingLines.length; i++) {

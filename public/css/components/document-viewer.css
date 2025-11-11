@@ -1,0 +1,525 @@
+/**
+ * Enhanced Document Viewer Component Styles
+ * 
+ * Features:
+ * - PDF and image rendering
+ * - Zoom and pan controls
+ * - Multi-page navigation
+ * - Fullscreen mode
+ * - AI annotation overlays
+ * - Annotation interactions
+ * - Document comparison view
+ */
+
+/* ============================================================================
+   Document Viewer Container
+   ============================================================================ */
+
+.document-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.document-viewer[data-fullscreen="true"] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-index-modal);
+  border-radius: 0;
+}
+
+/* ============================================================================
+   Toolbar
+   ============================================================================ */
+
+.document-viewer__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-light);
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.document-viewer__toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.document-viewer__zoom-level {
+  min-width: 60px;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.document-viewer__page-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.document-viewer__page-input {
+  width: 60px;
+  padding: var(--spacing-1) var(--spacing-2);
+  text-align: center;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}
+
+.document-viewer__page-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-50);
+}
+
+/* ============================================================================
+   Content Area
+   ============================================================================ */
+
+.document-viewer__content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.document-viewer__canvas-container {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6);
+  background: var(--color-neutral-100);
+  position: relative;
+}
+
+[data-theme="dark"] .document-viewer__canvas-container {
+  background: var(--color-neutral-900);
+}
+
+.document-viewer__canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  box-shadow: var(--shadow-lg);
+  background: white;
+  transition: transform var(--transition-base) var(--transition-timing-ease-out);
+  cursor: grab;
+}
+
+.document-viewer__canvas:active {
+  cursor: grabbing;
+}
+
+/* ============================================================================
+   Annotations Layer
+   ============================================================================ */
+
+.document-viewer__annotations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.annotation-box {
+  position: absolute;
+  border: 2px solid;
+  border-radius: var(--radius-sm);
+  pointer-events: all;
+  cursor: pointer;
+  transition: var(--transition-all);
+  background: transparent;
+}
+
+.annotation-box--info {
+  border-color: var(--color-info-500);
+  background: rgba(0, 188, 212, 0.1);
+}
+
+.annotation-box--low {
+  border-color: var(--color-success-500);
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.annotation-box--medium {
+  border-color: var(--color-warning-500);
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.annotation-box--high {
+  border-color: var(--color-error-500);
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.annotation-box--critical {
+  border-color: var(--color-error-700);
+  background: rgba(211, 47, 47, 0.2);
+  animation: pulse 2s infinite;
+}
+
+.annotation-box:hover {
+  box-shadow: var(--shadow-md);
+  z-index: 20;
+}
+
+.annotation-box--selected {
+  border-width: 3px;
+  box-shadow: var(--shadow-lg);
+  z-index: 30;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ============================================================================
+   Annotation Tooltip
+   ============================================================================ */
+
+.annotation-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  min-width: 200px;
+  max-width: 300px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+  z-index: 100;
+}
+
+.annotation-box:hover .annotation-tooltip {
+  opacity: 1;
+}
+
+.annotation-tooltip__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2);
+}
+
+.annotation-tooltip__confidence {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.annotation-tooltip__content {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* ============================================================================
+   Annotation Sidebar
+   ============================================================================ */
+
+.document-viewer__sidebar {
+  width: 0;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width var(--transition-medium);
+}
+
+.document-viewer__sidebar--visible {
+  width: 350px;
+}
+
+.document-viewer__sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.document-viewer__sidebar-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.document-viewer__sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-4);
+}
+
+/* ============================================================================
+   Annotation List Items
+   ============================================================================ */
+
+.annotation-item {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-3);
+  transition: var(--transition-all);
+  cursor: pointer;
+}
+
+.annotation-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.annotation-item--selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-50);
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .annotation-item--selected {
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.annotation-item--accepted {
+  border-color: var(--color-success);
+  background: var(--color-success-50);
+}
+
+[data-theme="dark"] .annotation-item--accepted {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.annotation-item--rejected {
+  border-color: var(--color-error);
+  background: var(--color-error-50);
+  opacity: 0.7;
+}
+
+[data-theme="dark"] .annotation-item--rejected {
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.annotation-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2);
+}
+
+.annotation-item__confidence {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.annotation-item__content {
+  margin-bottom: var(--spacing-3);
+}
+
+.annotation-item__content strong {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-1);
+}
+
+.annotation-item__content p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.annotation-item__actions {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+.annotation-item__comments {
+  margin-top: var(--spacing-3);
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.annotation-item__comments textarea {
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: var(--spacing-2);
+  resize: vertical;
+}
+
+/* ============================================================================
+   Document Comparison View
+   ============================================================================ */
+
+.document-viewer__comparison {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6);
+  background: var(--color-neutral-100);
+  border-left: 2px solid var(--color-border-medium);
+}
+
+[data-theme="dark"] .document-viewer__comparison {
+  background: var(--color-neutral-900);
+}
+
+.document-viewer__comparison .document-viewer__canvas {
+  opacity: 0.8;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .document-viewer__toolbar {
+    padding: var(--spacing-2);
+    gap: var(--spacing-2);
+  }
+
+  .document-viewer__toolbar-group {
+    gap: var(--spacing-1);
+  }
+
+  .document-viewer__sidebar--visible {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 350px;
+    z-index: 50;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .document-viewer__canvas-container {
+    padding: var(--spacing-3);
+  }
+
+  .annotation-item__actions {
+    flex-direction: column;
+  }
+
+  .annotation-item__actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .document-viewer__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .document-viewer__toolbar-group {
+    justify-content: center;
+  }
+
+  .document-viewer__sidebar--visible {
+    max-width: 100%;
+  }
+}
+
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
+
+@media print {
+  .document-viewer__toolbar,
+  .document-viewer__sidebar {
+    display: none;
+  }
+
+  .document-viewer__canvas-container {
+    padding: 0;
+    background: white;
+  }
+
+  .annotation-box {
+    border-width: 1px;
+  }
+
+  .annotation-tooltip {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   Accessibility
+   ============================================================================ */
+
+.document-viewer__canvas:focus,
+.annotation-box:focus {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.annotation-item:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-50);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .annotation-box {
+    border-width: 3px;
+  }
+
+  .annotation-box--selected {
+    border-width: 4px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .document-viewer__canvas,
+  .annotation-box,
+  .annotation-tooltip,
+  .document-viewer__sidebar,
+  .annotation-item {
+    transition: none;
+  }
+
+  .annotation-box--critical {
+    animation: none;
+  }
+}

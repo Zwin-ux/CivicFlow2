@@ -12,7 +12,8 @@ async function main() {
       case 'all':
         logger.info('Running all seeds...');
         const includeTestData = config.env === 'development';
-        await seedRunner.runSeeds(includeTestData);
+        const includeDemoData = process.env.DEMO_MODE_ENABLED === 'true';
+        await seedRunner.runSeeds(includeTestData, includeDemoData);
         break;
       
       case 'rules':
@@ -29,19 +30,26 @@ async function main() {
         await seedRunner.seedTestData();
         break;
       
+      case 'demo':
+        logger.info('Seeding demo data...');
+        await seedRunner.seedDemoData();
+        break;
+      
       default:
         console.log(`
 Usage: npm run seed [command]
 
 Commands:
-  all     Run all seeds (includes test data in development only)
+  all     Run all seeds (includes test data in development, demo data if DEMO_MODE_ENABLED=true)
   rules   Seed program rules only
   test    Seed test data only (development only)
+  demo    Seed demo data only (for MVP deployment)
 
 Examples:
   npm run seed all
   npm run seed rules
   npm run seed test
+  npm run seed demo
         `);
         process.exit(0);
     }

@@ -203,6 +203,24 @@ class AICacheService {
   }
 
   /**
+   * Cache document summary (alias for cacheSummary)
+   */
+  public async cacheDocumentSummary(
+    documentId: string,
+    summary: any,
+    options: CacheOptions = {}
+  ): Promise<void> {
+    return this.cacheSummary(documentId, summary, options);
+  }
+
+  /**
+   * Get cached document summary (alias for getSummary)
+   */
+  public async getDocumentSummary(documentId: string): Promise<any | null> {
+    return this.getSummary(documentId);
+  }
+
+  /**
    * Cache application summary
    */
   public async cacheApplicationSummary(
@@ -430,6 +448,40 @@ class AICacheService {
       misses: 0,
       hitRate: 0,
     };
+  }
+
+  /**
+   * Generic get method
+   */
+  public async get(key: string): Promise<string | null> {
+    try {
+      const value = await redisClient.get(key);
+      if (value) {
+        logger.debug('Cache hit', { key });
+        return value;
+      }
+      logger.debug('Cache miss', { key });
+      return null;
+    } catch (error) {
+      logger.error('Failed to get from cache', { key, error });
+      return null;
+    }
+  }
+
+  /**
+   * Generic set method
+   */
+  public async set(key: string, value: string, ttl?: number): Promise<void> {
+    try {
+      if (ttl) {
+        await redisClient.set(key, value, ttl);
+      } else {
+        await redisClient.set(key, value);
+      }
+      logger.debug('Cached value', { key, ttl });
+    } catch (error) {
+      logger.error('Failed to set cache', { key, error });
+    }
   }
 }
 

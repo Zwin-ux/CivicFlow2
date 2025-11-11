@@ -1,0 +1,352 @@
+/* Applicant Portal Specific Styles */
+
+/* AI Recommendations */
+.ai-recommendations {
+    background: var(--color-primary-50);
+    border: 2px solid var(--color-primary-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+    animation: slideInDown 0.3s ease-out;
+}
+
+.recommendation-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+}
+
+.ai-badge {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
+    color: white;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.recommendation-header h4 {
+    margin: 0;
+    color: var(--color-primary-700);
+    font-size: var(--font-size-lg);
+}
+
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.recommendation-item {
+    display: flex;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: white;
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary-400);
+    transition: all 0.2s ease;
+}
+
+.recommendation-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+}
+
+.recommendation-item.required {
+    border-left-color: var(--color-error-500);
+}
+
+.recommendation-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.recommendation-content {
+    flex: 1;
+}
+
+.recommendation-title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-neutral-900);
+    margin-bottom: var(--spacing-1);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.recommendation-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    margin-bottom: var(--spacing-1);
+}
+
+.recommendation-reason {
+    font-size: var(--font-size-xs);
+    color: var(--color-neutral-500);
+    font-style: italic;
+}
+
+/* Upload Progress Indicator */
+.upload-progress-indicator {
+    background: var(--color-neutral-50);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-neutral-700);
+}
+
+.progress-bar-container {
+    height: 12px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--spacing-2);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-success-500), var(--color-success-400));
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease;
+}
+
+.progress-details {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    text-align: center;
+}
+
+/* File Quality Indicators */
+.file-quality {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin-left: var(--spacing-2);
+}
+
+.spinner-small {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--color-neutral-300);
+    border-top-color: var(--color-primary-500);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--color-primary-600);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: var(--font-size-xs);
+    padding: 0;
+    margin-left: var(--spacing-2);
+}
+
+.btn-link:hover {
+    color: var(--color-primary-700);
+}
+
+/* Enhanced File List */
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-3);
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: var(--color-neutral-50);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.file-item:hover {
+    background: var(--color-neutral-100);
+    box-shadow: var(--shadow-sm);
+}
+
+.file-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+}
+
+.file-name {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-900);
+}
+
+.file-size {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-500);
+}
+
+.file-progress {
+    flex: 1;
+    height: 6px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.file-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-400));
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease;
+}
+
+.file-remove {
+    background: var(--color-error-500);
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.file-remove:hover {
+    background: var(--color-error-600);
+    transform: scale(1.1);
+}
+
+/* Enhanced Upload Area */
+.upload-area {
+    border: 2px dashed var(--color-neutral-300);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-6);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--color-neutral-50);
+}
+
+.upload-area:hover {
+    border-color: var(--color-primary-400);
+    background: var(--color-primary-50);
+}
+
+.upload-area.dragover {
+    border-color: var(--color-primary-500);
+    background: var(--color-primary-100);
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    color: var(--color-primary-500);
+    margin-bottom: var(--spacing-2);
+}
+
+.upload-instructions p {
+    margin: var(--spacing-2) 0;
+    color: var(--color-neutral-700);
+}
+
+.upload-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-500);
+}
+
+/* Form Validation with AI */
+.form-group.ai-validated input:valid,
+.form-group.ai-validated select:valid,
+.form-group.ai-validated textarea:valid {
+    border-color: var(--color-success-400);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.form-group.ai-validated input:invalid:not(:placeholder-shown),
+.form-group.ai-validated select:invalid:not(:placeholder-shown),
+.form-group.ai-validated textarea:invalid:not(:placeholder-shown) {
+    border-color: var(--color-error-400);
+}
+
+.ai-suggestion {
+    display: flex;
+    align-items: start;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2);
+    background: var(--color-primary-50);
+    border-left: 3px solid var(--color-primary-400);
+    border-radius: var(--radius-sm);
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-700);
+}
+
+.ai-suggestion::before {
+    content: "💡";
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .recommendation-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .progress-header {
+        flex-direction: column;
+        gap: var(--spacing-1);
+        text-align: center;
+    }
+
+    .file-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .file-info {
+        text-align: center;
+    }
+}
+
+/* Animations */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,596 @@
+/**
+ * Responsive Layout System
+ * Mobile-first grid system, containers, and layout utilities
+ */
+
+/* ============================================================================
+   Container System
+   ============================================================================ */
+
+.ds-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+}
+
+/* Container sizes */
+.ds-container-sm {
+  max-width: 640px;
+}
+
+.ds-container-md {
+  max-width: 768px;
+}
+
+.ds-container-lg {
+  max-width: 1024px;
+}
+
+.ds-container-xl {
+  max-width: 1280px;
+}
+
+.ds-container-2xl {
+  max-width: 1536px;
+}
+
+/* Fluid container */
+.ds-container-fluid {
+  max-width: 100%;
+}
+
+/* Responsive containers */
+@media (min-width: 640px) {
+  .ds-container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .ds-container {
+    max-width: 768px;
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ds-container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .ds-container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .ds-container {
+    max-width: 1536px;
+  }
+}
+
+/* ============================================================================
+   Grid System
+   ============================================================================ */
+
+.ds-grid {
+  display: grid;
+  gap: var(--spacing-4);
+}
+
+/* Grid columns */
+.ds-grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.ds-grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ds-grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ds-grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ds-grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.ds-grid-cols-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.ds-grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+/* Auto-fit grid */
+.ds-grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.ds-grid-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/* Grid gap sizes */
+.ds-grid-gap-0 {
+  gap: 0;
+}
+
+.ds-grid-gap-2 {
+  gap: var(--spacing-2);
+}
+
+.ds-grid-gap-3 {
+  gap: var(--spacing-3);
+}
+
+.ds-grid-gap-4 {
+  gap: var(--spacing-4);
+}
+
+.ds-grid-gap-6 {
+  gap: var(--spacing-6);
+}
+
+.ds-grid-gap-8 {
+  gap: var(--spacing-8);
+}
+
+/* Column span */
+.ds-col-span-1 {
+  grid-column: span 1 / span 1;
+}
+
+.ds-col-span-2 {
+  grid-column: span 2 / span 2;
+}
+
+.ds-col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
+.ds-col-span-4 {
+  grid-column: span 4 / span 4;
+}
+
+.ds-col-span-6 {
+  grid-column: span 6 / span 6;
+}
+
+.ds-col-span-12 {
+  grid-column: span 12 / span 12;
+}
+
+.ds-col-span-full {
+  grid-column: 1 / -1;
+}
+
+/* Responsive grid columns */
+@media (min-width: 640px) {
+  .sm\:ds-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .sm\:ds-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .sm\:ds-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .sm\:ds-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:ds-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .md\:ds-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .md\:ds-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .md\:ds-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  .md\:ds-grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:ds-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .lg\:ds-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .lg\:ds-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  .lg\:ds-grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  
+  .lg\:ds-grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* ============================================================================
+   Flexbox Utilities
+   ============================================================================ */
+
+.ds-flex {
+  display: flex;
+}
+
+.ds-inline-flex {
+  display: inline-flex;
+}
+
+/* Flex direction */
+.ds-flex-row {
+  flex-direction: row;
+}
+
+.ds-flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+.ds-flex-col {
+  flex-direction: column;
+}
+
+.ds-flex-col-reverse {
+  flex-direction: column-reverse;
+}
+
+/* Flex wrap */
+.ds-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.ds-flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+/* Justify content */
+.ds-justify-start {
+  justify-content: flex-start;
+}
+
+.ds-justify-end {
+  justify-content: flex-end;
+}
+
+.ds-justify-center {
+  justify-content: center;
+}
+
+.ds-justify-between {
+  justify-content: space-between;
+}
+
+.ds-justify-around {
+  justify-content: space-around;
+}
+
+.ds-justify-evenly {
+  justify-content: space-evenly;
+}
+
+/* Align items */
+.ds-items-start {
+  align-items: flex-start;
+}
+
+.ds-items-end {
+  align-items: flex-end;
+}
+
+.ds-items-center {
+  align-items: center;
+}
+
+.ds-items-baseline {
+  align-items: baseline;
+}
+
+.ds-items-stretch {
+  align-items: stretch;
+}
+
+/* Align self */
+.ds-self-start {
+  align-self: flex-start;
+}
+
+.ds-self-end {
+  align-self: flex-end;
+}
+
+.ds-self-center {
+  align-self: center;
+}
+
+.ds-self-stretch {
+  align-self: stretch;
+}
+
+/* Flex grow/shrink */
+.ds-flex-1 {
+  flex: 1 1 0%;
+}
+
+.ds-flex-auto {
+  flex: 1 1 auto;
+}
+
+.ds-flex-none {
+  flex: none;
+}
+
+.ds-flex-grow {
+  flex-grow: 1;
+}
+
+.ds-flex-shrink {
+  flex-shrink: 1;
+}
+
+.ds-flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+/* Gap utilities */
+.ds-gap-0 {
+  gap: 0;
+}
+
+.ds-gap-1 {
+  gap: var(--spacing-1);
+}
+
+.ds-gap-2 {
+  gap: var(--spacing-2);
+}
+
+.ds-gap-3 {
+  gap: var(--spacing-3);
+}
+
+.ds-gap-4 {
+  gap: var(--spacing-4);
+}
+
+.ds-gap-6 {
+  gap: var(--spacing-6);
+}
+
+.ds-gap-8 {
+  gap: var(--spacing-8);
+}
+
+/* ============================================================================
+   Spacing Utilities
+   ============================================================================ */
+
+/* Margin */
+.ds-m-0 {
+  margin: 0;
+}
+
+.ds-m-auto {
+  margin: auto;
+}
+
+.ds-mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ds-my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* Padding */
+.ds-p-0 {
+  padding: 0;
+}
+
+.ds-p-2 {
+  padding: var(--spacing-2);
+}
+
+.ds-p-4 {
+  padding: var(--spacing-4);
+}
+
+.ds-p-6 {
+  padding: var(--spacing-6);
+}
+
+.ds-p-8 {
+  padding: var(--spacing-8);
+}
+
+/* ============================================================================
+   Display Utilities
+   ============================================================================ */
+
+.ds-block {
+  display: block;
+}
+
+.ds-inline-block {
+  display: inline-block;
+}
+
+.ds-inline {
+  display: inline;
+}
+
+.ds-hidden {
+  display: none;
+}
+
+/* Responsive display */
+@media (max-width: 639px) {
+  .ds-hidden-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  .ds-hidden-sm {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .ds-hidden-md {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ds-hidden-lg {
+    display: none;
+  }
+}
+
+/* Show only on specific breakpoints */
+@media (max-width: 639px) {
+  .ds-show-mobile {
+    display: block;
+  }
+}
+
+@media (min-width: 640px) {
+  .ds-show-mobile {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   Position Utilities
+   ============================================================================ */
+
+.ds-relative {
+  position: relative;
+}
+
+.ds-absolute {
+  position: absolute;
+}
+
+.ds-fixed {
+  position: fixed;
+}
+
+.ds-sticky {
+  position: sticky;
+}
+
+/* ============================================================================
+   Width & Height Utilities
+   ============================================================================ */
+
+.ds-w-full {
+  width: 100%;
+}
+
+.ds-w-auto {
+  width: auto;
+}
+
+.ds-h-full {
+  height: 100%;
+}
+
+.ds-h-auto {
+  height: auto;
+}
+
+.ds-min-h-screen {
+  min-height: 100vh;
+}
+
+/* ============================================================================
+   Overflow Utilities
+   ============================================================================ */
+
+.ds-overflow-auto {
+  overflow: auto;
+}
+
+.ds-overflow-hidden {
+  overflow: hidden;
+}
+
+.ds-overflow-scroll {
+  overflow: scroll;
+}
+
+.ds-overflow-x-auto {
+  overflow-x: auto;
+}
+
+.ds-overflow-y-auto {
+  overflow-y: auto;
+}
+
+/* ============================================================================
+   Stack Layout (Vertical spacing)
+   ============================================================================ */
+
+.ds-stack > * + * {
+  margin-top: var(--spacing-4);
+}
+
+.ds-stack-sm > * + * {
+  margin-top: var(--spacing-2);
+}
+
+.ds-stack-lg > * + * {
+  margin-top: var(--spacing-6);
+}
+
+/* ============================================================================
+   Aspect Ratio
+   ============================================================================ */
+
+.ds-aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.ds-aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.ds-aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}

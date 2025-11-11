@@ -11,26 +11,23 @@ import { validateTLSConfig, createHTTPSOptions } from './config/tls';
 import teamsNotificationService from './services/teamsNotificationService';
 import websocketService from './services/websocketService';
 import teamsConfigReloadService from './services/teamsConfigReloadService';
+import demoSessionCleanupJob from './services/demoSessionCleanupJob';
+import startupScript from './scripts/startup';
 
 const startServer = async (): Promise<void> => {
   try {
+    // Run startup script (migrations, seeding, service verification)
+    const startupSuccess = await startupScript.run();
+    if (!startupSuccess) {
+      throw new Error('Startup script failed - check logs for details');
+    }
+
     // Validate encryption key configuration
     validateEncryptionKey();
     logger.info('Encryption key validated successfully');
 
     // Validate TLS configuration
     validateTLSConfig();
-
-    // Connect to Redis
-    await redis.connect();
-    logger.info('Redis connected successfully');
-
-    // Test database connection
-    const dbHealthy = await database.healthCheck();
-    if (!dbHealthy) {
-      throw new Error('Database connection failed');
-    }
-    logger.info('Database connected successfully');
 
     // Initialize validator routes with database pool
     initializeValidatorRoutes(database.getPool());
@@ -42,6 +39,10 @@ const startServer = async (): Promise<void> => {
     // Initialize Teams configuration reload service
     teamsConfigReloadService.initialize();
     logger.info('Teams configuration reload service initialized');
+
+    // Start demo session cleanup job
+    demoSessionCleanupJob.start();
+    logger.info('Demo session cleanup job started');
 
     // Create server (HTTP or HTTPS based on TLS configuration)
     const httpsOptions = createHTTPSOptions();
@@ -74,6 +75,7 @@ const startServer = async (): Promise<void> => {
         try {
           websocketService.shutdown();
           teamsConfigReloadService.shutdown();
+          demoSessionCleanupJob.stop();
           await database.close();
           await redis.close();
           logger.info('All connections closed');

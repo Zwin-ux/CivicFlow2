@@ -1,0 +1,289 @@
+/**
+ * Progress Indicators (Linear, Circular, Step)
+ */
+
+/* Linear Progress */
+.ds-progress {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-neutral-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.ds-progress-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-medium) var(--transition-timing-ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Progress variants */
+.ds-progress-bar.primary {
+  background-color: var(--color-primary);
+}
+
+.ds-progress-bar.success {
+  background-color: var(--color-success);
+}
+
+.ds-progress-bar.warning {
+  background-color: var(--color-warning);
+}
+
+.ds-progress-bar.error {
+  background-color: var(--color-error);
+}
+
+/* Progress sizes */
+.ds-progress-sm {
+  height: 4px;
+}
+
+.ds-progress-lg {
+  height: 12px;
+}
+
+/* Indeterminate progress */
+.ds-progress-indeterminate .ds-progress-bar {
+  width: 30% !important;
+  animation: ds-progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes ds-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+/* Progress with label */
+.ds-progress-labeled {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.ds-progress-labeled .ds-progress {
+  flex: 1;
+}
+
+.ds-progress-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* Circular Progress */
+.ds-progress-circular {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.ds-progress-circular svg {
+  transform: rotate(-90deg);
+}
+
+.ds-progress-circular-bg {
+  fill: none;
+  stroke: var(--color-neutral-200);
+  stroke-width: 4;
+}
+
+.ds-progress-circular-bar {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-medium) var(--transition-timing-ease-out);
+}
+
+/* Circular progress sizes */
+.ds-progress-circular-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.ds-progress-circular-lg {
+  width: 64px;
+  height: 64px;
+}
+
+.ds-progress-circular-xl {
+  width: 96px;
+  height: 96px;
+}
+
+/* Circular progress with label */
+.ds-progress-circular-labeled {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ds-progress-circular-label {
+  position: absolute;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* Spinner (indeterminate circular) */
+.ds-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-neutral-200);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: ds-spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes ds-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Spinner sizes */
+.ds-spinner-sm {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.ds-spinner-lg {
+  width: 56px;
+  height: 56px;
+  border-width: 4px;
+}
+
+.ds-spinner-xl {
+  width: 72px;
+  height: 72px;
+  border-width: 5px;
+}
+
+/* Spinner variants */
+.ds-spinner.success {
+  border-top-color: var(--color-success);
+}
+
+.ds-spinner.warning {
+  border-top-color: var(--color-warning);
+}
+
+.ds-spinner.error {
+  border-top-color: var(--color-error);
+}
+
+/* Step Progress */
+.ds-progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.ds-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.ds-progress-step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-neutral-200);
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: var(--transition-all);
+  position: relative;
+  z-index: 2;
+}
+
+.ds-progress-step.active .ds-progress-step-circle {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
+}
+
+.ds-progress-step.completed .ds-progress-step-circle {
+  background-color: var(--color-success);
+  color: var(--color-text-inverse);
+}
+
+.ds-progress-step-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  text-align: center;
+  transition: var(--transition-colors);
+}
+
+.ds-progress-step.active .ds-progress-step-label {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.ds-progress-step.completed .ds-progress-step-label {
+  color: var(--color-text-secondary);
+}
+
+/* Step connector line */
+.ds-progress-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: calc(50% + 16px);
+  right: calc(-50% + 16px);
+  height: 2px;
+  background-color: var(--color-neutral-200);
+  z-index: 0;
+}
+
+.ds-progress-step.completed:not(:last-child)::after {
+  background-color: var(--color-success);
+}
+
+/* Vertical step progress */
+.ds-progress-steps.vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ds-progress-steps.vertical .ds-progress-step {
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ds-progress-steps.vertical .ds-progress-step-label {
+  text-align: left;
+}
+
+.ds-progress-steps.vertical .ds-progress-step:not(:last-child)::after {
+  top: calc(16px + 16px);
+  left: 16px;
+  right: auto;
+  bottom: calc(-100% + 16px);
+  width: 2px;
+  height: auto;
+}
