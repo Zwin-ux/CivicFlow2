@@ -354,4 +354,12 @@ class PreDeploymentChecker {
  * Main execution
  */
 async function main(): Promise<void> {
-  const checker = new 
+  const checker = new PreDeploymentChecker();
+  await checker.runAllChecks();
+}
+
+// Run the checks
+main().catch(error => {
+  console.error('Error running pre-deployment checks:', error);
+  process.exit(1);
+}); 
