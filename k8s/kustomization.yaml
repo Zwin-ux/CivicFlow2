@@ -1,0 +1,56 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: lending-crm
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - postgres-deployment.yaml
+  - redis-deployment.yaml
+  - api-deployment.yaml
+  - hpa.yaml
+  - ingress.yaml
+  - cert-issuer.yaml
+  - network-policy.yaml
+  - resource-quota.yaml
+  - pod-disruption-budget.yaml
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: lending-crm
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/managed-by: kustomize
+
+# Images to be used (can be overridden)
+images:
+  - name: lending-crm-api
+    newName: your-registry/lending-crm-api
+    newTag: latest
+
+# ConfigMap generator for additional configuration
+configMapGenerator:
+  - name: app-version
+    literals:
+      - version=1.0.0
+      - build-date=2024-01-01
+
+# Secret generator (for production, use external secret management)
+# secretGenerator:
+#   - name: additional-secrets
+#     literals:
+#       - key=value
+
+# Patches for environment-specific overrides
+patchesStrategicMerge: []
+
+# JSON patches for specific modifications
+# patches:
+#   - target:
+#       kind: Deployment
+#       name: lending-crm-api
+#     patch: |-
+#       - op: replace
+#         path: /spec/replicas
+#         value: 5

@@ -1,0 +1,32 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: lending-crm-api-pdb
+  namespace: lending-crm
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: lending-crm-api
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-pdb
+  namespace: lending-crm
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: postgres
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  namespace: lending-crm
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis

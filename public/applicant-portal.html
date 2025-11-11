@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant Portal - Government Lending CRM</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Government Lending CRM</h1>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/applicant-portal.html" class="active">Applicant Portal</a></li>
+                <li><a href="/staff-portal.html">Staff Portal</a></li>
+                <li><a href="/admin-dashboard.html">Admin Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="portal-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="submit">Submit Application</button>
+                <button class="tab-btn" data-tab="status">Track Status</button>
+            </div>
+
+            <!-- Application Submission Form -->
+            <div id="submit-tab" class="tab-content active">
+                <h2>Submit New Application</h2>
+                <form id="application-form" class="form">
+                    <div class="form-section">
+                        <h3>Business Information</h3>
+                        <div class="form-group">
+                            <label for="businessName">Business Name *</label>
+                            <input type="text" id="businessName" name="businessName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ein">Employer Identification Number (EIN) *</label>
+                            <input type="text" id="ein" name="ein" pattern="[0-9]{2}-[0-9]{7}" placeholder="XX-XXXXXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="programType">Program Type *</label>
+                            <select id="programType" name="programType" required>
+                                <option value="">Select a program</option>
+                                <option value="MICRO_GRANT">Micro Grant</option>
+                                <option value="SMALL_BUSINESS_LOAN">Small Business Loan</option>
+                                <option value="EMERGENCY_RELIEF">Emergency Relief</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="requestedAmount">Requested Amount ($) *</label>
+                            <input type="number" id="requestedAmount" name="requestedAmount" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Business Address *</label>
+                            <textarea id="address" name="address" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Owner Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ssn">Social Security Number (SSN) *</label>
+                            <input type="password" id="ssn" name="ssn" pattern="[0-9]{3}-[0-9]{2}-[0-9]{4}" placeholder="XXX-XX-XXXX" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Required Documents</h3>
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-instructions">
+                                <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <p>Drag and drop files here or click to browse</p>
+                                <p class="upload-hint">Required: W-9, EIN Verification, Bank Statements</p>
+                            </div>
+                            <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                        </div>
+                        <div id="file-list" class="file-list"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Submit Application</button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Application Status Tracking -->
+            <div id="status-tab" class="tab-content">
+                <h2>Track Application Status</h2>
+                <div class="search-section">
+                    <div class="form-group">
+                        <label for="applicationId">Application ID</label>
+                        <input type="text" id="applicationId" placeholder="Enter your application ID">
+                    </div>
+                    <button id="search-btn" class="btn btn-primary">Search</button>
+                </div>
+
+                <div id="status-result" class="status-result" style="display: none;">
+                    <div class="status-card">
+                        <div class="status-header">
+                            <h3>Application <span id="result-app-id"></span></h3>
+                            <span id="result-status" class="status-badge"></span>
+                        </div>
+                        <div class="status-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Business Name:</span>
+                                <span id="result-business-name"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Program Type:</span>
+                                <span id="result-program-type"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Requested Amount:</span>
+                                <span id="result-amount"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Submitted:</span>
+                                <span id="result-submitted"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Eligibility Score:</span>
+                                <span id="result-eligibility"></span>
+                            </div>
+                        </div>
+                        <div id="missing-docs-section" class="missing-docs" style="display: none;">
+                            <h4>Missing Documents:</h4>
+                            <ul id="missing-docs-list"></ul>
+                        </div>
+                        <div class="status-timeline">
+                            <h4>Application Timeline</h4>
+                            <div id="timeline" class="timeline"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Government Lending CRM Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/applicant-portal.js"></script>
+</body>
+</html>

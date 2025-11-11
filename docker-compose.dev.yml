@@ -1,0 +1,45 @@
+# Development override for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # API Server with hot-reload for development
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: lending-crm-api-dev
+    environment:
+      NODE_ENV: development
+    volumes:
+      # Mount source code for hot-reload
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      # Persist node_modules
+      - node_modules:/app/node_modules
+      # Logs and uploads
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    command: npm run dev
+    # Remove resource limits in development
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+
+  # PostgreSQL with exposed port for direct access
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: lending_crm_dev
+
+  # Redis with exposed port for direct access
+  redis:
+    ports:
+      - "6379:6379"
+
+volumes:
+  node_modules:
+    driver: local

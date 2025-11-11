@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal - Government Lending CRM</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Government Lending CRM</h1>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/applicant-portal.html">Applicant Portal</a></li>
+                <li><a href="/staff-portal.html" class="active">Staff Portal</a></li>
+                <li><a href="/admin-dashboard.html">Admin Dashboard</a></li>
+                <li><a href="#" id="logout-btn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Login Section -->
+        <div id="login-section" class="portal-container">
+            <h2>Staff Login</h2>
+            <form id="login-form" class="form" style="max-width: 400px; margin: 2rem auto;">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Staff Dashboard -->
+        <div id="staff-dashboard" class="portal-container" style="display: none;">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="queue">Review Queue</button>
+                <button class="tab-btn" data-tab="review">Application Review</button>
+            </div>
+
+            <!-- Review Queue Tab -->
+            <div id="queue-tab" class="tab-content active">
+                <div class="table-header">
+                    <h2>Applications Review Queue</h2>
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label for="status-filter">Status</label>
+                            <select id="status-filter">
+                                <option value="">All Statuses</option>
+                                <option value="SUBMITTED">Submitted</option>
+                                <option value="UNDER_REVIEW">Under Review</option>
+                                <option value="PENDING_DOCUMENTS">Pending Documents</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="program-filter">Program Type</label>
+                            <select id="program-filter">
+                                <option value="">All Programs</option>
+                                <option value="MICRO_GRANT">Micro Grant</option>
+                                <option value="SMALL_BUSINESS_LOAN">Small Business Loan</option>
+                                <option value="EMERGENCY_RELIEF">Emergency Relief</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sort-filter">Sort By</label>
+                            <select id="sort-filter">
+                                <option value="submittedAt">Submission Date</option>
+                                <option value="eligibilityScore">Eligibility Score</option>
+                                <option value="requestedAmount">Amount</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="applications-table">
+                        <thead>
+                            <tr>
+                                <th>Application ID</th>
+                                <th>Business Name</th>
+                                <th>Program Type</th>
+                                <th>Amount</th>
+                                <th>Eligibility Score</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applications-tbody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 2rem;">
+                                    <div class="spinner"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Application Review Tab -->
+            <div id="review-tab" class="tab-content">
+                <div id="no-application-selected" style="text-align: center; padding: 3rem;">
+                    <p style="color: #7f8c8d; font-size: 1.2rem;">Select an application from the queue to review</p>
+                </div>
+
+                <div id="application-review" style="display: none;">
+                    <div class="review-header">
+                        <h2>Application Review</h2>
+                        <button id="back-to-queue" class="btn btn-secondary">Back to Queue</button>
+                    </div>
+
+                    <div class="review-container">
+                        <!-- Application Summary -->
+                        <div class="review-section">
+                            <h3>Application Summary</h3>
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <span class="summary-label">Application ID:</span>
+                                    <span id="review-app-id"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Status:</span>
+                                    <span id="review-status" class="status-badge"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Business Name:</span>
+                                    <span id="review-business-name"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">EIN:</span>
+                                    <span id="review-ein"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Program Type:</span>
+                                    <span id="review-program-type"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Requested Amount:</span>
+                                    <span id="review-amount"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Submitted:</span>
+                                    <span id="review-submitted"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Contact:</span>
+                                    <span id="review-contact"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Eligibility Score -->
+                        <div class="review-section">
+                            <h3>Eligibility Assessment</h3>
+                            <div class="eligibility-card">
+                                <div class="eligibility-score">
+                                    <div class="score-circle">
+                                        <span id="review-eligibility-score" class="score-value">--</span>
+                                        <span class="score-label">/100</span>
+                                    </div>
+                                    <div class="score-status">
+                                        <span id="review-eligibility-status"></span>
+                                    </div>
+                                </div>
+                                <div class="eligibility-details">
+                                    <h4>Program Rules Applied:</h4>
+                                    <ul id="review-program-rules"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fraud Flags -->
+                        <div id="fraud-flags-section" class="review-section" style="display: none;">
+                            <h3>⚠️ Fraud Alerts</h3>
+                            <div id="fraud-flags-list" class="fraud-flags"></div>
+                        </div>
+
+                        <!-- Missing Documents -->
+                        <div id="missing-docs-review-section" class="review-section" style="display: none;">
+                            <h3>Missing Documents</h3>
+                            <div class="missing-docs">
+                                <ul id="review-missing-docs"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded Documents -->
+                        <div class="review-section">
+                            <h3>Uploaded Documents</h3>
+                            <div id="review-documents" class="documents-grid"></div>
+                        </div>
+
+                        <!-- Recommended Action -->
+                        <div class="review-section">
+                            <h3>System Recommendation</h3>
+                            <div id="recommendation-card" class="recommendation-card">
+                                <div class="recommendation-icon">
+                                    <span id="recommendation-icon-text">ℹ️</span>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h4 id="recommendation-action"></h4>
+                                    <ul id="recommendation-reasons"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision Form -->
+                        <div class="review-section">
+                            <h3>Make Decision</h3>
+                            <form id="decision-form" class="decision-form">
+                                <div class="form-group">
+                                    <label for="decision">Decision *</label>
+                                    <select id="decision" name="decision" required>
+                                        <option value="">Select a decision</option>
+                                        <option value="APPROVED">Approve</option>
+                                        <option value="REJECTED">Reject</option>
+                                        <option value="DEFERRED">Defer (Request More Info)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="approved-amount">Approved Amount ($)</label>
+                                    <input type="number" id="approved-amount" name="approvedAmount" min="0" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="justification">Justification *</label>
+                                    <textarea id="justification" name="justification" rows="4" required 
+                                        placeholder="Provide detailed justification for your decision..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="override-checkbox" name="override">
+                                        Override automated eligibility score
+                                    </label>
+                                </div>
+                                <div id="override-reason-group" class="form-group" style="display: none;">
+                                    <label for="override-reason">Override Reason *</label>
+                                    <textarea id="override-reason" name="overrideReason" rows="3"
+                                        placeholder="Explain why you are overriding the automated score..."></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Submit Decision</button>
+                                    <button type="button" id="cancel-decision" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Government Lending CRM Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/staff-portal.js"></script>
+</body>
+</html>

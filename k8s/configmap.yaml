@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lending-crm-config
+  namespace: lending-crm
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  LOG_LEVEL: "info"
+  # Database configuration
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_NAME: "lending_crm"
+  # Redis configuration
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  # API configuration
+  API_VERSION: "v1"
+  CORS_ORIGIN: "*"
+  # Performance settings
+  DB_POOL_MIN: "2"
+  DB_POOL_MAX: "10"
+  REDIS_MAX_RETRIES: "3"

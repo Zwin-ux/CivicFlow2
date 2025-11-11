@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: ServiceMonitor
+metadata:
+  name: lending-crm-api-monitor
+  namespace: lending-crm
+  labels:
+    app: lending-crm-api
+spec:
+  selector:
+    matchLabels:
+      app: lending-crm-api
+  endpoints:
+  - port: http
+    path: /api/v1/metrics
+    interval: 30s
+    scrapeTimeout: 10s
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard
+  namespace: lending-crm
+  labels:
+    grafana_dashboard: "1"
+data:
+  lending-crm-dashboard.json: |
+    {
+      "dashboard": {
+        "title": "Government Lending CRM Dashboard",
+        "panels": [
+          {
+            "title": "API Request Rate",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{namespace=\"lending-crm\"}[5m])"
+              }
+            ]
+          },
+          {
+            "title": "API Response Time",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{namespace=\"lending-crm\"}[5m]))"
+              }
+            ]
+          },
+          {
+            "title": "Pod CPU Usage",
+            "targets": [
+              {
+                "expr": "rate(container_cpu_usage_seconds_total{namespace=\"lending-crm\"}[5m])"
+              }
+            ]
+          },
+          {
+            "title": "Pod Memory Usage",
+            "targets": [
+              {
+                "expr": "container_memory_usage_bytes{namespace=\"lending-crm\"}"
+              }
+            ]
+          }
+        ]
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: lending-crm
+data:
+  lending-crm-alerts.yaml: |
+    groups:
+    - name: lending-crm-alerts
+      interval: 30s
+      rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 5% for 5 minutes"
+      
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is above 1 second"
+      
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total{namespace="lending-crm"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pod is crash looping"
+          description: "Pod {{ $labels.pod }} is restarting frequently"
+      
+      - alert: HighMemoryUsage
+        expr: container_memory_usage_bytes{namespace="lending-crm"} / container_spec_memory_limit_bytes{namespace="lending-crm"} > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Container {{ $labels.container }} is using more than 90% of memory limit"
+      
+      - alert: DatabaseConnectionFailure
+        expr: up{job="postgres"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection failure"
+          description: "Cannot connect to PostgreSQL database"
