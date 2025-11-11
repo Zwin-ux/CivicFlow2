@@ -44,9 +44,9 @@ COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /app/src/database ./src/database
 COPY --from=builder --chown=nodejs:nodejs /app/src/scripts ./src/scripts
 
-# Create uploads directory for local storage
-RUN mkdir -p /app/uploads && \
-    chown -R nodejs:nodejs /app/uploads
+# Create uploads and logs directories for local storage
+RUN mkdir -p /app/uploads /app/logs && \
+    chown -R nodejs:nodejs /app/uploads /app/logs
 
 # Switch to non-root user
 USER nodejs
