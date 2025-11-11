@@ -7,7 +7,9 @@ import applicationRepository from '../repositories/applicationRepository';
 import programRuleRepository from '../repositories/programRuleRepository';
 import documentRepository from '../repositories/documentRepository';
 import auditLogRepository from '../repositories/auditLogRepository';
+import autoAssignmentService from './autoAssignmentService';
 import redisClient from '../config/redis';
+import websocketService from './websocketService';
 import logger from '../utils/logger';
 import {
   Application,
@@ -186,6 +188,29 @@ class ApplicationService extends EventEmitter {
           newStatus: data.status,
           application,
         });
+
+        // Broadcast WebSocket event
+        websocketService.broadcast({
+          type: 'application.updated',
+          data: {
+            applicationId: id,
+            status: data.status,
+            previousStatus: existing.status,
+          },
+          timestamp: new Date(),
+        });
+      }
+
+      // Emit assignment event if assigned
+      if (data.assignedTo && data.assignedTo !== existing.assignedTo) {
+        websocketService.sendToUser(data.assignedTo, {
+          type: 'application.assigned',
+          data: {
+            applicationId: id,
+            assignedTo: data.assignedTo,
+          },
+          timestamp: new Date(),
+        });
       }
 
       logger.info('Application updated successfully', {
@@ -248,6 +273,9 @@ class ApplicationService extends EventEmitter {
         },
       });
 
+      // Trigger auto-assignment
+      const assignedUserId = await autoAssignmentService.assignApplication(updatedApplication);
+      
       // Emit status change event
       this.emit('statusChanged', {
         applicationId: id,
@@ -256,10 +284,20 @@ class ApplicationService extends EventEmitter {
         application: updatedApplication,
       });
 
+      // Emit assignment event if application was assigned
+      if (assignedUserId) {
+        this.emit('applicationAssigned', {
+          applicationId: id,
+          assignedTo: assignedUserId,
+          application: updatedApplication,
+        });
+      }
+
       logger.info('Application submitted successfully', {
         applicationId: id,
         status: newStatus,
         eligibilityScore: eligibilityResult.score,
+        assignedTo: assignedUserId || 'unassigned',
       });
 
       return updatedApplication;

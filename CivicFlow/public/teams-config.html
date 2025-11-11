@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Configuration - Government Lending CRM</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .config-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .config-list {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .config-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .config-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .config-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .config-card-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .config-card-status.active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .config-card-status.inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .config-card-body {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .config-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-field-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .config-field-value {
+            font-size: 1rem;
+            color: #1a1a1a;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .notification-rules {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .notification-rules-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-rules-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .notification-rule {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+        }
+
+        .notification-rule.enabled {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .notification-rule.disabled {
+            background: #f5f5f5;
+            color: #9e9e9e;
+        }
+
+        .config-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Government Lending CRM</h1>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin-dashboard.html">Admin Dashboard</a></li>
+                <li><a href="/teams-config.html" class="active">Teams Configuration</a></li>
+                <li><a href="#" id="logout-btn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="config-container">
+        <div class="config-header">
+            <div>
+                <h2>Microsoft Teams Integration Configuration</h2>
+                <p style="color: #666; margin-top: 0.5rem;">Manage Teams channels and notification rules for loan programs</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                + Add Configuration
+            </button>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div id="config-list" class="config-list">
+            <div class="empty-state">
+                <div class="empty-state-icon">⏳</div>
+                <p>Loading configurations...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create/Edit Configuration Modal -->
+    <div id="config-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Add Teams Configuration</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="config-form">
+                <input type="hidden" id="config-id">
+
+                <div class="form-group">
+                    <label for="program-type">Program Type *</label>
+                    <input type="text" id="program-type" required 
+                           placeholder="e.g., SMALL_BUSINESS_LOAN">
+                    <small style="color: #666;">Use uppercase with underscores (e.g., SMALL_BUSINESS_LOAN)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="team-id">Team ID *</label>
+                    <input type="text" id="team-id" required 
+                           placeholder="Microsoft Teams Team ID">
+                    <small style="color: #666;">Found in Teams channel URL</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="channel-id">Channel ID *</label>
+                    <input type="text" id="channel-id" required 
+                           placeholder="Microsoft Teams Channel ID">
+                    <small style="color: #666;">Found in Teams channel URL</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="channel-name">Channel Name</label>
+                    <input type="text" id="channel-name" 
+                           placeholder="Optional - will be auto-generated if not provided">
+                </div>
+
+                <div class="form-group">
+                    <label>Notification Rules</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-new-submission" checked>
+                            <label for="rule-new-submission">New Submission</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-sla-warning" checked>
+                            <label for="rule-sla-warning">SLA Warning</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-decision-ready" checked>
+                            <label for="rule-decision-ready">Decision Ready</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-documents-received" checked>
+                            <label for="rule-documents-received">Documents Received</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-fraud-detected" checked>
+                            <label for="rule-fraud-detected">Fraud Detected</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-status-changed">
+                            <label for="rule-status-changed">Status Changed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rule-decision-made">
+                            <label for="rule-decision-made">Decision Made</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="is-active" checked>
+                        Active
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="testConnectivity()">Test Connection</button>
+                    <button type="submit" class="btn btn-primary">Save Configuration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/teams-config.js"></script>
+</body>
+</html>

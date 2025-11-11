@@ -118,6 +118,60 @@ class RedisClient {
     }
   }
 
+  public async hincrby(key: string, field: string, increment: number): Promise<number> {
+    try {
+      return await this.client.hIncrBy(key, field, increment);
+    } catch (error) {
+      logger.error('Redis HINCRBY error', { key, field, increment, error });
+      throw error;
+    }
+  }
+
+  public async hgetall(key: string): Promise<Record<string, string>> {
+    try {
+      return await this.client.hGetAll(key);
+    } catch (error) {
+      logger.error('Redis HGETALL error', { key, error });
+      throw error;
+    }
+  }
+
+  public async zadd(key: string, score: number, member: string): Promise<number> {
+    try {
+      return await this.client.zAdd(key, { score, value: member });
+    } catch (error) {
+      logger.error('Redis ZADD error', { key, score, member, error });
+      throw error;
+    }
+  }
+
+  public async zremrangebyscore(key: string, min: number, max: number): Promise<number> {
+    try {
+      return await this.client.zRemRangeByScore(key, min, max);
+    } catch (error) {
+      logger.error('Redis ZREMRANGEBYSCORE error', { key, min, max, error });
+      throw error;
+    }
+  }
+
+  public async zcount(key: string, min: number, max: number): Promise<number> {
+    try {
+      return await this.client.zCount(key, min, max);
+    } catch (error) {
+      logger.error('Redis ZCOUNT error', { key, min, max, error });
+      throw error;
+    }
+  }
+
+  public async expire(key: string, seconds: number): Promise<boolean> {
+    try {
+      return await this.client.expire(key, seconds);
+    } catch (error) {
+      logger.error('Redis EXPIRE error', { key, seconds, error });
+      throw error;
+    }
+  }
+
   public async healthCheck(): Promise<boolean> {
     try {
       const result = await this.client.ping();

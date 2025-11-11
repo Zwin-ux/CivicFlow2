@@ -51,6 +51,7 @@ export interface Application {
   missingDocuments: string[];
   fraudFlags: FraudFlag[];
   assignedTo?: string;
+  assignedAt?: Date;
   submittedAt?: Date;
   reviewedAt?: Date;
   decidedAt?: Date;

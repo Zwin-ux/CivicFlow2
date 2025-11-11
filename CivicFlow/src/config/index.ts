@@ -33,8 +33,39 @@ interface Config {
     apiKey: string;
     from: string;
   };
+  teams: {
+    clientId: string;
+    clientSecret: string;
+    tenantId: string;
+    webhookSecret: string;
+  };
   logging: {
     level: string;
+  };
+  ai: {
+    azureDocumentIntelligence: {
+      endpoint: string;
+      key: string;
+      timeout: number;
+    };
+    llm: {
+      provider: 'openai' | 'claude';
+      openai: {
+        apiKey: string;
+        model: string;
+        maxTokens: number;
+        temperature: number;
+        timeout: number;
+      };
+      claude: {
+        apiKey: string;
+        model: string;
+        maxTokens: number;
+      };
+    };
+    confidenceThreshold: number;
+    maxRetries: number;
+    retryDelay: number;
   };
 }
 
@@ -68,8 +99,39 @@ const config: Config = {
     apiKey: process.env.EMAIL_API_KEY || '',
     from: process.env.EMAIL_FROM || 'noreply@example.com',
   },
+  teams: {
+    clientId: process.env.TEAMS_CLIENT_ID || '',
+    clientSecret: process.env.TEAMS_CLIENT_SECRET || '',
+    tenantId: process.env.TEAMS_TENANT_ID || '',
+    webhookSecret: process.env.TEAMS_WEBHOOK_SECRET || 'dev-webhook-secret-change-in-production',
+  },
   logging: {
     level: process.env.LOG_LEVEL || 'info',
+  },
+  ai: {
+    azureDocumentIntelligence: {
+      endpoint: process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT || '',
+      key: process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY || '',
+      timeout: parseInt(process.env.AZURE_DOCUMENT_INTELLIGENCE_TIMEOUT || '30000', 10),
+    },
+    llm: {
+      provider: (process.env.LLM_PROVIDER as 'openai' | 'claude') || 'openai',
+      openai: {
+        apiKey: process.env.OPENAI_API_KEY || '',
+        model: process.env.OPENAI_MODEL || 'gpt-4',
+        maxTokens: parseInt(process.env.OPENAI_MAX_TOKENS || '2000', 10),
+        temperature: parseFloat(process.env.OPENAI_TEMPERATURE || '0.7'),
+        timeout: parseInt(process.env.OPENAI_TIMEOUT || '30000', 10),
+      },
+      claude: {
+        apiKey: process.env.CLAUDE_API_KEY || '',
+        model: process.env.CLAUDE_MODEL || 'claude-3-sonnet-20240229',
+        maxTokens: parseInt(process.env.CLAUDE_MAX_TOKENS || '2000', 10),
+      },
+    },
+    confidenceThreshold: parseFloat(process.env.AI_CONFIDENCE_THRESHOLD || '0.85'),
+    maxRetries: parseInt(process.env.AI_MAX_RETRIES || '3', 10),
+    retryDelay: parseInt(process.env.AI_RETRY_DELAY || '1000', 10),
   },
 };
 

@@ -27,7 +27,7 @@ CREATE INDEX idx_program_rules_version ON program_rules(program_type, version DE
 
 -- Composite index for finding active rules
 CREATE INDEX idx_program_rules_active ON program_rules(program_type, active_from, active_to)
-  WHERE active_to IS NULL OR active_to > NOW();
+  WHERE active_to IS NULL;
 
 -- GIN index for JSONB rules
 CREATE INDEX idx_program_rules_rules ON program_rules USING GIN (rules);
