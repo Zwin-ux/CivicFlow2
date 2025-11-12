@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo Mode - Government Lending CRM</title>
-  <link rel="stylesheet" href="/css/components/demo-mode.css">
-  <link rel="stylesheet" href="/css/components/toast.css">
+  <title>Demo Mode - OctoDoc</title>
   <link rel="stylesheet" href="/css/responsive.css">
-  <link rel="stylesheet" href="/css/touch-enhancements.css">
   <style>
     * {
       margin: 0;
@@ -16,95 +13,265 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: white;
+    }
+
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      color: #333;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: #1f2937;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .feature {
+      background: #f9fafb;
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .feature h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+    }
+
+    .feature p {
+      font-size: 0.8125rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1f2937;
+      text-align: center;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .role-button {
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      color: #1f2937;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-button:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+      transform: translateY(-2px);
+    }
+
+    .role-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .disclaimer {
+      font-size: 0.8125rem;
+      color: #6b7280;
+      text-align: center;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .disclaimer strong {
+      color: #1f2937;
+    }
+
+    .toast {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 0.875rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    .toast.success {
+      border-left: 4px solid #10b981;
+      color: #065f46;
+    }
+
+    .toast.error {
+      border-left: 4px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .toast.info {
+      border-left: 4px solid #3b82f6;
+      color: #1e40af;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 2rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .features,
+      .roles {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="demo-landing">
-    <div class="demo-landing__container">
-      <div class="demo-landing__icon">🎭</div>
-      <h1 class="demo-landing__title">Welcome to Demo Mode</h1>
-      <p class="demo-landing__subtitle">
-        Experience the full power of our AI-powered Government Lending CRM with realistic sample data.
+  <div class="container">
+    <div class="header">
+      <img src="/images/logo.svg" alt="OctoDoc Logo" class="logo">
+      <h1>Welcome to Demo Mode</h1>
+      <p class="subtitle">
+        Experience the full power of OctoDoc with realistic sample data.
         Choose a role below to start exploring.
       </p>
-
-      <div class="demo-landing__features">
-        <div class="demo-landing__feature">
-          <div class="demo-landing__feature-icon">🤖</div>
-          <h3 class="demo-landing__feature-title">AI Document Analysis</h3>
-          <p class="demo-landing__feature-text">
-            Automatic document processing with quality scoring and data extraction
-          </p>
-        </div>
-
-        <div class="demo-landing__feature">
-          <div class="demo-landing__feature-icon">🔍</div>
-          <h3 class="demo-landing__feature-title">Fraud Detection</h3>
-          <p class="demo-landing__feature-text">
-            Advanced anomaly detection and risk assessment powered by AI
-          </p>
-        </div>
-
-        <div class="demo-landing__feature">
-          <div class="demo-landing__feature-icon">📊</div>
-          <h3 class="demo-landing__feature-title">Smart Insights</h3>
-          <p class="demo-landing__feature-text">
-            AI-generated summaries and recommendations for faster decisions
-          </p>
-        </div>
-
-        <div class="demo-landing__feature">
-          <div class="demo-landing__feature-icon">⚡</div>
-          <h3 class="demo-landing__feature-title">Real-time Updates</h3>
-          <p class="demo-landing__feature-text">
-            Live dashboard with WebSocket updates and instant notifications
-          </p>
-        </div>
-      </div>
-
-      <h2 style="font-size: 20px; color: #333; margin-bottom: 20px;">Select Your Role</h2>
-      
-      <div class="demo-landing__roles">
-        <button class="demo-landing__role-button" onclick="startDemo('APPLICANT')">
-          👤 Applicant Portal
-        </button>
-        <button class="demo-landing__role-button" onclick="startDemo('REVIEWER')">
-          👨‍💼 Staff Portal
-        </button>
-        <button class="demo-landing__role-button" onclick="startDemo('APPROVER')">
-          ✅ Approver Dashboard
-        </button>
-        <button class="demo-landing__role-button" onclick="startDemo('ADMIN')">
-          ⚙️ Admin Dashboard
-        </button>
-      </div>
-
-      <p class="demo-landing__disclaimer">
-        <strong>Note:</strong> This is a demonstration environment with sample data.
-        No real data will be stored or processed. Sessions automatically expire after 30 minutes of inactivity.
-      </p>
     </div>
+
+    <div class="features">
+      <div class="feature">
+        <h3>AI Document Analysis</h3>
+        <p>Automatic document processing with quality scoring and data extraction</p>
+      </div>
+
+      <div class="feature">
+        <h3>Fraud Detection</h3>
+        <p>Advanced anomaly detection and risk assessment powered by AI</p>
+      </div>
+
+      <div class="feature">
+        <h3>Smart Insights</h3>
+        <p>AI-generated summaries and recommendations for faster decisions</p>
+      </div>
+
+      <div class="feature">
+        <h3>Real-time Updates</h3>
+        <p>Live dashboard with WebSocket updates and instant notifications</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Select Your Role</h2>
+    
+    <div class="roles">
+      <button class="role-button" onclick="startDemo(event, 'APPLICANT')">
+        Applicant Portal
+      </button>
+      <button class="role-button" onclick="startDemo(event, 'REVIEWER')">
+        Staff Portal
+      </button>
+      <button class="role-button" onclick="startDemo(event, 'APPROVER')">
+        Approver Dashboard
+      </button>
+      <button class="role-button" onclick="startDemo(event, 'ADMIN')">
+        Admin Dashboard
+      </button>
+    </div>
+
+    <p class="disclaimer">
+      <strong>Note:</strong> This is a demonstration environment with sample data.
+      No real data will be stored or processed. Sessions automatically expire after 30 minutes of inactivity.
+    </p>
   </div>
 
-  <!-- Toast Container -->
   <div id="toast-container"></div>
 
-  <script src="/js/components/toast.js"></script>
   <script>
-    // Initialize toast manager
-    window.toastManager = new ToastManager();
+    // Toast manager
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
 
-    async function startDemo(role) {
+      setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    async function startDemo(event, role) {
       try {
-        // Show loading state
         const button = event.target;
         const originalText = button.textContent;
         button.textContent = 'Starting...';
         button.disabled = true;
 
-        // Create demo session
         const response = await fetch('/api/v1/demo/start', {
           method: 'POST',
           headers: {
@@ -119,15 +286,12 @@
 
         const data = await response.json();
 
-        // Store session info
         sessionStorage.setItem('demo_session', data.sessionId);
         sessionStorage.setItem('demo_role', data.userRole);
         sessionStorage.setItem('demo_expires', data.expiresAt);
 
-        // Show success message
-        window.toastManager.show('Demo session started successfully!', 'success');
+        showToast('Demo session started successfully!', 'success');
 
-        // Redirect based on role
         setTimeout(() => {
           switch (role) {
             case 'APPLICANT':
@@ -149,10 +313,10 @@
 
       } catch (error) {
         console.error('Error starting demo:', error);
-        window.toastManager.show('Failed to start demo session. Please try again.', 'error');
+        showToast('Failed to start demo session. Please try again.', 'error');
         
-        // Reset button
-        button.textContent = originalText;
+        const button = event.target;
+        button.textContent = button.getAttribute('data-original-text') || 'Try Again';
         button.disabled = false;
       }
     }
@@ -160,9 +324,8 @@
     // Check if already in demo mode
     if (sessionStorage.getItem('demo_session')) {
       const role = sessionStorage.getItem('demo_role');
-      window.toastManager.show('You already have an active demo session', 'info');
+      showToast('You already have an active demo session', 'info');
       
-      // Redirect to appropriate page
       setTimeout(() => {
         switch (role) {
           case 'APPLICANT':
@@ -182,6 +345,11 @@
         }
       }, 1500);
     }
+
+    // Store original button text
+    document.querySelectorAll('.role-button').forEach(btn => {
+      btn.setAttribute('data-original-text', btn.textContent.trim());
+    });
   </script>
 </body>
 </html>
