@@ -27,22 +27,31 @@ export interface AnalysisResultWithMetadata {
 }
 
 class AzureDocumentIntelligenceClient {
-  private client: DocumentAnalysisClient;
+  private client: DocumentAnalysisClient | null = null;
   private circuitBreaker: CircuitBreaker<any, AnalysisResultWithMetadata>;
   private static instance: AzureDocumentIntelligenceClient;
+  private isConfigured: boolean = false;
 
   private constructor() {
     const { endpoint, key, timeout } = config.ai.azureDocumentIntelligence;
 
     if (!endpoint || !key) {
-      logger.warn('Azure Document Intelligence credentials not configured. Client will not be functional.');
+      logger.warn('Azure Document Intelligence credentials not configured. Client will operate in mock mode.');
+      this.isConfigured = false;
+    } else {
+      try {
+        // Initialize Azure client only if credentials are provided
+        this.client = new DocumentAnalysisClient(
+          endpoint,
+          new AzureKeyCredential(key)
+        );
+        this.isConfigured = true;
+        logger.info('Azure Document Intelligence client initialized successfully');
+      } catch (error: any) {
+        logger.error('Failed to initialize Azure Document Intelligence client', { error: error.message });
+        this.isConfigured = false;
+      }
     }
-
-    // Initialize Azure client
-    this.client = new DocumentAnalysisClient(
-      endpoint,
-      new AzureKeyCredential(key)
-    );
 
     // Circuit breaker configuration
     const circuitBreakerOptions: CircuitBreakerOptions = {
@@ -86,6 +95,12 @@ class AzureDocumentIntelligenceClient {
   ): Promise<AnalysisResultWithMetadata> {
     const startTime = Date.now();
     const modelId = options.modelId || 'prebuilt-document';
+
+    // Return mock data if not configured
+    if (!this.isConfigured || !this.client) {
+      logger.info('Azure Document Intelligence not configured - returning mock analysis');
+      return this.getMockAnalysisResult(modelId, startTime);
+    }
 
     try {
       logger.info('Starting document analysis', {
@@ -137,6 +152,40 @@ class AzureDocumentIntelligenceClient {
   }
 
   /**
+   * Get mock analysis result for demo mode
+   */
+  private getMockAnalysisResult(modelId: string, startTime: number): AnalysisResultWithMetadata {
+    const processingTime = Date.now() - startTime;
+    
+    // Create a minimal mock result
+    const mockResult: any = {
+      apiVersion: '2023-07-31',
+      modelId,
+      content: 'Mock document content for demo mode',
+      pages: [
+        {
+          pageNumber: 1,
+          width: 8.5,
+          height: 11,
+          unit: 'inch',
+          words: [],
+          lines: [],
+        },
+      ],
+      tables: [],
+      keyValuePairs: [],
+      entities: [],
+      styles: [],
+    };
+
+    return {
+      result: mockResult as AnalyzeResult,
+      processingTime,
+      modelId,
+    };
+  }
+
+  /**
    * Analyze document with retry logic and circuit breaker
    */
   public async analyzeDocument(
@@ -159,6 +208,12 @@ class AzureDocumentIntelligenceClient {
   ): Promise<AnalysisResultWithMetadata> {
     const startTime = Date.now();
     const modelId = options.modelId || 'prebuilt-document';
+
+    // Return mock data if not configured
+    if (!this.isConfigured || !this.client) {
+      logger.info('Azure Document Intelligence not configured - returning mock analysis for URL');
+      return this.getMockAnalysisResult(modelId, startTime);
+    }
 
     try {
       logger.info('Starting document analysis from URL', {
@@ -260,13 +315,18 @@ class AzureDocumentIntelligenceClient {
    */
   public async healthCheck(): Promise<boolean> {
     try {
-      // Simple check to see if credentials are configured
-      const { endpoint, key } = config.ai.azureDocumentIntelligence;
-      return !!(endpoint && key);
+      return this.isConfigured;
     } catch (error) {
       logger.error('Azure Document Intelligence health check failed', { error });
       return false;
     }
+  }
+
+  /**
+   * Check if client is configured
+   */
+  public isClientConfigured(): boolean {
+    return this.isConfigured;
   }
 
   /**
@@ -277,6 +337,7 @@ class AzureDocumentIntelligenceClient {
       name: this.circuitBreaker.name,
       state: this.circuitBreaker.opened ? 'OPEN' : this.circuitBreaker.halfOpen ? 'HALF_OPEN' : 'CLOSED',
       stats: this.circuitBreaker.stats,
+      configured: this.isConfigured,
     };
   }
 }
