@@ -20,7 +20,8 @@ export interface DashboardFilters {
  */
 export interface TimeSeriesData {
   date: string;
-  value: number;
+  value?: number;
+  count?: number;
   label?: string;
 }
 
@@ -34,6 +35,13 @@ export interface DashboardData {
   documentClassificationAccuracy: number;
   applicationsByStatus: Record<ApplicationStatus, number>;
   trendsOverTime: TimeSeriesData[];
+  totalLoanAmount?: number;
+  statusBreakdown?: {
+    pending: number;
+    underReview: number;
+    approved: number;
+    rejected: number;
+  };
 }
 
 /**

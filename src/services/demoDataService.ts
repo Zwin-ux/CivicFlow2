@@ -34,6 +34,7 @@ export interface DemoDocument {
   fileType: string;
   uploadedAt: Date;
   status: string;
+  url?: string;
 }
 
 class DemoDataService {
@@ -150,39 +151,88 @@ class DemoDataService {
       },
     ];
 
-    // Demo documents
+    // Demo documents with URLs to sample SBA documents
     this.demoDocuments = [
       {
         id: 'demo-doc-1',
         applicationId: 'demo-app-1',
-        fileName: 'business_plan.pdf',
+        fileName: 'tax_returns_2023.pdf',
         fileType: 'application/pdf',
         uploadedAt: new Date('2024-01-15T10:35:00Z'),
         status: 'VERIFIED',
+        url: '/demo-documents/sample-tax-return-2023.html',
       },
       {
         id: 'demo-doc-2',
         applicationId: 'demo-app-1',
-        fileName: 'tax_returns_2023.pdf',
+        fileName: 'bank_statement_q4_2023.pdf',
         fileType: 'application/pdf',
         uploadedAt: new Date('2024-01-15T10:36:00Z'),
         status: 'VERIFIED',
+        url: '/demo-documents/sample-bank-statement-q4-2023.html',
       },
       {
         id: 'demo-doc-3',
-        applicationId: 'demo-app-2',
-        fileName: 'financial_statements.xlsx',
-        fileType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        uploadedAt: new Date('2024-01-10T14:25:00Z'),
+        applicationId: 'demo-app-1',
+        fileName: 'business_license.pdf',
+        fileType: 'application/pdf',
+        uploadedAt: new Date('2024-01-15T10:37:00Z'),
         status: 'VERIFIED',
+        url: '/demo-documents/sample-business-license.html',
       },
       {
         id: 'demo-doc-4',
+        applicationId: 'demo-app-2',
+        fileName: 'tax_returns_2023.pdf',
+        fileType: 'application/pdf',
+        uploadedAt: new Date('2024-01-10T14:25:00Z'),
+        status: 'VERIFIED',
+        url: '/demo-documents/sample-tax-return-2023.html',
+      },
+      {
+        id: 'demo-doc-5',
+        applicationId: 'demo-app-2',
+        fileName: 'bank_statement_q4_2023.pdf',
+        fileType: 'application/pdf',
+        uploadedAt: new Date('2024-01-10T14:26:00Z'),
+        status: 'VERIFIED',
+        url: '/demo-documents/sample-bank-statement-q4-2023.html',
+      },
+      {
+        id: 'demo-doc-6',
         applicationId: 'demo-app-3',
-        fileName: 'project_proposal.pdf',
+        fileName: 'tax_returns_2023.pdf',
         fileType: 'application/pdf',
         uploadedAt: new Date('2024-01-05T11:05:00Z'),
         status: 'VERIFIED',
+        url: '/demo-documents/sample-tax-return-2023.html',
+      },
+      {
+        id: 'demo-doc-7',
+        applicationId: 'demo-app-3',
+        fileName: 'business_license.pdf',
+        fileType: 'application/pdf',
+        uploadedAt: new Date('2024-01-05T11:06:00Z'),
+        status: 'VERIFIED',
+        url: '/demo-documents/sample-business-license.html',
+      },
+      {
+        id: 'demo-doc-8',
+        applicationId: 'demo-app-4',
+        fileName: 'bank_statement_q4_2023.pdf',
+        fileType: 'application/pdf',
+        uploadedAt: new Date('2024-01-03T08:50:00Z'),
+        status: 'VERIFIED',
+        url: '/demo-documents/sample-bank-statement-q4-2023.html',
+      },
+      {
+        id: 'demo-doc-9',
+        applicationId: 'demo-app-5',
+        fileName: 'business_license.pdf',
+        fileType: 'application/pdf',
+        uploadedAt: new Date('2024-01-18T15:15:00Z'),
+        status: 'PENDING',
+        url: '/demo-documents/sample-business-license.html',
       },
     ];
 

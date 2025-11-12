@@ -6,12 +6,16 @@
 import reportingRepository from '../repositories/reportingRepository';
 import redisClient from '../config/redis';
 import logger from '../utils/logger';
+import demoModeManager from './demoModeManager';
+import demoDataService from './demoDataService';
+import { ApplicationStatus } from '../models/application';
 import {
   DashboardFilters,
   DashboardData,
   ReportFilters,
   EligibilityReport,
   ComplianceSummaryData,
+  TimeSeriesData,
 } from '../models/reporting';
 
 class ReportingService {
@@ -24,6 +28,12 @@ class ReportingService {
    * @returns Dashboard data
    */
   async getDashboardMetrics(filters: DashboardFilters): Promise<DashboardData> {
+    // Check if demo mode is active
+    if (demoModeManager.isActive()) {
+      logger.info('Returning demo dashboard metrics');
+      return this.getDemoDashboardMetrics();
+    }
+
     const cacheKey = this.buildCacheKey(filters);
 
     try {
@@ -73,6 +83,60 @@ class ReportingService {
       logger.error('Failed to get dashboard metrics', { error, filters });
       throw new Error('Failed to get dashboard metrics');
     }
+  }
+
+  /**
+   * Get demo dashboard metrics
+   * @returns Demo dashboard data
+   */
+  private getDemoDashboardMetrics(): DashboardData {
+    const stats = demoDataService.getStatistics();
+    
+    return {
+      totalApplications: stats.total,
+      approvalRate: stats.total > 0 ? (stats.approved / stats.total) * 100 : 0,
+      averageProcessingTime: 48, // 48 hours average
+      documentClassificationAccuracy: 95.5,
+      applicationsByStatus: {
+        [ApplicationStatus.DRAFT]: 0,
+        [ApplicationStatus.SUBMITTED]: stats.pending,
+        [ApplicationStatus.UNDER_REVIEW]: stats.underReview,
+        [ApplicationStatus.PENDING_DOCUMENTS]: 0,
+        [ApplicationStatus.APPROVED]: stats.approved,
+        [ApplicationStatus.REJECTED]: stats.rejected,
+        [ApplicationStatus.DEFERRED]: 0,
+      },
+      trendsOverTime: this.generateDemoTrends(),
+      totalLoanAmount: stats.totalLoanAmount,
+      statusBreakdown: {
+        pending: stats.pending,
+        underReview: stats.underReview,
+        approved: stats.approved,
+        rejected: stats.rejected,
+      },
+    };
+  }
+
+  /**
+   * Generate demo trends data
+   * @returns Demo trends over time
+   */
+  private generateDemoTrends(): TimeSeriesData[] {
+    const trends: TimeSeriesData[] = [];
+    const now = new Date();
+    
+    // Generate 7 days of demo data
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      
+      trends.push({
+        date: date.toISOString().split('T')[0],
+        count: Math.floor(Math.random() * 10) + 5, // 5-15 applications per day
+      });
+    }
+    
+    return trends;
   }
 
   /**

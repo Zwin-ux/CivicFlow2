@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Business Tax Return 2023</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        .document {
+            background: white;
+            padding: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .form-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .form-title {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .tax-year {
+            font-size: 14px;
+            color: #666;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-decoration: underline;
+        }
+        .field {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+        .field-label {
+            flex: 1;
+        }
+        .field-value {
+            width: 200px;
+            text-align: right;
+            border-bottom: 1px solid #000;
+            padding-right: 10px;
+        }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 120px;
+            color: rgba(255, 0, 0, 0.1);
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="watermark">SAMPLE</div>
+    <div class="document">
+        <div class="header">
+            <div class="form-number">Form 1120</div>
+            <div class="form-title">U.S. Corporation Income Tax Return</div>
+            <div class="tax-year">For calendar year 2023 or tax year beginning _____, 2023, ending _____, 2024</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Part I - Business Information</div>
+            <div class="field">
+                <span class="field-label">Name of Corporation:</span>
+                <span class="field-value">SAMPLE BUSINESS INC</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Employer Identification Number:</span>
+                <span class="field-value">XX-XXXXXXX</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Business Address:</span>
+                <span class="field-value">123 Main Street</span>
+            </div>
+            <div class="field">
+                <span class="field-label">City, State, ZIP:</span>
+                <span class="field-value">Anytown, ST 12345</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Part II - Income</div>
+            <div class="field">
+                <span class="field-label">1a. Gross receipts or sales</span>
+                <span class="field-value">$850,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">1b. Returns and allowances</span>
+                <span class="field-value">$12,500.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">1c. Balance (subtract line 1b from 1a)</span>
+                <span class="field-value">$837,500.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">2. Cost of goods sold</span>
+                <span class="field-value">$425,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">3. Gross profit (subtract line 2 from 1c)</span>
+                <span class="field-value">$412,500.00</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Part III - Deductions</div>
+            <div class="field">
+                <span class="field-label">12. Salaries and wages</span>
+                <span class="field-value">$180,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">13. Repairs and maintenance</span>
+                <span class="field-value">$15,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">14. Bad debts</span>
+                <span class="field-value">$5,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">15. Rent</span>
+                <span class="field-value">$48,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">16. Taxes and licenses</span>
+                <span class="field-value">$12,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">17. Interest</span>
+                <span class="field-value">$8,500.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">26. Total deductions</span>
+                <span class="field-value">$268,500.00</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Part IV - Tax Computation</div>
+            <div class="field">
+                <span class="field-label">28. Taxable income (line 3 minus line 26)</span>
+                <span class="field-value">$144,000.00</span>
+            </div>
+            <div class="field">
+                <span class="field-label">29. Total tax</span>
+                <span class="field-value">$30,240.00</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>SAMPLE DOCUMENT FOR DEMONSTRATION PURPOSES ONLY</strong></p>
+            <p>This is a generic sample document and does not represent any real business or tax filing.</p>
+            <p>All information shown is fictional and for demonstration purposes only.</p>
+        </div>
+    </div>
+</body>
+</html>

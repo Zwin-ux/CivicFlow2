@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Design Test - CivicFlow2</title>
+    <link rel="stylesheet" href="/css/professional-theme.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/touch-enhancements.css">
+    <style>
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-section h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .viewport-info {
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+
+        .touch-target-demo {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .touch-box {
+            border: 2px dashed #667eea;
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .touch-box button {
+            margin: 0.5rem;
+        }
+
+        .breakpoint-indicator {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="/images/logo.svg" alt="CivicFlow2 Logo" class="logo-image">
+                <div class="logo-text">
+                    <span class="logo-name">CivicFlow2</span>
+                    <span class="logo-tagline">Government Lending CRM</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/demo-investor.html">Demo</a></li>
+                <li><a href="/investor-dashboard.html">Dashboard</a></li>
+                <li><a href="/applications-list.html">Applications</a></li>
+                <li><a href="/test-responsive.html" class="active">Test</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 style="margin-bottom: 2rem;">Responsive Design Test Page</h1>
+
+        <!-- Viewport Info -->
+        <div class="test-section">
+            <h2>📱 Viewport Information</h2>
+            <div class="viewport-info" id="viewport-info">
+                Loading...
+            </div>
+            <p>Resize your browser window to see the responsive breakpoints in action.</p>
+        </div>
+
+        <!-- Touch Targets -->
+        <div class="test-section">
+            <h2>👆 Touch Target Sizes (Requirement 9.3)</h2>
+            <p>All buttons should be at least 44x44px for comfortable touch interaction.</p>
+            <div class="touch-target-demo">
+                <div class="touch-box">
+                    <p>Standard Button (44x44px min)</p>
+                    <button class="btn btn-secondary">Tap Me</button>
+                </div>
+                <div class="touch-box">
+                    <p>Primary Button (48x48px min)</p>
+                    <button class="btn btn-primary">Tap Me</button>
+                </div>
+                <div class="touch-box">
+                    <p>Large Button (56x56px min)</p>
+                    <button class="btn btn-primary btn-large">Tap Me</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responsive Grid -->
+        <div class="test-section">
+            <h2>📊 Responsive Grid (Requirement 9.1)</h2>
+            <p>Grid adapts from 1 column (mobile) to 4 columns (desktop).</p>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Card 1</div>
+                    <div class="metric-value">100</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Card 2</div>
+                    <div class="metric-value">200</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Card 3</div>
+                    <div class="metric-value">300</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Card 4</div>
+                    <div class="metric-value">400</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table to Cards -->
+        <div class="test-section">
+            <h2>📋 Table to Cards (Requirement 9.4)</h2>
+            <p>On mobile (<768px), tables convert to card layout.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Name">Application 1</td>
+                            <td data-label="Status"><span class="status-badge approved">Approved</span></td>
+                            <td data-label="Amount">$50,000</td>
+                            <td data-label="Date">2025-01-15</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Name">Application 2</td>
+                            <td data-label="Status"><span class="status-badge pending_review">Pending</span></td>
+                            <td data-label="Amount">$75,000</td>
+                            <td data-label="Date">2025-01-14</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Name">Application 3</td>
+                            <td data-label="Status"><span class="status-badge under_review">Under Review</span></td>
+                            <td data-label="Amount">$100,000</td>
+                            <td data-label="Date">2025-01-13</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Navigation Test -->
+        <div class="test-section">
+            <h2>🍔 Hamburger Menu (Requirement 9.2)</h2>
+            <p>On mobile (<768px), navigation shows hamburger menu. Try resizing to mobile width!</p>
+            <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px;">
+                <p><strong>Desktop (≥768px):</strong> Horizontal navigation bar</p>
+                <p><strong>Mobile (<768px):</strong> Hamburger menu with slide-in drawer</p>
+            </div>
+        </div>
+
+        <!-- Breakpoint Reference -->
+        <div class="test-section">
+            <h2>📐 Breakpoint Reference</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Breakpoint</th>
+                        <th>Width Range</th>
+                        <th>Layout</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Breakpoint">Mobile</td>
+                        <td data-label="Width Range">320px - 639px</td>
+                        <td data-label="Layout">1 column, hamburger menu</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Breakpoint">Tablet</td>
+                        <td data-label="Width Range">640px - 767px</td>
+                        <td data-label="Layout">2 columns, hamburger menu</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Breakpoint">Tablet Large</td>
+                        <td data-label="Width Range">768px - 1023px</td>
+                        <td data-label="Layout">2-4 columns, horizontal nav</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Breakpoint">Desktop</td>
+                        <td data-label="Width Range">1024px - 1279px</td>
+                        <td data-label="Layout">4 columns, full features</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Breakpoint">Desktop Large</td>
+                        <td data-label="Width Range">1280px - 2559px</td>
+                        <td data-label="Layout">3-4 columns, spacious</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Breakpoint">Ultra-Wide</td>
+                        <td data-label="Width Range">2560px+</td>
+                        <td data-label="Layout">4-6 columns, optimized</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CivicFlow2. Responsive Design Test Page.</p>
+        </div>
+    </footer>
+
+    <!-- Breakpoint Indicator -->
+    <div class="breakpoint-indicator" id="breakpoint-indicator">
+        Loading...
+    </div>
+
+    <script src="/js/mobile-nav.js"></script>
+    <script>
+        function updateViewportInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const devicePixelRatio = window.devicePixelRatio || 1;
+            
+            let breakpoint = 'Unknown';
+            if (width < 640) breakpoint = 'Mobile';
+            else if (width < 768) breakpoint = 'Tablet';
+            else if (width < 1024) breakpoint = 'Tablet Large';
+            else if (width < 1280) breakpoint = 'Desktop';
+            else if (width < 2560) breakpoint = 'Desktop Large';
+            else breakpoint = 'Ultra-Wide';
+
+            const info = `
+Width: ${width}px
+Height: ${height}px
+Device Pixel Ratio: ${devicePixelRatio}
+Breakpoint: ${breakpoint}
+Touch Support: ${('ontouchstart' in window) ? 'Yes' : 'No'}
+            `.trim();
+
+            document.getElementById('viewport-info').textContent = info;
+            document.getElementById('breakpoint-indicator').textContent = breakpoint;
+        }
+
+        // Update on load and resize
+        updateViewportInfo();
+        window.addEventListener('resize', updateViewportInfo);
+
+        // Update every second to catch any changes
+        setInterval(updateViewportInfo, 1000);
+    </script>
+</body>
+</html>

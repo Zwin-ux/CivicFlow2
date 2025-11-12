@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Components Showcase - CivicFlow2</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/components/demo-indicator.css">
+  <link rel="stylesheet" href="/css/components/skeleton-loader.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .showcase {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #2c3e50;
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .demo-item {
+      padding: 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+    .demo-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+    .card-example {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    .card-content {
+      color: #555;
+      margin-bottom: 1rem;
+    }
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #5568d3;
+    }
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .list-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="showcase">
+    <h1 style="margin-bottom: 2rem; color: #2c3e50;">Demo Components Showcase</h1>
+
+    <!-- Demo Indicator Section -->
+    <div class="section">
+      <h2 class="section-title">Demo Indicator Component</h2>
+      
+      <div class="demo-grid">
+        <!-- Badge Variant -->
+        <div class="demo-item">
+          <div class="demo-label">Badge Variant (Default)</div>
+          <div id="badge-demo"></div>
+        </div>
+
+        <!-- Badge Variant Small -->
+        <div class="demo-item">
+          <div class="demo-label">Badge Variant (Small)</div>
+          <div id="badge-sm-demo"></div>
+        </div>
+
+        <!-- Badge Variant Large -->
+        <div class="demo-item">
+          <div class="demo-label">Badge Variant (Large)</div>
+          <div id="badge-lg-demo"></div>
+        </div>
+
+        <!-- Icon Variant -->
+        <div class="demo-item">
+          <div class="demo-label">Icon Variant</div>
+          <span>Application #12345</span>
+          <span id="icon-demo"></span>
+        </div>
+
+        <!-- Badge on Card -->
+        <div class="demo-item" style="grid-column: 1 / -1;">
+          <div class="demo-label">Badge on Card</div>
+          <div class="card-example">
+            <div class="card-header">
+              <div class="card-title">
+                Sample Application
+                <span id="card-badge-demo"></span>
+              </div>
+              <span style="color: #10b981; font-weight: 600;">Approved</span>
+            </div>
+            <div class="card-content">
+              <p><strong>Business:</strong> Tech Startup Inc.</p>
+              <p><strong>Amount:</strong> $50,000</p>
+              <p><strong>Status:</strong> Under Review</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner Variant -->
+        <div class="demo-item" style="grid-column: 1 / -1;">
+          <div class="demo-label">Banner Variant (Dismissible)</div>
+          <div id="banner-demo"></div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn btn-primary" onclick="resetBanner()">Reset Banner</button>
+        <button class="btn btn-secondary" onclick="addDynamicIndicator()">Add Dynamic Badge</button>
+      </div>
+    </div>
+
+    <!-- Skeleton Loader Section -->
+    <div class="section">
+      <h2 class="section-title">Skeleton Loader Component</h2>
+      
+      <div class="demo-grid">
+        <!-- Card Skeleton -->
+        <div class="demo-item" style="grid-column: 1 / -1;">
+          <div class="demo-label">Card Skeleton (3 cards)</div>
+          <div id="card-skeleton-demo"></div>
+        </div>
+
+        <!-- Table Skeleton -->
+        <div class="demo-item" style="grid-column: 1 / -1;">
+          <div class="demo-label">Table Skeleton</div>
+          <div id="table-skeleton-demo"></div>
+        </div>
+
+        <!-- Chart Skeletons -->
+        <div class="demo-item">
+          <div class="demo-label">Bar Chart Skeleton</div>
+          <div id="bar-chart-skeleton-demo"></div>
+        </div>
+
+        <div class="demo-item">
+          <div class="demo-label">Line Chart Skeleton</div>
+          <div id="line-chart-skeleton-demo"></div>
+        </div>
+
+        <div class="demo-item">
+          <div class="demo-label">Pie Chart Skeleton</div>
+          <div id="pie-chart-skeleton-demo"></div>
+        </div>
+
+        <!-- Text Skeleton -->
+        <div class="demo-item">
+          <div class="demo-label">Text Skeleton</div>
+          <div id="text-skeleton-demo"></div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn btn-primary" onclick="simulateLoading()">Simulate Loading</button>
+        <button class="btn btn-secondary" onclick="refreshSkeletons()">Refresh Skeletons</button>
+      </div>
+    </div>
+
+    <!-- Combined Example -->
+    <div class="section">
+      <h2 class="section-title">Combined Example: Loading Demo Data</h2>
+      <div id="combined-demo">
+        <div id="loading-state"></div>
+        <div id="loaded-state" style="display: none;">
+          <div class="card-example">
+            <div class="card-header">
+              <div class="card-title">
+                Application #54321
+                <span id="combined-badge"></span>
+              </div>
+              <span style="color: #10b981; font-weight: 600;">Approved</span>
+            </div>
+            <div class="card-content">
+              <p><strong>Business:</strong> Green Energy Solutions</p>
+              <p><strong>Amount:</strong> $75,000</p>
+              <p><strong>Submitted:</strong> 2024-01-15</p>
+              <p><strong>Status:</strong> Approved</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-primary" onclick="simulateCombinedLoading()">Simulate API Call</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/components/demo-indicator.js"></script>
+  <script src="/js/components/skeleton-loader.js"></script>
+  <script>
+    // Initialize Demo Indicators
+    function initDemoIndicators() {
+      // Badge variants
+      const badgeDemo = document.getElementById('badge-demo');
+      badgeDemo.innerHTML = '';
+      badgeDemo.appendChild(DemoIndicator.createBadge());
+
+      const badgeSmDemo = document.getElementById('badge-sm-demo');
+      badgeSmDemo.innerHTML = '';
+      badgeSmDemo.appendChild(DemoIndicator.createBadge({ 
+        text: 'Demo', 
+        className: 'demo-indicator-badge-sm' 
+      }));
+
+      const badgeLgDemo = document.getElementById('badge-lg-demo');
+      badgeLgDemo.innerHTML = '';
+      badgeLgDemo.appendChild(DemoIndicator.createBadge({ 
+        text: 'Demo Data', 
+        className: 'demo-indicator-badge-lg' 
+      }));
+
+      // Icon variant
+      const iconDemo = document.getElementById('icon-demo');
+      iconDemo.innerHTML = '';
+      iconDemo.appendChild(DemoIndicator.createIcon());
+
+      // Card badge
+      const cardBadgeDemo = document.getElementById('card-badge-demo');
+      cardBadgeDemo.innerHTML = '';
+      cardBadgeDemo.appendChild(DemoIndicator.createBadge({ text: 'Demo' }));
+
+      // Banner variant
+      const bannerDemo = document.getElementById('banner-demo');
+      bannerDemo.innerHTML = '';
+      const banner = DemoIndicator.createBanner({
+        title: 'Demo Mode Active',
+        message: 'This is a demonstration with sample data.',
+        dismissible: true
+      });
+      if (banner) {
+        bannerDemo.appendChild(banner);
+      }
+    }
+
+    // Initialize Skeleton Loaders
+    function initSkeletonLoaders() {
+      // Card skeleton
+      const cardSkeletonDemo = document.getElementById('card-skeleton-demo');
+      cardSkeletonDemo.innerHTML = '';
+      cardSkeletonDemo.appendChild(SkeletonLoader.createCard({ 
+        count: 3, 
+        showImage: false,
+        showActions: true 
+      }));
+
+      // Table skeleton
+      const tableSkeletonDemo = document.getElementById('table-skeleton-demo');
+      tableSkeletonDemo.innerHTML = '';
+      tableSkeletonDemo.appendChild(SkeletonLoader.createTable({ 
+        rows: 5, 
+        columns: 4 
+      }));
+
+      // Bar chart skeleton
+      const barChartDemo = document.getElementById('bar-chart-skeleton-demo');
+      barChartDemo.innerHTML = '';
+      barChartDemo.appendChild(SkeletonLoader.createChart({ 
+        type: 'bar', 
+        height: '200px' 
+      }));
+
+      // Line chart skeleton
+      const lineChartDemo = document.getElementById('line-chart-skeleton-demo');
+      lineChartDemo.innerHTML = '';
+      lineChartDemo.appendChild(SkeletonLoader.createChart({ 
+        type: 'line', 
+        height: '200px' 
+      }));
+
+      // Pie chart skeleton
+      const pieChartDemo = document.getElementById('pie-chart-skeleton-demo');
+      pieChartDemo.innerHTML = '';
+      pieChartDemo.appendChild(SkeletonLoader.createChart({ 
+        type: 'pie', 
+        height: '200px' 
+      }));
+
+      // Text skeleton
+      const textSkeletonDemo = document.getElementById('text-skeleton-demo');
+      textSkeletonDemo.innerHTML = '';
+      textSkeletonDemo.appendChild(SkeletonLoader.createText({ lines: 4 }));
+    }
+
+    // Reset banner
+    function resetBanner() {
+      sessionStorage.removeItem('demoIndicatorBannerDismissed');
+      initDemoIndicators();
+    }
+
+    // Add dynamic indicator
+    function addDynamicIndicator() {
+      const container = document.createElement('div');
+      container.style.marginTop = '1rem';
+      container.innerHTML = '<p>New dynamic content</p>';
+      DemoIndicator.addTo(container, 'badge', { text: 'New' });
+      document.querySelector('.demo-grid').appendChild(container);
+    }
+
+    // Simulate loading
+    function simulateLoading() {
+      refreshSkeletons();
+      setTimeout(() => {
+        alert('Loading complete! In a real app, this would show actual data.');
+      }, 2000);
+    }
+
+    // Refresh skeletons
+    function refreshSkeletons() {
+      initSkeletonLoaders();
+    }
+
+    // Simulate combined loading
+    function simulateCombinedLoading() {
+      const loadingState = document.getElementById('loading-state');
+      const loadedState = document.getElementById('loaded-state');
+      
+      // Show loading
+      loadedState.style.display = 'none';
+      loadingState.style.display = 'block';
+      loadingState.innerHTML = '';
+      loadingState.appendChild(SkeletonLoader.createCard({ count: 1 }));
+      
+      // Simulate API call
+      setTimeout(() => {
+        loadingState.style.display = 'none';
+        loadedState.style.display = 'block';
+        
+        // Add demo indicator
+        const combinedBadge = document.getElementById('combined-badge');
+        combinedBadge.innerHTML = '';
+        combinedBadge.appendChild(DemoIndicator.createBadge({ text: 'Demo' }));
+      }, 2000);
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      initDemoIndicators();
+      initSkeletonLoaders();
+    });
+  </script>
+</body>
+</html>

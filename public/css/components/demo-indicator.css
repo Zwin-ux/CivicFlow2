@@ -1,0 +1,366 @@
+/**
+ * Demo Indicator Component Styles
+ * Supports badge, icon, and banner variants
+ */
+
+/* ===== Badge Variant ===== */
+.demo-indicator-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  cursor: help;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+}
+
+.demo-indicator-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+}
+
+.demo-indicator-badge .demo-indicator-icon {
+  font-size: 0.85rem;
+  animation: demoIndicatorSparkle 2s ease-in-out infinite;
+}
+
+@keyframes demoIndicatorSparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.demo-indicator-badge .demo-indicator-text {
+  line-height: 1;
+}
+
+/* Tooltip on hover */
+.demo-indicator-badge::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2c3e50;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.demo-indicator-badge::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+}
+
+.demo-indicator-badge:hover::after,
+.demo-indicator-badge:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== Icon Variant ===== */
+.demo-indicator-icon-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 0.9rem;
+  cursor: help;
+  position: relative;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  animation: demoIndicatorSparkle 2s ease-in-out infinite;
+}
+
+/* Tooltip for icon variant */
+.demo-indicator-icon-only::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2c3e50;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 250px;
+  white-space: normal;
+  text-align: center;
+}
+
+.demo-indicator-icon-only::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+}
+
+.demo-indicator-icon-only:hover::after,
+.demo-indicator-icon-only:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== Banner Variant ===== */
+.demo-indicator-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  animation: demoIndicatorSlideDown 0.3s ease-out;
+}
+
+@keyframes demoIndicatorSlideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes demoIndicatorSlideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+.demo-indicator-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.demo-indicator-banner-icon {
+  font-size: 1.5rem;
+  animation: demoIndicatorPulse 2s ease-in-out infinite;
+}
+
+@keyframes demoIndicatorPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.demo-indicator-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.demo-indicator-banner-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.demo-indicator-banner-message {
+  font-size: 0.85rem;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+.demo-indicator-banner-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  line-height: 1;
+  border-radius: 4px;
+  margin-left: 1rem;
+}
+
+.demo-indicator-banner-close:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.demo-indicator-banner-close:active {
+  transform: scale(0.95);
+}
+
+/* ===== Size Variants ===== */
+.demo-indicator-badge-sm {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.65rem;
+  gap: 0.25rem;
+}
+
+.demo-indicator-badge-sm .demo-indicator-icon {
+  font-size: 0.75rem;
+}
+
+.demo-indicator-badge-lg {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  gap: 0.4rem;
+}
+
+.demo-indicator-badge-lg .demo-indicator-icon {
+  font-size: 1rem;
+}
+
+/* ===== Color Variants ===== */
+.demo-indicator-badge-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+}
+
+.demo-indicator-badge-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.demo-indicator-badge-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+}
+
+/* ===== Dark Mode Support ===== */
+[data-theme="dark"] .demo-indicator-badge::after,
+[data-theme="dark"] .demo-indicator-icon-only::after {
+  background: #1a202c;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .demo-indicator-badge::before,
+[data-theme="dark"] .demo-indicator-icon-only::before {
+  border-top-color: #1a202c;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .demo-indicator-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .demo-indicator-banner-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    margin-left: 0;
+  }
+
+  .demo-indicator-banner-message {
+    font-size: 0.8rem;
+  }
+
+  .demo-indicator-badge::after,
+  .demo-indicator-icon-only::after {
+    max-width: 200px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ===== Accessibility ===== */
+@media (prefers-reduced-motion: reduce) {
+  .demo-indicator-badge,
+  .demo-indicator-icon-only,
+  .demo-indicator-banner-icon {
+    animation: none;
+  }
+
+  .demo-indicator-banner {
+    animation: none;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.demo-indicator-badge:focus-visible,
+.demo-indicator-icon-only:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+.demo-indicator-banner-close:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* ===== Integration Helpers ===== */
+/* Add spacing when badge is in a card header */
+.card-header .demo-indicator-badge,
+.card-title .demo-indicator-badge {
+  margin-left: 0.5rem;
+}
+
+/* Add spacing when icon is inline with text */
+.demo-indicator-icon-only + span,
+span + .demo-indicator-icon-only {
+  margin-left: 0.25rem;
+}
+
+/* Ensure banner doesn't break layout */
+.demo-indicator-banner + * {
+  margin-top: 0;
+}

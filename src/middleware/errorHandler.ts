@@ -2,6 +2,74 @@ import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 import { toAppError } from '../utils/errors';
 import { EntityType } from '../models/auditLog';
+import demoModeManager from '../services/demoModeManager';
+import demoDataService from '../services/demoDataService';
+
+/**
+ * Get demo data fallback for a given route
+ */
+function getDemoDataForRoute(path: string, method: string): any {
+  // Dashboard routes
+  if (path.includes('/dashboard/pipeline')) {
+    const stats = demoDataService.getStatistics();
+    return {
+      stages: [
+        { stage: 'PENDING_REVIEW', count: stats.pending, totalAmount: 0 },
+        { stage: 'UNDER_REVIEW', count: stats.underReview, totalAmount: 0 },
+        { stage: 'APPROVED', count: stats.approved, totalAmount: stats.approvedLoanAmount },
+        { stage: 'REJECTED', count: stats.rejected, totalAmount: 0 },
+      ],
+      totalApplications: stats.total,
+      totalAmount: stats.totalLoanAmount,
+    };
+  }
+
+  if (path.includes('/dashboard/queue')) {
+    return {
+      applications: demoDataService.getAllApplications().slice(0, 10),
+      total: demoDataService.getAllApplications().length,
+      page: 1,
+      pageSize: 10,
+    };
+  }
+
+  if (path.includes('/dashboard/sla')) {
+    return {
+      averageProcessingTime: 5.2,
+      onTimePercentage: 87,
+      breachedCount: 3,
+      totalProcessed: 23,
+    };
+  }
+
+  // Application routes
+  if (path.includes('/applications') && method === 'GET') {
+    if (path.match(/\/applications\/[^/]+$/)) {
+      // Single application
+      return demoDataService.getAllApplications()[0] || null;
+    }
+    // List of applications
+    return demoDataService.getAllApplications();
+  }
+
+  if (path.includes('/applications') && method === 'POST') {
+    return demoDataService.createApplication({
+      businessName: 'Demo Business',
+      loanAmount: 50000,
+    });
+  }
+
+  // Documents
+  if (path.includes('/documents')) {
+    return demoDataService.getAllDocuments();
+  }
+
+  // Default fallback
+  return {
+    message: 'Demo data - service temporarily unavailable',
+    availableInDemoMode: true,
+  };
+}
 
 /**
  * Global error handler middleware
@@ -65,6 +133,30 @@ export const errorHandler = async (
     }
   }
 
+  // In demo mode, return demo data instead of technical errors for 500-level errors
+  if (demoModeManager.isActive() && statusCode >= 500) {
+    const demoData = getDemoDataForRoute(req.path, req.method);
+    
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Using simulated data due to service error');
+    
+    res.status(200).json({
+      data: demoData,
+      isDemo: true,
+      message: 'Using simulated data',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  // Add demo mode indicator to error responses
+  const isDemo = demoModeManager.isActive();
+  
+  if (isDemo) {
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');
+  }
+
   // Send error response
   res.status(statusCode).json({
     error: {
@@ -74,6 +166,7 @@ export const errorHandler = async (
       timestamp: new Date().toISOString(),
       requestId,
     },
+    isDemo,
   });
 };
 
@@ -82,12 +175,18 @@ export const errorHandler = async (
  */
 export const notFoundHandler = (req: Request, res: Response): void => {
   const requestId = (req.headers['x-request-id'] as string) || `req-${Date.now()}`;
+  const isDemo = demoModeManager.isActive();
 
   logger.warn('Route not found', {
     path: req.path,
     method: req.method,
     requestId,
   });
+
+  if (isDemo) {
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');
+  }
 
   res.status(404).json({
     error: {
@@ -96,6 +195,7 @@ export const notFoundHandler = (req: Request, res: Response): void => {
       timestamp: new Date().toISOString(),
       requestId,
     },
+    isDemo,
   });
 };
 

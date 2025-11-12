@@ -14,13 +14,11 @@ const router = Router();
 
 /**
  * GET /api/v1/reporting/dashboard
- * Get dashboard metrics
- * @access Reviewer, Approver, Administrator, Auditor
+ * Get dashboard metrics (public endpoint - works in demo mode)
+ * @access Public (no authentication required)
  */
 router.get(
   '/dashboard',
-  authenticate,
-  authorize('Reviewer', 'Approver', 'Administrator', 'Auditor'),
   async (req: Request, res: Response) => {
     try {
       const { startDate, endDate, programType, status } = req.query;

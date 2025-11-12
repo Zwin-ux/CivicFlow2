@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Client Test - CivicFlow2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-demo {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .badge-live {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .status-dot.demo {
+            background: #8b5cf6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 API Client Test Suite</h1>
+            <p class="subtitle">Testing automatic fallback to demo data when API is unavailable</p>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-card">
+                <h3>📊 Dashboard Metrics</h3>
+                <button class="btn" onclick="testDashboardMetrics()">
+                    <span id="btn-dashboard">Test Dashboard API</span>
+                </button>
+                <div id="result-dashboard" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>📋 Applications List</h3>
+                <button class="btn" onclick="testApplicationsList()">
+                    <span id="btn-applications">Test Applications API</span>
+                </button>
+                <div id="result-applications" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>📄 Application Detail</h3>
+                <button class="btn" onclick="testApplicationDetail()">
+                    <span id="btn-detail">Test Detail API</span>
+                </button>
+                <div id="result-detail" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>❤️ Health Check</h3>
+                <button class="btn" onclick="testHealthCheck()">
+                    <span id="btn-health">Test Health API</span>
+                </button>
+                <div id="result-health" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>👤 User Profile</h3>
+                <button class="btn" onclick="testUserProfile()">
+                    <span id="btn-profile">Test Profile API</span>
+                </button>
+                <div id="result-profile" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>🔄 All Tests</h3>
+                <button class="btn" onclick="runAllTests()">
+                    <span id="btn-all">Run All Tests</span>
+                </button>
+                <div class="status-indicator">
+                    <div class="status-dot demo"></div>
+                    <span>Demo mode fallbacks enabled</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api-client.js"></script>
+    <script>
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            if (loading) {
+                btn.innerHTML = '<span class="loading"></span>Loading...';
+                btn.parentElement.disabled = true;
+            } else {
+                btn.innerHTML = btn.dataset.originalText || 'Test API';
+                btn.parentElement.disabled = false;
+            }
+        }
+
+        function displayResult(resultId, response) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.style.display = 'block';
+            
+            const badge = response.isDemo 
+                ? '<span class="badge badge-demo">📦 Demo Data</span>'
+                : '<span class="badge badge-live">✅ Live Data</span>';
+            
+            const errorBadge = response.error 
+                ? `<span class="badge badge-error">⚠️ ${response.error}</span>`
+                : '';
+            
+            resultDiv.innerHTML = `
+                ${badge}
+                ${errorBadge}
+                <pre>${JSON.stringify(response.data, null, 2)}</pre>
+            `;
+        }
+
+        async function testDashboardMetrics() {
+            const btnId = 'btn-dashboard';
+            const resultId = 'result-dashboard';
+            
+            setLoading(btnId, true);
+            try {
+                const response = await ApiClient.getDashboardMetrics();
+                displayResult(resultId, response);
+            } catch (error) {
+                console.error('Test failed:', error);
+            } finally {
+                setLoading(btnId, false);
+            }
+        }
+
+        async function testApplicationsList() {
+            const btnId = 'btn-applications';
+            const resultId = 'result-applications';
+            
+            setLoading(btnId, true);
+            try {
+                const response = await ApiClient.getApplications();
+                displayResult(resultId, response);
+            } catch (error) {
+                console.error('Test failed:', error);
+            } finally {
+                setLoading(btnId, false);
+            }
+        }
+
+        async function testApplicationDetail() {
+            const btnId = 'btn-detail';
+            const resultId = 'result-detail';
+            
+            setLoading(btnId, true);
+            try {
+                const response = await ApiClient.getApplicationDetail('demo-app-001');
+                displayResult(resultId, response);
+            } catch (error) {
+                console.error('Test failed:', error);
+            } finally {
+                setLoading(btnId, false);
+            }
+        }
+
+        async function testHealthCheck() {
+            const btnId = 'btn-health';
+            const resultId = 'result-health';
+            
+            setLoading(btnId, true);
+            try {
+                const response = await ApiClient.getHealth();
+                displayResult(resultId, response);
+            } catch (error) {
+                console.error('Test failed:', error);
+            } finally {
+                setLoading(btnId, false);
+            }
+        }
+
+        async function testUserProfile() {
+            const btnId = 'btn-profile';
+            const resultId = 'result-profile';
+            
+            setLoading(btnId, true);
+            try {
+                const response = await ApiClient.getUserProfile();
+                displayResult(resultId, response);
+            } catch (error) {
+                console.error('Test failed:', error);
+            } finally {
+                setLoading(btnId, false);
+            }
+        }
+
+        async function runAllTests() {
+            await testDashboardMetrics();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testApplicationsList();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testApplicationDetail();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testHealthCheck();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testUserProfile();
+        }
+
+        // Store original button text
+        document.querySelectorAll('.btn span').forEach(span => {
+            span.dataset.originalText = span.textContent;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Demo - CivicFlow2</title>
+    <link rel="stylesheet" href="/css/professional-theme.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/components/demo-indicator.css">
+    <link rel="stylesheet" href="/css/components/skeleton-loader.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/touch-enhancements.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --demo-color: #8b5cf6;
+            --surface: #ffffff;
+            --background: #f5f7fa;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .logo-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .logo-tagline {
+            font-size: 0.625rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .demo-preview {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .demo-preview h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .preview-card {
+            background: var(--background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .preview-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .preview-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .cta-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="/images/logo.svg" alt="CivicFlow2 Logo" class="logo-image">
+                <div class="logo-text">
+                    <span class="logo-name">CivicFlow2</span>
+                    <span class="logo-tagline">Government Lending CRM</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/demo-investor.html" class="active">Demo</a></li>
+                <li><a href="/investor-dashboard.html">Dashboard</a></li>
+                <li><a href="/applications-list.html">Applications</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1>✨ CivicFlow2 Investor Demo</h1>
+            <p>Experience a fully functional government lending CRM with AI-powered document processing, fraud detection, and real-time insights.</p>
+            <div class="hero-buttons">
+                <a href="/investor-dashboard.html" class="btn btn-primary">
+                    <span>📊</span>
+                    <span>View Dashboard</span>
+                </a>
+                <a href="/applications-list.html" class="btn btn-secondary">
+                    <span>📋</span>
+                    <span>Browse Applications</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Document Analysis</h3>
+                <p>Automatic extraction and validation of financial documents using Azure Document Intelligence and GPT-4.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Fraud Detection</h3>
+                <p>Advanced anomaly detection identifies suspicious patterns and flags high-risk applications.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-time Updates</h3>
+                <p>WebSocket-powered live dashboard with instant notifications and status changes.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Smart Insights</h3>
+                <p>AI-generated summaries and recommendations help reviewers make faster, better decisions.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <h3>Demo Mode</h3>
+                <p>Never crashes - automatically falls back to realistic demo data when infrastructure is unavailable.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile Responsive</h3>
+                <p>Fully responsive design works seamlessly on phones, tablets, and desktops.</p>
+            </div>
+        </div>
+
+        <!-- Demo Preview -->
+        <section class="demo-preview">
+            <h2>
+                <span>📈</span>
+                <span>Live Demo Metrics</span>
+            </h2>
+            <div class="preview-grid" id="metrics-preview">
+                <!-- Metrics will be loaded here -->
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Explore?</h2>
+            <p>Jump into the full demo experience and see how CivicFlow2 streamlines government lending workflows.</p>
+            <div class="hero-buttons">
+                <a href="/investor-dashboard.html" class="btn btn-primary">
+                    <span>🚀</span>
+                    <span>Start Exploring</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <img src="/images/logo.svg" alt="CivicFlow2 Logo" style="width: 24px; height: 24px;">
+                    <span style="font-weight: 600; color: var(--primary-color);">CivicFlow2</span>
+                </div>
+                <p>&copy; 2025 CivicFlow2. All rights reserved. | Government Lending CRM Platform</p>
+                <p style="font-size: 0.75rem; color: var(--text-secondary);">This is a demonstration with simulated data.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/mobile-nav.js"></script>
+    <script src="/js/components/demo-indicator.js"></script>
+    <script src="/js/api-client.js"></script>
+    <script>
+        // Load demo metrics
+        async function loadMetrics() {
+            const container = document.getElementById('metrics-preview');
+            
+            // Show loading state
+            container.innerHTML = `
+                <div class="preview-card">
+                    <div class="preview-label">Loading...</div>
+                    <div class="preview-value">...</div>
+                </div>
+            `;
+
+            try {
+                const response = await fetchWithFallback('/api/v1/reporting/dashboard-metrics', {
+                    totalApplications: 5,
+                    approvalRate: 60,
+                    totalLoanAmount: 505000,
+                    pendingReview: 2,
+                    underReview: 1,
+                    approved: 1,
+                    rejected: 1
+                });
+
+                const metrics = response.data;
+                const isDemo = response.isDemo;
+
+                container.innerHTML = `
+                    <div class="preview-card">
+                        <div class="preview-label">Total Applications ${isDemo ? '✨' : ''}</div>
+                        <div class="preview-value">${metrics.totalApplications || 0}</div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-label">Approval Rate ${isDemo ? '✨' : ''}</div>
+                        <div class="preview-value">${metrics.approvalRate || 0}%</div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-label">Total Loan Amount ${isDemo ? '✨' : ''}</div>
+                        <div class="preview-value">$${(metrics.totalLoanAmount || 0).toLocaleString()}</div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-label">Status ${isDemo ? '✨' : ''}</div>
+                        <div class="preview-value">
+                            <span class="status-badge approved">Active</span>
+                        </div>
+                    </div>
+                `;
+
+                // Show demo indicator if using demo data
+                if (isDemo) {
+                    const banner = DemoIndicator.createBanner(
+                        'Demo Mode Active',
+                        'Showing simulated data for demonstration purposes',
+                        true
+                    );
+                    document.querySelector('main').insertBefore(banner, document.querySelector('main').firstChild);
+                }
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+                container.innerHTML = `
+                    <div class="preview-card">
+                        <div class="preview-label">Status</div>
+                        <div class="preview-value">
+                            <span class="status-badge pending">Loading...</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load metrics on page load
+        loadMetrics();
+    </script>
+</body>
+</html>

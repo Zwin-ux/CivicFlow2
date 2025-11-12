@@ -156,6 +156,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// Wrap responses with demo mode indicator
+import { wrapResponseWithDemoIndicator } from './middleware/demoModeResponse';
+app.use(wrapResponseWithDemoIndicator);
+
 // Rate limiting (apply after demo mode detection)
 // General API rate limiter for all routes
 app.use('/api/', apiLimiter);
@@ -209,7 +213,18 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin/teams/config', teamsConfigRoutes);
 app.use('/api/ai', aiLimiter, aiRoutes);
 
-// 404 handler
+// Serve index.html for root path and any non-API routes (SPA fallback)
+app.get('*', (req, res, next) => {
+  // Skip API routes
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  
+  // Serve index.html for all other routes
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// 404 handler for API routes
 app.use(notFoundHandler);
 
 // Error handler (must be last)

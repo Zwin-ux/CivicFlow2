@@ -37,17 +37,31 @@ const router = Router();
  *                   format: date-time
  */
 router.get('/', (_req: Request, res: Response) => {
+  const isDemo = demoModeManager.isActive();
+  const demoStatus = demoModeManager.getStatus();
+  
   const response: any = {
     status: 'ok',
     timestamp: new Date().toISOString(),
+    isDemo,
   };
 
-  // Add demo mode indicator
-  if (demoModeManager.isActive()) {
+  // Add comprehensive demo mode status
+  if (isDemo) {
     response.demoMode = {
       active: true,
       message: 'Running in offline showcase mode with simulated data',
+      reason: demoStatus.reason,
+      features: {
+        authentication: 'bypassed',
+        database: 'simulated',
+        cache: 'in-memory',
+        externalServices: 'mocked',
+      },
     };
+    
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');
   }
 
   res.json(response);
@@ -87,13 +101,26 @@ router.get('/', (_req: Request, res: Response) => {
  */
 router.get('/detailed', async (_req: Request, res: Response) => {
   const startTime = Date.now();
+  const isDemo = demoModeManager.isActive();
+  const demoStatus = demoModeManager.getStatus();
+  
   const health: any = {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
-    demoMode: demoModeManager.getStatus(),
+    isDemo,
+    demoMode: {
+      ...demoStatus,
+      features: isDemo ? {
+        authentication: 'bypassed',
+        database: 'simulated',
+        cache: 'in-memory',
+        externalServices: 'mocked',
+        dataSource: 'demo-data-service',
+      } : null,
+    },
     services: {},
   };
 
@@ -169,6 +196,12 @@ router.get('/detailed', async (_req: Request, res: Response) => {
   // Add response time
   health.responseTime = Date.now() - startTime;
 
+  // Add demo mode headers
+  if (isDemo) {
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');
+  }
+
   // Set HTTP status code based on health
   const statusCode = health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503;
   res.status(statusCode).json(health);
@@ -204,6 +237,8 @@ router.get('/detailed', async (_req: Request, res: Response) => {
  *                         type: object
  */
 router.get('/circuit-breakers', (_req: Request, res: Response) => {
+  const isDemo = demoModeManager.isActive();
+  
   const circuitBreakers = [
     {
       service: 'EIN Verification',
@@ -215,9 +250,15 @@ router.get('/circuit-breakers', (_req: Request, res: Response) => {
     },
   ];
 
+  if (isDemo) {
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');
+  }
+
   res.json({
     circuitBreakers,
     timestamp: new Date().toISOString(),
+    isDemo,
   });
 });
 

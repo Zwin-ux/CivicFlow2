@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Government Lending CRM - Home</title>
+    <link rel="stylesheet" href="/css/professional-theme.css">
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/touch-enhancements.css">
 </head>
 <body>
     <!-- Demo Mode Banner -->
@@ -16,23 +19,55 @@
 
     <nav class="navbar">
         <div class="container">
-            <h1 class="logo">Government Lending CRM</h1>
+            <a href="/" class="logo" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit;">
+                <img src="/images/logo.svg" alt="CivicFlow2 Logo" style="width: 40px; height: 40px;">
+                <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                    <span style="font-size: 1.25rem; font-weight: 700;">CivicFlow2</span>
+                    <span style="font-size: 0.625rem; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Government Lending CRM</span>
+                </div>
+            </a>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/applicant-portal.html">Applicant Portal</a></li>
-                <li><a href="/staff-portal.html">Staff Portal</a></li>
-                <li><a href="/admin-dashboard.html">Admin Dashboard</a></li>
+                <li><a href="/demo-investor.html">Investor Demo</a></li>
+                <li><a href="/investor-dashboard.html">Dashboard</a></li>
+                <li><a href="/applications-list.html">Applications</a></li>
             </ul>
         </div>
     </nav>
 
     <main class="container">
         <section class="hero">
-            <h2>Welcome to the Government Lending CRM Platform</h2>
-            <p>Streamlining micro-business grant and loan workflows for government agencies and lenders.</p>
+            <h2>Welcome to CivicFlow2</h2>
+            <p>AI-powered government lending CRM that streamlines micro-business grant and loan workflows.</p>
             <div class="cta-buttons">
-                <a href="/applicant-portal.html" class="btn btn-primary">Apply for Funding</a>
-                <a href="/staff-portal.html" class="btn btn-secondary">Staff Login</a>
+                <a href="/demo-investor.html" class="btn btn-primary">✨ View Investor Demo</a>
+                <a href="/investor-dashboard.html" class="btn btn-primary">📊 Dashboard</a>
+                <a href="/applications-list.html" class="btn btn-secondary">📋 Applications</a>
+            </div>
+        </section>
+
+        <section style="margin-top: 3rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🤖</div>
+                    <h3 style="margin-bottom: 0.5rem;">AI Document Analysis</h3>
+                    <p style="color: #7f8c8d;">Automatic extraction and validation of financial documents</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+                    <h3 style="margin-bottom: 0.5rem;">Fraud Detection</h3>
+                    <p style="color: #7f8c8d;">Advanced anomaly detection and risk assessment</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚡</div>
+                    <h3 style="margin-bottom: 0.5rem;">Real-time Updates</h3>
+                    <p style="color: #7f8c8d;">Live dashboard with WebSocket notifications</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎭</div>
+                    <h3 style="margin-bottom: 0.5rem;">Demo Mode</h3>
+                    <p style="color: #7f8c8d;">Never crashes - graceful fallback to demo data</p>
+                </div>
             </div>
         </section>
     </main>
@@ -67,5 +102,6 @@
         // Run on page load
         checkDemoMode();
     </script>
+    <script src="/js/mobile-nav.js"></script>
 </body>
 </html>

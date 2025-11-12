@@ -1,0 +1,409 @@
+/**
+ * Touch-Friendly Enhancements
+ * Ensures all interactive elements meet touch target requirements
+ * Requirement 9.3: Minimum 44x44px button sizes and appropriate touch targets
+ */
+
+/* ===== Touch Target Sizes ===== */
+/* All interactive elements must be at least 44x44px */
+
+/* Buttons */
+button,
+.btn,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.75rem 1.5rem;
+  touch-action: manipulation; /* Prevents double-tap zoom */
+  -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
+  cursor: pointer;
+}
+
+/* Primary and CTA buttons get larger touch targets */
+.btn-primary,
+.btn-cta,
+.cta-button {
+  min-height: 48px;
+  padding: 0.875rem 1.75rem;
+}
+
+/* Large buttons for important actions */
+.btn-large,
+.btn-lg {
+  min-height: 56px;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* ===== Links ===== */
+a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Navigation links */
+.nav-links a {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Card links should have adequate touch area */
+.application-card,
+.metric-card {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ===== Form Controls ===== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+select,
+textarea {
+  min-height: 44px;
+  padding: 0.75rem;
+  font-size: 16px; /* Prevents zoom on iOS */
+  touch-action: manipulation;
+}
+
+/* Larger touch targets for checkboxes and radio buttons */
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 24px;
+  min-height: 24px;
+  cursor: pointer;
+}
+
+/* Checkbox and radio labels should be clickable */
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* ===== Icon Buttons ===== */
+.icon-button,
+.btn-icon {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Close buttons */
+.close-button,
+.btn-close,
+.demo-indicator-banner-close {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Navigation Toggle (Hamburger) ===== */
+.nav-toggle {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ===== Status Badges (when clickable) ===== */
+.status-badge.clickable,
+button.status-badge {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* ===== Document Items ===== */
+.document-item {
+  min-height: 60px; /* Larger for better touch */
+  padding: 1rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.document-item button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ===== Timeline Items ===== */
+.timeline-item {
+  min-height: 44px;
+  padding: 0.75rem 0;
+}
+
+/* ===== Tabs ===== */
+.tab-btn,
+.tab-button {
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ===== Dropdown Menus ===== */
+.dropdown-item,
+.menu-item {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ===== Pagination ===== */
+.pagination button,
+.pagination a {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Touch Feedback ===== */
+/* Provide visual feedback on touch */
+button:active,
+.btn:active,
+a:active,
+.application-card:active,
+.metric-card:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Prevent transform on disabled elements */
+button:disabled:active,
+.btn:disabled:active {
+  transform: none;
+  opacity: 0.6;
+}
+
+/* ===== Spacing Between Touch Targets ===== */
+/* Ensure adequate spacing between interactive elements */
+.btn + .btn,
+button + button {
+  margin-left: 0.75rem;
+}
+
+.nav-links li + li {
+  margin-left: 0.5rem;
+}
+
+/* ===== Mobile-Specific Touch Enhancements ===== */
+@media (max-width: 767px) {
+  /* Increase touch targets on mobile */
+  button,
+  .btn,
+  a {
+    min-height: 48px;
+  }
+
+  /* Larger form controls on mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    min-height: 48px;
+    padding: 0.875rem;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Larger navigation items */
+  .nav-links a {
+    min-height: 48px;
+    padding: 1rem;
+  }
+
+  /* More spacing between touch targets */
+  .btn + .btn,
+  button + button {
+    margin-left: 1rem;
+  }
+
+  /* Stack buttons vertically on mobile for better touch */
+  .cta-buttons,
+  .form-actions,
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cta-buttons .btn,
+  .form-actions .btn,
+  .hero-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ===== Tablet Touch Enhancements ===== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Comfortable touch targets on tablets */
+  button,
+  .btn {
+    min-height: 46px;
+  }
+}
+
+/* ===== Accessibility - Focus Indicators ===== */
+/* Ensure focus indicators are visible for keyboard navigation */
+button:focus-visible,
+.btn:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--primary-color, #667eea);
+  outline-offset: 2px;
+}
+
+/* ===== Disabled State ===== */
+button:disabled,
+.btn:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  touch-action: none;
+}
+
+/* ===== Hover States (Desktop Only) ===== */
+/* Only show hover effects on devices that support hover */
+@media (hover: hover) and (pointer: fine) {
+  button:hover,
+  .btn:hover,
+  a:hover {
+    transform: translateY(-1px);
+  }
+
+  .application-card:hover,
+  .metric-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ===== Prevent Text Selection on Touch ===== */
+/* Prevent text selection when tapping buttons */
+button,
+.btn,
+.application-card,
+.metric-card {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection in content areas */
+p,
+.detail-value,
+.metric-value,
+.document-name {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* ===== Safe Area Insets (for notched devices) ===== */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .navbar,
+  footer {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  footer {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  }
+
+  /* Mobile navigation menu */
+  .nav-links {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* ===== Smooth Scrolling ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Disable smooth scrolling for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ===== Touch Callout (iOS) ===== */
+/* Disable callout on long press for iOS */
+a,
+button,
+.btn {
+  -webkit-touch-callout: none;
+}
+
+/* ===== Utility Classes ===== */
+.touch-target-small {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.touch-target-medium {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.touch-target-large {
+  min-width: 56px;
+  min-height: 56px;
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  /* Remove touch-specific styles for print */
+  button,
+  .btn,
+  a {
+    min-height: auto;
+    padding: 0.5rem 1rem;
+  }
+}
