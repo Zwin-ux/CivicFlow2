@@ -211,7 +211,9 @@
     - _Requirements: 11.4_
   
 
-  - [ ]* 8.4 Add logo and branding elements
+  - [x]* 8.4 Add logo and branding elements
+
+
 
 
 
