@@ -146,6 +146,16 @@ app.use(detectDemoMode);
 app.use(bypassAuthForDemo);
 app.use(checkDemoExpiry);
 
+// Add demo mode indicator to all responses
+app.use((req, res, next) => {
+  const demoModeManager = require('./services/demoModeManager').default;
+  if (demoModeManager.isActive()) {
+    res.setHeader('X-Demo-Mode', 'true');
+    res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');
+  }
+  next();
+});
+
 // Rate limiting (apply after demo mode detection)
 // General API rate limiter for all routes
 app.use('/api/', apiLimiter);

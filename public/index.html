@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <!-- Demo Mode Banner -->
+    <div id="demo-mode-banner" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 20px; text-align: center; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000;">
+        <span style="font-size: 18px; margin-right: 8px;">🎭</span>
+        <span>DEMO MODE: Running in offline showcase mode with simulated data</span>
+        <span style="font-size: 18px; margin-left: 8px;">🎭</span>
+    </div>
+
     <nav class="navbar">
         <div class="container">
             <h1 class="logo">Government Lending CRM</h1>
@@ -35,5 +42,30 @@
             <p>&copy; 2025 Government Lending CRM Platform. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // Check for demo mode on page load
+        async function checkDemoMode() {
+            try {
+                const response = await fetch('/api/v1/health');
+                const data = await response.json();
+                
+                // Check response headers
+                const demoModeHeader = response.headers.get('X-Demo-Mode');
+                
+                if (demoModeHeader === 'true' || data.demoMode?.active) {
+                    const banner = document.getElementById('demo-mode-banner');
+                    if (banner) {
+                        banner.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.warn('Could not check demo mode status:', error);
+            }
+        }
+
+        // Run on page load
+        checkDemoMode();
+    </script>
 </body>
 </html>

@@ -1,10 +1,47 @@
-# Government Lending CRM Platform
+# Government Lending CRM Platform (CivicFlow2)
 
-A system designed to streamline micro-business grant and loan workflows for government agencies and lenders.
+A resilient system designed to streamline micro-business grant and loan workflows for government agencies and lenders.
 
-## Quick Start with Docker (Recommended)
+## 🎭 Demo Mode - Never Crashes!
 
-The fastest way to get started is using Docker:
+CivicFlow2 includes **automatic demo mode** that ensures the application always runs, even without database or Redis connections. Perfect for:
+- 🚀 **Railway deployments** - Deploy instantly without setup
+- 🎪 **Demos & showcases** - Full functionality with sample data
+- 💻 **Development** - Work offline without infrastructure
+- 🛡️ **Production resilience** - Graceful degradation on failures
+
+[📖 Read Demo Mode Documentation](docs/DEMO_MODE.md) | [🚂 Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
+
+## 🚀 Quick Start Options
+
+### Option 1: Railway (Fastest - 1 Click Deploy)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
+
+The app runs immediately in demo mode - no database setup required!
+
+[📖 Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
+
+### Option 2: Demo Mode (No Infrastructure)
+
+Run locally without any database or Redis:
+
+```bash
+# Install dependencies
+npm install
+
+# Set demo mode
+echo "DEMO_MODE=true" > .env
+
+# Start server
+npm start
+```
+
+Visit http://localhost:3000 - fully functional with sample data!
+
+### Option 3: Docker (Recommended for Full Setup)
+
+The fastest way to get started with full infrastructure:
 
 ```bash
 # Windows (PowerShell)

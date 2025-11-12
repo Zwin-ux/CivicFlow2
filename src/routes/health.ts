@@ -9,6 +9,7 @@ import redisClient from '../config/redis';
 import einVerificationClient from '../clients/einVerificationClient';
 import emailClient from '../clients/emailClient';
 import logger from '../utils/logger';
+import demoModeManager from '../services/demoModeManager';
 
 const router = Router();
 
@@ -36,10 +37,20 @@ const router = Router();
  *                   format: date-time
  */
 router.get('/', (_req: Request, res: Response) => {
-  res.json({
+  const response: any = {
     status: 'ok',
     timestamp: new Date().toISOString(),
-  });
+  };
+
+  // Add demo mode indicator
+  if (demoModeManager.isActive()) {
+    response.demoMode = {
+      active: true,
+      message: 'Running in offline showcase mode with simulated data',
+    };
+  }
+
+  res.json(response);
 });
 
 /**
@@ -82,6 +93,7 @@ router.get('/detailed', async (_req: Request, res: Response) => {
     uptime: process.uptime(),
     version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
+    demoMode: demoModeManager.getStatus(),
     services: {},
   };
 

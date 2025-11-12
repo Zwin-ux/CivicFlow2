@@ -7,6 +7,11 @@ interface Config {
   env: string;
   port: number;
   apiVersion: string;
+  demoMode: {
+    enabled: boolean;
+    autoEnableOnFailure: boolean;
+    maxRetries: number;
+  };
   database: {
     host: string;
     port: number;
@@ -74,26 +79,51 @@ interface Config {
   };
 }
 
+// Helper to safely parse boolean env vars
+const parseBoolean = (value: string | undefined, defaultValue: boolean): boolean => {
+  if (!value) return defaultValue;
+  return value.toLowerCase() === 'true' || value === '1';
+};
+
+// Helper to safely parse integers with fallback
+const safeParseInt = (value: string | undefined, defaultValue: number): number => {
+  if (!value) return defaultValue;
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) ? defaultValue : parsed;
+};
+
+// Helper to safely parse floats with fallback
+const safeParseFloat = (value: string | undefined, defaultValue: number): number => {
+  if (!value) return defaultValue;
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? defaultValue : parsed;
+};
+
 const config: Config = {
   env: process.env.NODE_ENV || 'development',
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: safeParseInt(process.env.PORT, 3000),
   apiVersion: process.env.API_VERSION || 'v1',
+  demoMode: {
+    enabled: parseBoolean(process.env.DEMO_MODE, false),
+    autoEnableOnFailure: parseBoolean(process.env.DEMO_MODE_AUTO_ENABLE, true),
+    maxRetries: safeParseInt(process.env.DEMO_MODE_MAX_RETRIES, 3),
+  },
   database: {
     host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
+    port: safeParseInt(process.env.DB_PORT, 5432),
     name: process.env.DB_NAME || 'lending_crm',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
     pool: {
-      min: parseInt(process.env.DB_POOL_MIN || '2', 10),
-      max: parseInt(process.env.DB_POOL_MAX || '10', 10),
+      min: safeParseInt(process.env.DB_POOL_MIN, 2),
+      max: safeParseInt(process.env.DB_POOL_MAX, 10),
     },
   },
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    port: safeParseInt(process.env.REDIS_PORT, 6379),
     password: process.env.REDIS_PASSWORD || undefined,
-    db: parseInt(process.env.REDIS_DB || '0', 10),
+    db: safeParseInt(process.env.REDIS_DB, 0),
   },
   security: {
     jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
@@ -102,7 +132,7 @@ const config: Config = {
     jwtIssuer: process.env.JWT_ISSUER || 'government-lending-crm',
     jwtAudience: process.env.JWT_AUDIENCE || 'government-lending-crm-api',
     encryptionKey: process.env.ENCRYPTION_KEY || 'dev-encryption-key-change-in-production',
-    bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '12', 10), // Higher rounds for production
+    bcryptRounds: safeParseInt(process.env.BCRYPT_ROUNDS, 12),
   },
   email: {
     provider: process.env.EMAIL_SERVICE_PROVIDER || 'sendgrid',
@@ -122,26 +152,26 @@ const config: Config = {
     azureDocumentIntelligence: {
       endpoint: process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT || '',
       key: process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY || '',
-      timeout: parseInt(process.env.AZURE_DOCUMENT_INTELLIGENCE_TIMEOUT || '30000', 10),
+      timeout: safeParseInt(process.env.AZURE_DOCUMENT_INTELLIGENCE_TIMEOUT, 30000),
     },
     llm: {
       provider: (process.env.LLM_PROVIDER as 'openai' | 'claude') || 'openai',
       openai: {
         apiKey: process.env.OPENAI_API_KEY || '',
         model: process.env.OPENAI_MODEL || 'gpt-4',
-        maxTokens: parseInt(process.env.OPENAI_MAX_TOKENS || '2000', 10),
-        temperature: parseFloat(process.env.OPENAI_TEMPERATURE || '0.7'),
-        timeout: parseInt(process.env.OPENAI_TIMEOUT || '30000', 10),
+        maxTokens: safeParseInt(process.env.OPENAI_MAX_TOKENS, 2000),
+        temperature: safeParseFloat(process.env.OPENAI_TEMPERATURE, 0.7),
+        timeout: safeParseInt(process.env.OPENAI_TIMEOUT, 30000),
       },
       claude: {
         apiKey: process.env.CLAUDE_API_KEY || '',
         model: process.env.CLAUDE_MODEL || 'claude-3-sonnet-20240229',
-        maxTokens: parseInt(process.env.CLAUDE_MAX_TOKENS || '2000', 10),
+        maxTokens: safeParseInt(process.env.CLAUDE_MAX_TOKENS, 2000),
       },
     },
-    confidenceThreshold: parseFloat(process.env.AI_CONFIDENCE_THRESHOLD || '0.85'),
-    maxRetries: parseInt(process.env.AI_MAX_RETRIES || '3', 10),
-    retryDelay: parseInt(process.env.AI_RETRY_DELAY || '1000', 10),
+    confidenceThreshold: safeParseFloat(process.env.AI_CONFIDENCE_THRESHOLD, 0.85),
+    maxRetries: safeParseInt(process.env.AI_MAX_RETRIES, 3),
+    retryDelay: safeParseInt(process.env.AI_RETRY_DELAY, 1000),
   },
 };
 

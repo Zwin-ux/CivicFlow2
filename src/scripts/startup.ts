@@ -14,6 +14,7 @@ import migrationRunner from '../database/migrationRunner';
 import seedRunner from '../database/seedRunner';
 import logger from '../utils/logger';
 import config from '../config';
+import demoModeManager from '../services/demoModeManager';
 
 interface StartupStatus {
   success: boolean;
@@ -79,14 +80,28 @@ class StartupScript {
         return true;
       } else {
         const error = 'Database health check failed';
-        logger.error(error);
+        logger.warn(error);
         this.status.errors.push(error);
+        
+        // If demo mode was auto-enabled, consider it a success
+        if (demoModeManager.isActive()) {
+          logger.info('✓ Demo mode active - database check bypassed');
+          this.status.steps.database = true;
+          return true;
+        }
         return false;
       }
     } catch (error: any) {
       const errorMsg = `Database connection error: ${error.message}`;
-      logger.error(errorMsg, { error });
+      logger.warn(errorMsg, { error });
       this.status.errors.push(errorMsg);
+      
+      // If demo mode was auto-enabled, consider it a success
+      if (demoModeManager.isActive()) {
+        logger.info('✓ Demo mode active - database check bypassed');
+        this.status.steps.database = true;
+        return true;
+      }
       return false;
     }
   }
@@ -106,14 +121,28 @@ class StartupScript {
         return true;
       } else {
         const error = 'Redis health check failed';
-        logger.error(error);
+        logger.warn(error);
         this.status.errors.push(error);
+        
+        // If demo mode was auto-enabled, consider it a success
+        if (demoModeManager.isActive()) {
+          logger.info('✓ Demo mode active - Redis check bypassed');
+          this.status.steps.redis = true;
+          return true;
+        }
         return false;
       }
     } catch (error: any) {
       const errorMsg = `Redis connection error: ${error.message}`;
-      logger.error(errorMsg, { error });
+      logger.warn(errorMsg, { error });
       this.status.errors.push(errorMsg);
+      
+      // If demo mode was auto-enabled, consider it a success
+      if (demoModeManager.isActive()) {
+        logger.info('✓ Demo mode active - Redis check bypassed');
+        this.status.steps.redis = true;
+        return true;
+      }
       return false;
     }
   }
@@ -122,6 +151,13 @@ class StartupScript {
    * Run database migrations
    */
   private async runMigrations(): Promise<boolean> {
+    // Skip migrations in demo mode
+    if (demoModeManager.isActive()) {
+      logger.info('✓ Database migrations skipped (demo mode)');
+      this.status.steps.migrations = true;
+      return true;
+    }
+
     try {
       logger.info('Running database migrations...');
       await migrationRunner.runMigrations();
@@ -130,8 +166,15 @@ class StartupScript {
       return true;
     } catch (error: any) {
       const errorMsg = `Migration error: ${error.message}`;
-      logger.error(errorMsg, { error });
+      logger.warn(errorMsg, { error });
       this.status.errors.push(errorMsg);
+      
+      // If demo mode was auto-enabled, consider it a success
+      if (demoModeManager.isActive()) {
+        logger.info('✓ Demo mode active - migrations skipped');
+        this.status.steps.migrations = true;
+        return true;
+      }
       return false;
     }
   }
@@ -178,13 +221,17 @@ class StartupScript {
     logger.info('=== Startup Status Summary ===');
     logger.info(`Environment: ${config.env}`);
     logger.info(`Node Version: ${process.version}`);
+    logger.info(`Demo Mode: ${demoModeManager.isActive() ? '✓ ACTIVE' : '✗ Inactive'}`);
+    if (demoModeManager.isActive()) {
+      logger.info(`Demo Mode Reason: ${demoModeManager.getReason()}`);
+    }
     logger.info(`Database: ${this.status.steps.database ? '✓' : '✗'}`);
     logger.info(`Redis: ${this.status.steps.redis ? '✓' : '✗'}`);
     logger.info(`Migrations: ${this.status.steps.migrations ? '✓' : '✗'}`);
     logger.info(`Demo Data: ${this.status.steps.demoData ? '✓' : '✗'}`);
     
     if (this.status.errors.length > 0) {
-      logger.error('Startup errors:', { errors: this.status.errors });
+      logger.warn('Startup warnings/errors:', { errors: this.status.errors });
     }
     
     if (this.status.success) {
@@ -204,21 +251,24 @@ class StartupScript {
     try {
       // Step 1: Verify database connection
       const dbOk = await this.verifyDatabase();
-      if (!dbOk) {
+      if (!dbOk && !demoModeManager.isActive()) {
+        logger.error('Database verification failed and demo mode not active');
         this.logStartupStatus();
         return false;
       }
 
       // Step 2: Verify Redis connection
       const redisOk = await this.verifyRedis();
-      if (!redisOk) {
+      if (!redisOk && !demoModeManager.isActive()) {
+        logger.error('Redis verification failed and demo mode not active');
         this.logStartupStatus();
         return false;
       }
 
       // Step 3: Run migrations
       const migrationsOk = await this.runMigrations();
-      if (!migrationsOk) {
+      if (!migrationsOk && !demoModeManager.isActive()) {
+        logger.error('Migrations failed and demo mode not active');
         this.logStartupStatus();
         return false;
       }
@@ -231,10 +281,23 @@ class StartupScript {
       this.status.success = true;
       this.logStartupStatus();
       
+      // Log demo mode indicator if active
+      demoModeManager.logDemoModeIndicator();
+      
       return true;
     } catch (error: any) {
       logger.error('Unexpected error during startup', { error });
       this.status.errors.push(`Unexpected error: ${error.message}`);
+      
+      // Try to enable demo mode as last resort
+      if (!demoModeManager.isActive() && config.demoMode.autoEnableOnFailure) {
+        demoModeManager.enableDemoMode('Critical startup failure - falling back to demo mode');
+        this.status.success = true;
+        this.logStartupStatus();
+        demoModeManager.logDemoModeIndicator();
+        return true;
+      }
+      
       this.logStartupStatus();
       return false;
     }
