@@ -227,6 +227,8 @@ class DemoDataRepository {
     status: string,
     _notes?: string
   ): DemoAnomaly | null {
+    // Parameter intentionally unused in demo implementation
+    void _notes;
     const { applications } = this.getSessionData(sessionId);
 
     for (const app of applications) {

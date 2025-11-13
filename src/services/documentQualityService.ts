@@ -6,7 +6,6 @@
 
 import azureDocumentIntelligenceClient from '../clients/azureDocumentIntelligenceClient';
 import documentRepository from '../repositories/documentRepository';
-import storageService from '../utils/storage';
 import logger from '../utils/logger';
 import { AnalyzeResult } from '@azure/ai-form-recognizer';
 

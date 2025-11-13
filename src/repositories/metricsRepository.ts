@@ -9,7 +9,6 @@ import logger from '../utils/logger';
 import {
   ClassificationValidation,
   ClassificationAccuracyMetrics,
-  ProcessingTimeRecord,
   ProcessingTimeMetrics,
   PrivacyBreachAlert,
   MetricsFilters,

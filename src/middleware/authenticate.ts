@@ -3,12 +3,10 @@ import authService from '../services/authService';
 import { TokenPayload } from '../models/user';
 import logger from '../utils/logger';
 
-// Extend Express Request to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: TokenPayload;
-    }
+// Extend Express Request to include user (module augmentation)
+declare module 'express' {
+  interface Request {
+    user?: TokenPayload;
   }
 }
 

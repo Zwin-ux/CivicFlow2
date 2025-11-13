@@ -93,6 +93,9 @@ class RiskAssessmentEngine {
     _options: RiskAssessmentOptions = {}
   ): Promise<RiskScore> {
     try {
+      // Mark _options as used to satisfy linter when caller doesn't pass options
+      void _options;
+
       logger.info('Starting risk assessment', { applicationId });
 
       // Get application

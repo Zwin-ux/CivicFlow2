@@ -100,8 +100,9 @@ class AWSKMSKeyManagement extends KeyManagementService {
 
   private initializeKMSClient(): void {
     try {
-      // Lazy load AWS SDK to avoid requiring it in development
-      const { KMSClient } = require('@aws-sdk/client-kms');
+  // Lazy load AWS SDK to avoid importing it in development
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { KMSClient } = require('@aws-sdk/client-kms');
       
       this.kmsClient = new KMSClient({
         region: this.config.region || process.env.AWS_REGION || 'us-east-1',
@@ -121,7 +122,8 @@ class AWSKMSKeyManagement extends KeyManagementService {
     }
 
     try {
-      const { GenerateDataKeyCommand } = require('@aws-sdk/client-kms');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { GenerateDataKeyCommand } = require('@aws-sdk/client-kms');
       
       const command = new GenerateDataKeyCommand({
         KeyId: this.config.keyId,
@@ -168,7 +170,8 @@ class AWSKMSKeyManagement extends KeyManagementService {
 
   async getKeyMetadata(): Promise<KeyMetadata> {
     try {
-      const { DescribeKeyCommand } = require('@aws-sdk/client-kms');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { DescribeKeyCommand } = require('@aws-sdk/client-kms');
       
       const command = new DescribeKeyCommand({
         KeyId: this.config.keyId,
@@ -205,9 +208,11 @@ class AzureKeyVaultManagement extends KeyManagementService {
 
   private initializeKeyVaultClients(): void {
     try {
-      // Lazy load Azure SDK to avoid requiring it in development
-      const { SecretClient } = require('@azure/keyvault-secrets');
-      const { DefaultAzureCredential } = require('@azure/identity');
+  // Lazy load Azure SDK to avoid importing it in development
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { SecretClient } = require('@azure/keyvault-secrets');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { DefaultAzureCredential } = require('@azure/identity');
 
       const credential = new DefaultAzureCredential();
       

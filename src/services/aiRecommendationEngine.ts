@@ -387,6 +387,8 @@ class AIRecommendationEngine {
     includeOptional: boolean
   ): Promise<DocumentRecommendation[]> {
     try {
+      // includeOptional parameter currently not used in this simplified implementation
+      void includeOptional;
       // Prepare submitted documents list
       const submittedList = submittedDocuments
         .map((doc) => `- ${doc.documentType || doc.fileName}`)
@@ -587,6 +589,8 @@ class AIRecommendationEngine {
     missingDocuments: string[],
     programType: string
   ): { required: string[]; optional: string[] } {
+    // programType param reserved for future categorization rules
+    void programType;
     // For now, treat all as required
     // In a real system, you would have a more sophisticated categorization
     const coreRequirements = ['Tax Returns', 'Financial Statements', 'Business License'];

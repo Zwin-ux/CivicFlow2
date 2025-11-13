@@ -275,6 +275,9 @@ class LLMClient {
    * Update rate limit information from response headers
    */
   private updateRateLimitInfo(_response: any): void {
+    // Parameter intentionally unused in placeholder
+    void _response;
+
     // OpenAI rate limit headers (if available in future)
     // For now, this is a placeholder for future implementation
     // Rate limit info would typically come from response headers

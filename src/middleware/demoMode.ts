@@ -2,16 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import demoModeService from '../services/demoModeService';
 import logger from '../utils/logger';
 
-// Extend Express Request to include demo session
-declare global {
-  namespace Express {
-    interface Request {
-      demoSession?: {
-        sessionId: string;
-        userRole: 'APPLICANT' | 'REVIEWER' | 'APPROVER' | 'ADMIN';
-        isDemo: true;
-      };
-    }
+// Extend Express Request to include demo session (module augmentation)
+declare module 'express' {
+  interface Request {
+    demoSession?: {
+      sessionId: string;
+      userRole: 'APPLICANT' | 'REVIEWER' | 'APPROVER' | 'ADMIN';
+      isDemo: true;
+    };
   }
 }
 

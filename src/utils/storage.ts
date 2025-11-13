@@ -7,6 +7,8 @@ import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import logger from './logger';
 import config from '../config';
+import { promises as fsPromises } from 'fs';
+import path from 'path';
 
 interface StorageConfig {
   provider: 's3' | 'azure' | 'local';
@@ -242,6 +244,10 @@ class StorageService {
     _content: Buffer,
     _mimeType: string
   ): Promise<string> {
+    // Parameters are intentionally unused in the mock implementation
+    void _content;
+    void _mimeType;
+
     // TODO: Implement AWS S3 upload using @aws-sdk/client-s3
     // For now, return a mock URL
     logger.warn('S3 upload not implemented, using mock URL');
@@ -252,6 +258,8 @@ class StorageService {
    * Download from S3 (placeholder - requires AWS SDK)
    */
   private async downloadFromS3(_storageUrl: string): Promise<Buffer> {
+    // Parameter intentionally unused in placeholder
+    void _storageUrl;
     // TODO: Implement AWS S3 download using @aws-sdk/client-s3
     throw new Error('S3 download not implemented');
   }
@@ -260,6 +268,8 @@ class StorageService {
    * Delete from S3 (placeholder - requires AWS SDK)
    */
   private async deleteFromS3(_storageUrl: string): Promise<void> {
+    // Parameter intentionally unused in placeholder
+    void _storageUrl;
     // TODO: Implement AWS S3 delete using @aws-sdk/client-s3
     logger.warn('S3 delete not implemented');
   }
@@ -272,6 +282,10 @@ class StorageService {
     _content: Buffer,
     _mimeType: string
   ): Promise<string> {
+    // Parameters intentionally unused in the mock implementation
+    void _content;
+    void _mimeType;
+
     // TODO: Implement Azure Blob Storage upload using @azure/storage-blob
     logger.warn('Azure upload not implemented, using mock URL');
     return `azure://${this.config.bucket}/${fileKey}`;
@@ -281,6 +295,8 @@ class StorageService {
    * Download from Azure Blob Storage (placeholder - requires Azure SDK)
    */
   private async downloadFromAzure(_storageUrl: string): Promise<Buffer> {
+    // Parameter intentionally unused in placeholder
+    void _storageUrl;
     // TODO: Implement Azure Blob Storage download
     throw new Error('Azure download not implemented');
   }
@@ -289,6 +305,8 @@ class StorageService {
    * Delete from Azure Blob Storage (placeholder - requires Azure SDK)
    */
   private async deleteFromAzure(_storageUrl: string): Promise<void> {
+    // Parameter intentionally unused in placeholder
+    void _storageUrl;
     // TODO: Implement Azure Blob Storage delete
     logger.warn('Azure delete not implemented');
   }
@@ -297,17 +315,14 @@ class StorageService {
    * Upload to local filesystem (for development)
    */
   private async uploadToLocal(fileKey: string, content: Buffer): Promise<string> {
-    const fs = require('fs').promises;
-    const path = require('path');
-
     const uploadDir = path.join(process.cwd(), 'uploads');
     const filePath = path.join(uploadDir, fileKey);
 
     // Create directory if it doesn't exist
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fsPromises.mkdir(path.dirname(filePath), { recursive: true });
 
     // Write file
-    await fs.writeFile(filePath, content);
+    await fsPromises.writeFile(filePath, content);
 
     return `file://${filePath}`;
   }
@@ -316,18 +331,16 @@ class StorageService {
    * Download from local filesystem
    */
   private async downloadFromLocal(storageUrl: string): Promise<Buffer> {
-    const fs = require('fs').promises;
     const filePath = storageUrl.replace('file://', '');
-    return await fs.readFile(filePath);
+    return await fsPromises.readFile(filePath);
   }
 
   /**
    * Delete from local filesystem
    */
   private async deleteFromLocal(storageUrl: string): Promise<void> {
-    const fs = require('fs').promises;
     const filePath = storageUrl.replace('file://', '');
-    await fs.unlink(filePath);
+    await fsPromises.unlink(filePath);
   }
 }
 

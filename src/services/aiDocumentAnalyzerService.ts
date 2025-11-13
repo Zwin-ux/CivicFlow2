@@ -528,6 +528,8 @@ class AIDocumentAnalyzerService {
     extractedData: ExtractedData,
     azureResult: AnalyzeResult
   ): Promise<Anomaly[]> {
+    // azureResult is accepted for future checks but not used in this simplified implementation
+    void azureResult;
     const anomalies: Anomaly[] = [];
 
     // Check for missing critical information

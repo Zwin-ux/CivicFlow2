@@ -26,6 +26,7 @@ import demoRoutes from './routes/demo';
 import aiRoutes from './routes/ai';
 import { detectDemoMode, bypassAuthForDemo, checkDemoExpiry } from './middleware/demoMode';
 import { apiLimiter, authLimiter, uploadLimiter, aiLimiter, reportLimiter } from './middleware/rateLimiter';
+import demoModeManager from './services/demoModeManager';
 
 const app: Application = express();
 
@@ -148,7 +149,6 @@ app.use(checkDemoExpiry);
 
 // Add demo mode indicator to all responses
 app.use((req, res, next) => {
-  const demoModeManager = require('./services/demoModeManager').default;
   if (demoModeManager.isActive()) {
     res.setHeader('X-Demo-Mode', 'true');
     res.setHeader('X-Demo-Mode-Message', 'Running in offline showcase mode');

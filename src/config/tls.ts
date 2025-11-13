@@ -6,6 +6,8 @@
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
+import { constants as cryptoConstants } from 'crypto';
+import * as tls from 'tls';
 import logger from '../utils/logger';
 import config from './index';
 
@@ -67,7 +69,10 @@ export function createHTTPSOptions(): https.ServerOptions | null {
       ciphers: tlsConfig.ciphers,
       honorCipherOrder: true,
       // Disable older protocols
-      secureOptions: require('constants').SSL_OP_NO_TLSv1 | require('constants').SSL_OP_NO_TLSv1_1,
+      secureOptions: cryptoConstants.SSL_OP_NO_TLSv1 | cryptoConstants.SSL_OP_NO_TLSv1_1,
+      // Ensure min/max versions are typed for Node TLS
+      minVersion: tlsConfig.minVersion as unknown as tls.SecureVersion,
+      maxVersion: tlsConfig.maxVersion as unknown as tls.SecureVersion,
     };
 
     // Add CA certificate if provided

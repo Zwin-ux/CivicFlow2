@@ -81,6 +81,8 @@ export const errorHandler = async (
   res: Response,
   _next: NextFunction
 ): Promise<void> => {
+  // Mark _next as used to satisfy lint rules (we intentionally don't call it)
+  void _next;
   // Convert to AppError if not already
   const appError = toAppError(err);
 

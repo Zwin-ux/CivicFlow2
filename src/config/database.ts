@@ -96,14 +96,14 @@ class Database {
     return this.queryWithRetry(text, params, this.maxRetries);
   }
 
-  private async queryWithRetry(text: string, params: any[] | undefined, retriesLeft: number): Promise<QueryResult> {
+  private async queryWithRetry(text: string, _params: any[] | undefined, retriesLeft: number): Promise<QueryResult> {
     const start = Date.now();
     try {
       if (!this.pool) {
         throw new Error('Database pool not initialized');
       }
 
-      const result = await this.pool.query(text, params);
+      const result = await this.pool.query(text, _params as any[] | undefined);
       const duration = Date.now() - start;
       
       demoModeManager.resetFailures();
@@ -140,13 +140,13 @@ class Database {
         // Wait before retrying (exponential backoff)
         await new Promise(resolve => setTimeout(resolve, this.retryDelay * (this.maxRetries - retriesLeft + 1)));
         
-        return this.queryWithRetry(text, params, retriesLeft - 1);
+        return this.queryWithRetry(text, _params, retriesLeft - 1);
       }
       
       // If demo mode was auto-enabled, return mock data
       if (demoModeManager.isActive()) {
         logger.info('Falling back to demo mode for query');
-        return this.mockQuery(text, params);
+        return this.mockQuery(text, _params);
       }
       
       logger.error('Database query error', { text, error, duration });

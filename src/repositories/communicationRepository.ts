@@ -6,9 +6,7 @@
 import pool from '../config/database';
 import {
   Communication,
-  CommunicationType,
   CommunicationStatus,
-  EmailTemplateType,
   CreateCommunicationRequest,
 } from '../models/communication';
 import logger from '../utils/logger';

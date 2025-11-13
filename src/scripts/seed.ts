@@ -9,12 +9,13 @@ const command = process.argv[2];
 async function main() {
   try {
     switch (command) {
-      case 'all':
+      case 'all': {
         logger.info('Running all seeds...');
         const includeTestData = config.env === 'development';
         const includeDemoData = process.env.DEMO_MODE_ENABLED === 'true';
         await seedRunner.runSeeds(includeTestData, includeDemoData);
         break;
+      }
       
       case 'rules':
         logger.info('Seeding program rules...');
