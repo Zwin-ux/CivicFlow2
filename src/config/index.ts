@@ -120,10 +120,38 @@ const config: Config = {
     },
   },
   redis: {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: safeParseInt(process.env.REDIS_PORT, 6379),
-    password: process.env.REDIS_PASSWORD || undefined,
-    db: safeParseInt(process.env.REDIS_DB, 0),
+    // If a single REDIS_URL is provided (as Railway does), parse and prefer its components.
+    // Format: redis://[:user@]password@host:port[/db] or rediss:// for TLS
+    host: (() => {
+      try {
+        if (process.env.REDIS_URL) return new URL(process.env.REDIS_URL).hostname;
+      } catch (_) {}
+      return process.env.REDIS_HOST || 'localhost';
+    })(),
+    port: (() => {
+      try {
+        if (process.env.REDIS_URL) return safeParseInt(new URL(process.env.REDIS_URL).port, 6379);
+      } catch (_) {}
+      return safeParseInt(process.env.REDIS_PORT, 6379);
+    })(),
+    password: (() => {
+      try {
+        if (process.env.REDIS_URL) {
+          const p = new URL(process.env.REDIS_URL).password;
+          return p ? decodeURIComponent(p) : undefined;
+        }
+      } catch (_) {}
+      return process.env.REDIS_PASSWORD || undefined;
+    })(),
+    db: (() => {
+      try {
+        if (process.env.REDIS_URL) {
+          const path = new URL(process.env.REDIS_URL).pathname || '';
+          if (path && path.length > 1) return safeParseInt(path.slice(1), 0);
+        }
+      } catch (_) {}
+      return safeParseInt(process.env.REDIS_DB, 0);
+    })(),
   },
   security: {
     jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
