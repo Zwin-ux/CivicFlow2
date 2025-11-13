@@ -17,15 +17,15 @@ const logger = winston.createLogger({
 });
 
 // Add console transport in development
-if (config.env !== 'production') {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
-    })
-  );
-}
+// Always log errors to console so container/platform logs capture failures.
+// Keep the pretty console format in non-production, and a JSON/simple format in production.
+logger.add(
+  new winston.transports.Console({
+    level: config.env === 'production' ? 'info' : 'debug',
+    format: config.env === 'production'
+      ? winston.format.combine(winston.format.timestamp(), winston.format.json())
+      : winston.format.combine(winston.format.colorize(), winston.format.simple()),
+  })
+);
 
 export default logger;
