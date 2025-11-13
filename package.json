@@ -4,7 +4,7 @@
   "description": "Government Lending CRM Platform for micro-business grant and loan workflows",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc || true",
+  "build": "tsc",
     "start": "node dist/index.js",
     "start:production": "npm run migrate:up && npm run seed:demo && npm run start",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -14,7 +14,7 @@
     "migrate:up": "node dist/scripts/migrate.js up",
     "migrate:status": "node dist/scripts/migrate.js status",
     "seed": "node dist/scripts/seed.js",
-    "seed:demo": "NODE_ENV=production node dist/scripts/seed.js",
+  "seed:demo": "NODE_ENV=production node dist/scripts/seed.js demo",
     "test:redis": "ts-node src/scripts/test-redis.ts",
     "verify:ai": "ts-node src/scripts/verify-ai-services.ts",
     "startup": "ts-node src/scripts/startup.ts",
