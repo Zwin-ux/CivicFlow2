@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
   "build": "tsc",
-    "start": "node dist/index.js",
-    "start:production": "npm run migrate:up && npm run seed:demo && npm run start",
+  "start": "node dist/index.js",
+  "start:production": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "test": "jest",
     "lint": "eslint src --ext .ts",
