@@ -166,16 +166,21 @@ class AIDocumentAnalyzerService {
       }
 
       // Perform Azure AI Document Intelligence analysis
-      const azureResult = await this.performAzureAnalysis(document.storageUrl);
+      const azureAnalysis = await this.performAzureAnalysis(document.storageUrl);
 
-      // Extract structured data from Azure result
-      const extractedData = this.extractDataFromAzureResult(azureResult.result);
+      // Some clients may return undefined or an object with a 'result' property
+      const azureResultObj: AnalyzeResult = (azureAnalysis && (azureAnalysis as any).result)
+        ? (azureAnalysis as any).result as AnalyzeResult
+        : (azureAnalysis as any) as AnalyzeResult || ({} as AnalyzeResult);
+
+      // Extract structured data from Azure result (safe even if empty stub)
+      const extractedData = this.extractDataFromAzureResult(azureResultObj);
 
       // Calculate quality score
-      const qualityScore = this.calculateQualityScore(extractedData, azureResult.result);
+      const qualityScore = this.calculateQualityScore(extractedData, azureResultObj);
 
       // Detect anomalies
-      const anomalies = await this.detectAnomalies(extractedData, azureResult.result);
+      const anomalies = await this.detectAnomalies(extractedData, azureResultObj);
 
       // Generate summary using LLM
       const summary = await this.generateSummary(extractedData);
@@ -274,12 +279,13 @@ class AIDocumentAnalyzerService {
         const chunkResults = await Promise.all(promises);
 
         for (const chunkResult of chunkResults) {
-          if (chunkResult.success && 'result' in chunkResult) {
-            results.push(chunkResult.result);
-          } else if (!chunkResult.success && 'documentId' in chunkResult) {
+          if (chunkResult && (chunkResult as any).success && 'result' in chunkResult && (chunkResult as any).result) {
+            // Narrowed: chunkResult.result exists
+            results.push((chunkResult as any).result as DocumentAnalysisResult);
+          } else if (chunkResult && !(chunkResult as any).success && 'documentId' in chunkResult && (chunkResult as any).documentId) {
             errors.push({
-              documentId: chunkResult.documentId,
-              error: chunkResult.error,
+              documentId: String((chunkResult as any).documentId),
+              error: String((chunkResult as any).error),
             });
           }
         }
@@ -447,9 +453,11 @@ class AIDocumentAnalyzerService {
       }
     }
 
+    const languageVal = result.languages && result.languages.length > 0 ? String((result.languages as any)[0]) : undefined;
+
     const metadata: DocumentMetadata = {
       pageCount: result.pages?.length || 0,
-      language: result.languages?.[0] || undefined,
+      language: languageVal,
     };
 
     return {

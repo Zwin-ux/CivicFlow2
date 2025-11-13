@@ -64,15 +64,13 @@ export function createHTTPSOptions(): https.ServerOptions | null {
     const options: https.ServerOptions = {
       cert: fs.readFileSync(path.resolve(tlsConfig.cert)),
       key: fs.readFileSync(path.resolve(tlsConfig.key)),
-      minVersion: tlsConfig.minVersion as any,
-      maxVersion: tlsConfig.maxVersion as any,
-      ciphers: tlsConfig.ciphers,
-      honorCipherOrder: true,
-      // Disable older protocols
-      secureOptions: cryptoConstants.SSL_OP_NO_TLSv1 | cryptoConstants.SSL_OP_NO_TLSv1_1,
-      // Ensure min/max versions are typed for Node TLS
-      minVersion: tlsConfig.minVersion as unknown as tls.SecureVersion,
-      maxVersion: tlsConfig.maxVersion as unknown as tls.SecureVersion,
+  ciphers: tlsConfig.ciphers,
+  honorCipherOrder: true,
+  // Disable older protocols
+  secureOptions: cryptoConstants.SSL_OP_NO_TLSv1 | cryptoConstants.SSL_OP_NO_TLSv1_1,
+  // Ensure min/max versions are typed for Node TLS
+  minVersion: tlsConfig.minVersion as unknown as tls.SecureVersion,
+  maxVersion: tlsConfig.maxVersion as unknown as tls.SecureVersion,
     };
 
     // Add CA certificate if provided

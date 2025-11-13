@@ -39,6 +39,8 @@ RUN npm ci --only=production && \
 
 # Copy built application from builder
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+# Ensure compiled scripts (migrations/seeds) are available in the final image
+COPY --from=builder --chown=nodejs:nodejs /app/dist/scripts ./dist/scripts
 
 # Copy public folder (HTML, CSS, JS, images)
 COPY --from=builder --chown=nodejs:nodejs /app/public ./public
