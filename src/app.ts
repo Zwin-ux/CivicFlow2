@@ -23,6 +23,7 @@ import teamsRoutes from './routes/teams';
 import dashboardRoutes from './routes/dashboard';
 import teamsConfigRoutes from './routes/admin/teamsConfig';
 import demoRoutes from './routes/demo';
+import sbaDemoRoutes from './routes/sbaDemo';
 import aiRoutes from './routes/ai';
 import { detectDemoMode, bypassAuthForDemo, checkDemoExpiry } from './middleware/demoMode';
 import { apiLimiter, authLimiter, uploadLimiter, aiLimiter, reportLimiter } from './middleware/rateLimiter';
@@ -204,6 +205,7 @@ app.use(`/api/${config.apiVersion}/dashboard`, dashboardRoutes);
 app.use(`/api/${config.apiVersion}/admin/teams/config`, teamsConfigRoutes);
 app.use(`/api/${config.apiVersion}/demo`, demoRoutes);
 app.use(`/api/${config.apiVersion}/ai`, aiLimiter, aiRoutes);
+app.use(`/api/${config.apiVersion}/sba-demo`, sbaDemoRoutes);
 
 // Convenience routes without version prefix for frontend
 app.use('/api/applications', applicationRoutes);
