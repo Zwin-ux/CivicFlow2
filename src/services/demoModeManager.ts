@@ -34,16 +34,9 @@ class DemoModeManager {
       this.isDemoModeActive = true;
       this.demoModeReason = reason;
       
-      logger.warn('╔════════════════════════════════════════════════════════════╗');
-      logger.warn('║                                                            ║');
-      logger.warn('║              🎭 DEMO MODE ACTIVATED 🎭                     ║');
-      logger.warn('║                                                            ║');
-      logger.warn('║  Running in offline showcase mode with static demo data   ║');
-      logger.warn('║  Database and Redis connections are unavailable           ║');
-      logger.warn('║  All data operations are simulated                        ║');
-      logger.warn('║                                                            ║');
-      logger.warn('╚════════════════════════════════════════════════════════════╝');
-      logger.warn(`Demo Mode Reason: ${reason}`);
+      logger.warn('Demo mode activated');
+      logger.warn(`Reason: ${reason}`);
+      logger.warn('Running in offline showcase mode with static demo data. Database and Redis connections are simulated.');
     }
   }
 
@@ -118,15 +111,8 @@ class DemoModeManager {
    */
   public logDemoModeIndicator(): void {
     if (this.isDemoModeActive) {
-      console.log('\n');
-      console.log('╔════════════════════════════════════════════════════════════╗');
-      console.log('║                                                            ║');
-      console.log('║              🎭 RUNNING IN DEMO MODE 🎭                    ║');
-      console.log('║                                                            ║');
-      console.log('║  This is an offline showcase with simulated data          ║');
-      console.log('║  No real database operations are being performed          ║');
-      console.log('║                                                            ║');
-      console.log('╚════════════════════════════════════════════════════════════╝');
+      console.log('\nDemo mode is active: running with simulated data and in-memory services');
+      console.log(`Reason: ${this.demoModeReason}`);
       console.log('\n');
     }
   }

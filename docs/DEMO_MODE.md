@@ -31,12 +31,12 @@ Demo Mode can be activated in three ways:
 
 When Demo Mode is active:
 
-✅ **Static Demo Data**: All database queries return pre-seeded demo data
-✅ **In-Memory Cache**: Redis operations use an in-memory Map
-✅ **No Crashes**: Application never crashes due to missing DB/Redis
-✅ **Full UI Functionality**: All pages remain interactive
-✅ **Clear Indicators**: Console, logs, and UI show demo mode status
-✅ **Health Checks Pass**: Health endpoints return success
+[OK] **Static Demo Data**: All database queries return pre-seeded demo data
+[OK] **In-Memory Cache**: Redis operations use an in-memory Map
+[OK] **No Crashes**: Application never crashes due to missing DB/Redis
+[OK] **Full UI Functionality**: All pages remain interactive
+[OK] **Clear Indicators**: Console, logs, and UI show demo mode status
+[OK] **Health Checks Pass**: Health endpoints return success
 
 ## Configuration
 
@@ -98,7 +98,7 @@ When demo mode is active, you'll see:
 ```
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║              🎭 DEMO MODE ACTIVATED 🎭                     ║
+║              Demo DEMO MODE ACTIVATED Demo                     ║
 ║                                                            ║
 ║  Running in offline showcase mode with static demo data   ║
 ║  Database and Redis connections are unavailable           ║
@@ -119,7 +119,7 @@ X-Demo-Mode-Message: Running in offline showcase mode
 
 A purple gradient banner appears at the top of all pages:
 ```
-🎭 DEMO MODE: Running in offline showcase mode with simulated data 🎭
+Demo DEMO MODE: Running in offline showcase mode with simulated data Demo
 ```
 
 ## API Behavior
@@ -178,10 +178,10 @@ const applications = await database.query('SELECT * FROM applications');
 
 ### Supported Operations
 
-- ✅ SELECT queries return demo data
-- ✅ INSERT/UPDATE/DELETE operations are simulated (not persisted)
-- ✅ Transactions are mocked
-- ✅ Health checks always pass
+- [OK] SELECT queries return demo data
+- [OK] INSERT/UPDATE/DELETE operations are simulated (not persisted)
+- [OK] Transactions are mocked
+- [OK] Health checks always pass
 
 ## Redis Operations
 
@@ -196,12 +196,12 @@ const value = await redis.get('key');
 
 ### Supported Operations
 
-- ✅ GET/SET with TTL support
-- ✅ DEL, EXISTS
-- ✅ Lists (RPUSH, LPOP, LLEN)
-- ✅ Hashes (HINCRBY, HGETALL)
-- ✅ Sorted Sets (ZADD, ZCOUNT, ZREMRANGEBYSCORE)
-- ✅ EXPIRE
+- [OK] GET/SET with TTL support
+- [OK] DEL, EXISTS
+- [OK] Lists (RPUSH, LPOP, LLEN)
+- [OK] Hashes (HINCRBY, HGETALL)
+- [OK] Sorted Sets (ZADD, ZCOUNT, ZREMRANGEBYSCORE)
+- [OK] EXPIRE
 
 ## Logging
 
@@ -212,7 +212,7 @@ Demo mode logs are clearly marked:
 [WARN] Database connection failed (1/3)
 [WARN] Database connection failed (2/3)
 [WARN] Database connection failed (3/3)
-[WARN] 🎭 DEMO MODE ACTIVATED 🎭
+[WARN] Demo DEMO MODE ACTIVATED Demo
 [INFO] Mock query executed in demo mode
 [DEBUG] Mock Redis SET: key=session:123, ttl=3600
 ```
@@ -221,13 +221,13 @@ Demo mode logs are clearly marked:
 
 ### When to Use Demo Mode
 
-✅ **Good for:**
+[OK] **Good for:**
 - Showcase/demo environments
 - Development without infrastructure
 - Graceful degradation in production
 - Testing UI without backend
 
-❌ **Not suitable for:**
+[FAIL] **Not suitable for:**
 - Production with real user data
 - Applications requiring data persistence
 - Compliance-sensitive environments
@@ -355,7 +355,7 @@ Still Failed? → Auto-enable Demo Mode
   ↓
 Continue Startup with Demo Data
   ↓
-Server Running ✓
+Server Running 
 ```
 
 ## Support

@@ -39,7 +39,7 @@ function generateSecrets(): Secrets {
  */
 function displaySecrets(secrets: Secrets): void {
   console.log('\n=================================================');
-  console.log('🔐 Generated Secure Secrets for Railway');
+  console.log('Generated Secure Secrets for Railway');
   console.log('=================================================\n');
   
   console.log('Copy these values to your Railway environment variables:\n');
@@ -48,7 +48,7 @@ function displaySecrets(secrets: Secrets): void {
   console.log('ENCRYPTION_KEY=' + secrets.ENCRYPTION_KEY);
   
   console.log('\n=================================================');
-  console.log('📋 Instructions:');
+  console.log('Instructions:');
   console.log('=================================================\n');
   console.log('1. Go to your Railway project');
   console.log('2. Click on your service');
@@ -57,7 +57,7 @@ function displaySecrets(secrets: Secrets): void {
   console.log('5. Paste the above variables');
   console.log('6. Click "Update Variables"\n');
   
-  console.log('⚠️  IMPORTANT: Keep these secrets secure!');
+  console.log('IMPORTANT: Keep these secrets secure!');
   console.log('   - Never commit them to Git');
   console.log('   - Store them in a password manager');
   console.log('   - Rotate them regularly\n');
@@ -71,36 +71,36 @@ function validateSecrets(): void {
   const encryptionKey = process.env.ENCRYPTION_KEY;
   
   console.log('\n=================================================');
-  console.log('🔍 Validating Existing Secrets');
+  console.log('Validating Existing Secrets');
   console.log('=================================================\n');
   
   let hasIssues = false;
   
   if (!jwtSecret) {
-    console.log('❌ JWT_SECRET is not set');
+    console.log('JWT_SECRET is not set');
     hasIssues = true;
   } else if (jwtSecret.length < 32) {
-    console.log('⚠️  JWT_SECRET is too short (should be at least 32 characters)');
+    console.log('JWT_SECRET is too short (should be at least 32 characters)');
     hasIssues = true;
   } else {
-    console.log('✓ JWT_SECRET is set and valid');
+    console.log('JWT_SECRET is set and valid');
   }
   
   if (!encryptionKey) {
-    console.log('❌ ENCRYPTION_KEY is not set');
+    console.log('ENCRYPTION_KEY is not set');
     hasIssues = true;
   } else if (encryptionKey.length < 32) {
-    console.log('⚠️  ENCRYPTION_KEY is too short (should be at least 32 characters)');
+    console.log('ENCRYPTION_KEY is too short (should be at least 32 characters)');
     hasIssues = true;
   } else {
-    console.log('✓ ENCRYPTION_KEY is set and valid');
+    console.log('ENCRYPTION_KEY is set and valid');
   }
   
   if (hasIssues) {
-    console.log('\n⚠️  Issues found with secrets. Generate new ones with:');
+    console.log('\nIssues found with secrets. Generate new ones with:');
     console.log('   npm run generate-secrets\n');
   } else {
-    console.log('\n✓ All secrets are properly configured!\n');
+    console.log('\nAll secrets are properly configured!\n');
   }
 }
 

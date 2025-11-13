@@ -326,8 +326,8 @@ USE_MOCK_TEAMS=true npm run dev
 npm run verify:ai
 
 # Should see:
-# ✅ PASS: LLM service is working
-# ⚠️  SKIP: Azure Document Intelligence not configured (optional)
+# [OK] PASS: LLM service is working
+# [WARN]  SKIP: Azure Document Intelligence not configured (optional)
 ```
 
 ## Step 8: Deployment Checklist
@@ -390,19 +390,19 @@ When ready to use real services:
 
 ## Benefits Summary
 
-✅ **For MVP Demo:**
+[OK] **For MVP Demo:**
 - No external service configuration needed
 - Full visibility into all operations
 - No costs for email/Teams during demo
 - Easy to test and verify
 
-✅ **For Development:**
+[OK] **For Development:**
 - Fast iteration without external dependencies
 - Clear console output for debugging
 - No risk of sending test emails to real users
 - No risk of posting test messages to real Teams channels
 
-✅ **For Production:**
+[OK] **For Production:**
 - Easy switch to real services via environment variables
 - Same interface for both mock and real services
 - Gradual rollout possible

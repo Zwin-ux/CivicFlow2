@@ -12,8 +12,8 @@ Navigate to: `http://localhost:3000/loan-ops-dashboard.html`
 
 ### 3. Check Connection Status
 Look for the status indicator in the top-right header:
-- **"Live"** (green) = Connected ✅
-- **"Offline"** (red) = Disconnected ❌
+- **"Live"** (green) = Connected [OK]
+- **"Offline"** (red) = Disconnected [FAIL]
 
 ## Testing Scenarios
 
@@ -58,7 +58,7 @@ Look for the status indicator in the top-right header:
 2. Observe dashboard
 
 **Expected Result:**
-- Toast notification: "⚠️ SLA Warning: Application #XXXXXXXX (Applicant Name) is approaching deadline"
+- Toast notification: "[WARN] SLA Warning: Application #XXXXXXXX (Applicant Name) is approaching deadline"
 - Orange/yellow warning toast
 - SLA badge updates to "At Risk" (yellow)
 - Card refreshes with new SLA status
@@ -69,7 +69,7 @@ Look for the status indicator in the top-right header:
 2. Observe dashboard
 
 **Expected Result:**
-- Toast notification: "🚨 SLA Breach: Application #XXXXXXXX (Applicant Name) has exceeded deadline!"
+- Toast notification: " SLA Breach: Application #XXXXXXXX (Applicant Name) has exceeded deadline!"
 - Red error toast
 - SLA badge updates to "Breached" (red)
 - Card refreshes with breached status
@@ -297,29 +297,29 @@ websocketService.broadcast({
 
 ## Success Criteria
 
-✅ **Connection**
+[OK] **Connection**
 - Establishes automatically on dashboard load
 - Shows "Live" status when connected
 - Includes userId in connection URL
 
-✅ **Events**
+[OK] **Events**
 - Receives all event types
 - Updates UI appropriately
 - Shows toast notifications
 
-✅ **Reconnection**
+[OK] **Reconnection**
 - Attempts reconnection on disconnect
 - Uses exponential backoff
 - Maximum 5 attempts
 - Shows appropriate notifications
 
-✅ **Performance**
+[OK] **Performance**
 - Handles 1000+ concurrent connections
 - Processes events without lag
 - No memory leaks
 - Smooth animations
 
-✅ **User Experience**
+[OK] **User Experience**
 - Clear connection status
 - Non-intrusive notifications
 - Automatic recovery

@@ -243,7 +243,7 @@
         const submittedDate = document.createElement('div');
         submittedDate.className = 'submitted-date';
         submittedDate.innerHTML = `
-            <span>📅</span>
+            <span></span>
             <span>${formatDate(application.submittedAt)}</span>
         `;
 

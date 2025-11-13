@@ -20,10 +20,10 @@ check_endpoint() {
     response=$(curl -s -o /dev/null -w "%{http_code}" "$url")
     
     if [ "$response" = "200" ]; then
-        echo "✓ OK (HTTP $response)"
+        echo " OK (HTTP $response)"
         return 0
     else
-        echo "✗ FAILED (HTTP $response)"
+        echo " FAILED (HTTP $response)"
         return 1
     fi
 }
@@ -63,7 +63,7 @@ while [ $attempt -le $MAX_ATTEMPTS ]; do
     
     if perform_health_checks; then
         echo ""
-        echo "✓ All health checks passed!"
+        echo " All health checks passed!"
         exit 0
     fi
     
@@ -77,5 +77,5 @@ while [ $attempt -le $MAX_ATTEMPTS ]; do
 done
 
 echo ""
-echo "✗ Health checks failed after $MAX_ATTEMPTS attempts"
+echo " Health checks failed after $MAX_ATTEMPTS attempts"
 exit 1

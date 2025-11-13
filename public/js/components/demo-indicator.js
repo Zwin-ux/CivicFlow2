@@ -27,7 +27,7 @@ class DemoIndicator {
     badge.setAttribute('aria-label', `Demo mode: ${tooltip}`);
     
     badge.innerHTML = `
-      <span class="demo-indicator-icon">✨</span>
+      <span class="demo-indicator-icon"></span>
       <span class="demo-indicator-text">${text}</span>
     `;
 
@@ -52,7 +52,7 @@ class DemoIndicator {
     icon.setAttribute('data-tooltip', tooltip);
     icon.setAttribute('role', 'img');
     icon.setAttribute('aria-label', `Demo mode: ${tooltip}`);
-    icon.textContent = '✨';
+    icon.textContent = '';
 
     return icon;
   }
@@ -88,7 +88,7 @@ class DemoIndicator {
 
     banner.innerHTML = `
       <div class="demo-indicator-banner-content">
-        <div class="demo-indicator-banner-icon">✨</div>
+        <div class="demo-indicator-banner-icon"></div>
         <div class="demo-indicator-banner-text">
           <div class="demo-indicator-banner-title">${title}</div>
           <div class="demo-indicator-banner-message">${message}</div>

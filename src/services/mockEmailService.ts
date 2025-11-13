@@ -27,7 +27,7 @@ class MockEmailService {
 
     // Log to console with formatting
     console.log('\n' + '='.repeat(60));
-    console.log('📧 MOCK EMAIL SERVICE - Email Sent');
+    console.log(' MOCK EMAIL SERVICE - Email Sent');
     console.log('='.repeat(60));
     console.log(`To: ${message.to}`);
     console.log(`From: ${message.from || 'noreply@example.com'}`);
@@ -75,7 +75,7 @@ class MockEmailService {
    */
   async sendBulkEmails(messages: EmailMessage[]): Promise<EmailResponse[]> {
     console.log('\n' + '='.repeat(60));
-    console.log(`📧 MOCK EMAIL SERVICE - Bulk Send (${messages.length} emails)`);
+    console.log(` MOCK EMAIL SERVICE - Bulk Send (${messages.length} emails)`);
     console.log('='.repeat(60) + '\n');
 
     const results: EmailResponse[] = [];

@@ -42,28 +42,28 @@ async function loadMetrics() {
 
         container.innerHTML = `
             <div class="preview-card">
-                <div class="preview-label">Total Applications ${isDemo ? '✨' : '🔗'}</div>
+                <div class="preview-label">Total Applications ${isDemo ? '' : ''}</div>
                 <div class="preview-value">${metrics.totalApplications || 0}</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
                     ${isDemo ? 'Demo Data' : 'Live Data'}
                 </div>
             </div>
             <div class="preview-card">
-                <div class="preview-label">Approval Rate ${isDemo ? '✨' : '🔗'}</div>
+                <div class="preview-label">Approval Rate ${isDemo ? '' : ''}</div>
                 <div class="preview-value">${metrics.approvalRate || 0}%</div>
                 <div style="font-size: 0.75rem; color: var(--success-color); margin-top: 0.5rem;">
                     ↑ Industry Average
                 </div>
             </div>
             <div class="preview-card">
-                <div class="preview-label">Total Loan Amount ${isDemo ? '✨' : '🔗'}</div>
+                <div class="preview-label">Total Loan Amount ${isDemo ? '' : ''}</div>
                 <div class="preview-value" style="font-size: 1.5rem;">${formatCurrency(metrics.totalLoanAmount || 0)}</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
                     Portfolio Value
                 </div>
             </div>
             <div class="preview-card">
-                <div class="preview-label">Avg Processing Time ${isDemo ? '✨' : '🔗'}</div>
+                <div class="preview-label">Avg Processing Time ${isDemo ? '' : ''}</div>
                 <div class="preview-value">${metrics.avgProcessingTime || 3.5} days</div>
                 <div style="font-size: 0.75rem; color: var(--success-color); margin-top: 0.5rem;">
                     ↓ 70% faster
@@ -73,7 +73,7 @@ async function loadMetrics() {
                 <div class="preview-label">System Status</div>
                 <div class="preview-value">
                     <span class="status-badge ${isDemo ? 'pending' : 'approved'}">
-                        ${isDemo ? '✨ Demo Mode' : '🔗 Connected'}
+                        ${isDemo ? ' Demo Mode' : ' Connected'}
                     </span>
                 </div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
@@ -83,7 +83,7 @@ async function loadMetrics() {
             <div class="preview-card">
                 <div class="preview-label">AI Services</div>
                 <div class="preview-value">
-                    <span class="status-badge approved">✓ Active</span>
+                    <span class="status-badge approved"> Active</span>
                 </div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
                     GPT-4 & Azure AI
@@ -104,7 +104,7 @@ async function loadMetrics() {
             banner.style.cssText = 'background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1rem; text-align: center; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);';
             banner.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
-                    <span style="font-size: 1.25rem;">🔗</span>
+                    <span style="font-size: 1.25rem;"></span>
                     <span style="font-weight: 600;">Connected to Live Infrastructure</span>
                     <span style="opacity: 0.9;">|</span>
                     <span style="opacity: 0.9;">Real-time data from PostgreSQL & Redis</span>
@@ -116,7 +116,7 @@ async function loadMetrics() {
         console.error('Error loading metrics:', error);
         container.innerHTML = `
             <div class="preview-card" style="grid-column: 1 / -1;">
-                <div class="preview-label">⚠️ Connection Error</div>
+                <div class="preview-label">[WARN] Connection Error</div>
                 <div class="preview-value" style="font-size: 1rem; color: var(--error-color);">
                     Unable to load metrics
                 </div>

@@ -75,7 +75,7 @@ class StartupScript {
       const isHealthy = await database.healthCheck();
       
       if (isHealthy) {
-        logger.info('✓ Database connection verified');
+        logger.info(' Database connection verified');
         this.status.steps.database = true;
         return true;
       } else {
@@ -85,7 +85,7 @@ class StartupScript {
         
         // If demo mode was auto-enabled, consider it a success
         if (demoModeManager.isActive()) {
-          logger.info('✓ Demo mode active - database check bypassed');
+          logger.info(' Demo mode active - database check bypassed');
           this.status.steps.database = true;
           return true;
         }
@@ -98,7 +98,7 @@ class StartupScript {
       
       // If demo mode was auto-enabled, consider it a success
       if (demoModeManager.isActive()) {
-        logger.info('✓ Demo mode active - database check bypassed');
+        logger.info(' Demo mode active - database check bypassed');
         this.status.steps.database = true;
         return true;
       }
@@ -116,7 +116,7 @@ class StartupScript {
       const isHealthy = await redis.healthCheck();
       
       if (isHealthy) {
-        logger.info('✓ Redis connection verified');
+        logger.info(' Redis connection verified');
         this.status.steps.redis = true;
         return true;
       } else {
@@ -126,7 +126,7 @@ class StartupScript {
         
         // If demo mode was auto-enabled, consider it a success
         if (demoModeManager.isActive()) {
-          logger.info('✓ Demo mode active - Redis check bypassed');
+          logger.info(' Demo mode active - Redis check bypassed');
           this.status.steps.redis = true;
           return true;
         }
@@ -139,7 +139,7 @@ class StartupScript {
       
       // If demo mode was auto-enabled, consider it a success
       if (demoModeManager.isActive()) {
-        logger.info('✓ Demo mode active - Redis check bypassed');
+        logger.info(' Demo mode active - Redis check bypassed');
         this.status.steps.redis = true;
         return true;
       }
@@ -153,7 +153,7 @@ class StartupScript {
   private async runMigrations(): Promise<boolean> {
     // Skip migrations in demo mode
     if (demoModeManager.isActive()) {
-      logger.info('✓ Database migrations skipped (demo mode)');
+      logger.info(' Database migrations skipped (demo mode)');
       this.status.steps.migrations = true;
       return true;
     }
@@ -161,7 +161,7 @@ class StartupScript {
     try {
       logger.info('Running database migrations...');
       await migrationRunner.runMigrations();
-      logger.info('✓ Database migrations completed');
+      logger.info(' Database migrations completed');
       this.status.steps.migrations = true;
       return true;
     } catch (error: any) {
@@ -171,7 +171,7 @@ class StartupScript {
       
       // If demo mode was auto-enabled, consider it a success
       if (demoModeManager.isActive()) {
-        logger.info('✓ Demo mode active - migrations skipped');
+        logger.info(' Demo mode active - migrations skipped');
         this.status.steps.migrations = true;
         return true;
       }
@@ -198,7 +198,7 @@ class StartupScript {
       if (isEmpty) {
         logger.info('Database is empty, seeding demo data...');
         await seedRunner.seedDemoData();
-        logger.info('✓ Demo data seeded successfully');
+        logger.info(' Demo data seeded successfully');
       } else {
         logger.info('Database already has data, skipping demo data seeding');
       }
@@ -221,23 +221,23 @@ class StartupScript {
     logger.info('=== Startup Status Summary ===');
     logger.info(`Environment: ${config.env}`);
     logger.info(`Node Version: ${process.version}`);
-    logger.info(`Demo Mode: ${demoModeManager.isActive() ? '✓ ACTIVE' : '✗ Inactive'}`);
+    logger.info(`Demo Mode: ${demoModeManager.isActive() ? ' ACTIVE' : ' Inactive'}`);
     if (demoModeManager.isActive()) {
       logger.info(`Demo Mode Reason: ${demoModeManager.getReason()}`);
     }
-    logger.info(`Database: ${this.status.steps.database ? '✓' : '✗'}`);
-    logger.info(`Redis: ${this.status.steps.redis ? '✓' : '✗'}`);
-    logger.info(`Migrations: ${this.status.steps.migrations ? '✓' : '✗'}`);
-    logger.info(`Demo Data: ${this.status.steps.demoData ? '✓' : '✗'}`);
+    logger.info(`Database: ${this.status.steps.database ? '' : ''}`);
+    logger.info(`Redis: ${this.status.steps.redis ? '' : ''}`);
+    logger.info(`Migrations: ${this.status.steps.migrations ? '' : ''}`);
+    logger.info(`Demo Data: ${this.status.steps.demoData ? '' : ''}`);
     
     if (this.status.errors.length > 0) {
       logger.warn('Startup warnings/errors:', { errors: this.status.errors });
     }
     
     if (this.status.success) {
-      logger.info('✓ Startup completed successfully');
+      logger.info(' Startup completed successfully');
     } else {
-      logger.error('✗ Startup failed');
+      logger.error(' Startup failed');
     }
     logger.info('==============================');
   }

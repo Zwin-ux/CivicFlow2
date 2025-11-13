@@ -168,13 +168,13 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧪 API Client Test Suite</h1>
+            <h1>Test API Client Test Suite</h1>
             <p class="subtitle">Testing automatic fallback to demo data when API is unavailable</p>
         </div>
 
         <div class="test-grid">
             <div class="test-card">
-                <h3>📊 Dashboard Metrics</h3>
+                <h3>Metrics Dashboard Metrics</h3>
                 <button class="btn" onclick="testDashboardMetrics()">
                     <span id="btn-dashboard">Test Dashboard API</span>
                 </button>
@@ -182,7 +182,7 @@
             </div>
 
             <div class="test-card">
-                <h3>📋 Applications List</h3>
+                <h3> Applications List</h3>
                 <button class="btn" onclick="testApplicationsList()">
                     <span id="btn-applications">Test Applications API</span>
                 </button>
@@ -190,7 +190,7 @@
             </div>
 
             <div class="test-card">
-                <h3>📄 Application Detail</h3>
+                <h3> Application Detail</h3>
                 <button class="btn" onclick="testApplicationDetail()">
                     <span id="btn-detail">Test Detail API</span>
                 </button>
@@ -198,7 +198,7 @@
             </div>
 
             <div class="test-card">
-                <h3>❤️ Health Check</h3>
+                <h3>️ Health Check</h3>
                 <button class="btn" onclick="testHealthCheck()">
                     <span id="btn-health">Test Health API</span>
                 </button>
@@ -206,7 +206,7 @@
             </div>
 
             <div class="test-card">
-                <h3>👤 User Profile</h3>
+                <h3> User Profile</h3>
                 <button class="btn" onclick="testUserProfile()">
                     <span id="btn-profile">Test Profile API</span>
                 </button>
@@ -214,7 +214,7 @@
             </div>
 
             <div class="test-card">
-                <h3>🔄 All Tests</h3>
+                <h3> All Tests</h3>
                 <button class="btn" onclick="runAllTests()">
                     <span id="btn-all">Run All Tests</span>
                 </button>
@@ -244,11 +244,11 @@
             resultDiv.style.display = 'block';
             
             const badge = response.isDemo 
-                ? '<span class="badge badge-demo">📦 Demo Data</span>'
-                : '<span class="badge badge-live">✅ Live Data</span>';
+                ? '<span class="badge badge-demo"> Demo Data</span>'
+                : '<span class="badge badge-live">[OK] Live Data</span>';
             
             const errorBadge = response.error 
-                ? `<span class="badge badge-error">⚠️ ${response.error}</span>`
+                ? `<span class="badge badge-error">[WARN] ${response.error}</span>`
                 : '';
             
             resultDiv.innerHTML = `

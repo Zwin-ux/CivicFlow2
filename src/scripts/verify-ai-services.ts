@@ -56,7 +56,7 @@ class AIServicesVerifier {
           status: 'FAIL',
           message: `${provider.toUpperCase()} API key not configured`,
         });
-        console.log('❌ FAIL: API key not configured\n');
+          console.log('FAIL: API key not configured\n');
         return;
       }
 
@@ -83,7 +83,7 @@ class AIServicesVerifier {
             response: result.content.substring(0, 100),
           },
         });
-        console.log('✅ PASS: LLM service is working');
+  console.log('PASS: LLM service is working');
         console.log(`  Model: ${result.model}`);
         console.log(`  Tokens used: ${result.tokensUsed}`);
         console.log(`  Processing time: ${result.processingTime}ms`);
@@ -94,7 +94,7 @@ class AIServicesVerifier {
           status: 'FAIL',
           message: 'LLM returned empty response',
         });
-        console.log('❌ FAIL: Empty response\n');
+        console.log('FAIL: Empty response\n');
       }
     } catch (error: any) {
       this.results.push({
@@ -103,7 +103,7 @@ class AIServicesVerifier {
         message: `LLM service error: ${error.message}`,
         details: { error: error.message },
       });
-      console.log(`❌ FAIL: ${error.message}\n`);
+      console.log(`FAIL: ${error.message}\n`);
     }
   }
 
@@ -123,7 +123,7 @@ class AIServicesVerifier {
           status: 'SKIP',
           message: 'Azure Document Intelligence not configured (optional)',
         });
-        console.log('⚠️  SKIP: Not configured (optional service)\n');
+        console.log('SKIP: Azure Document Intelligence not configured (optional service)\n');
         return;
       }
 
@@ -140,7 +140,7 @@ class AIServicesVerifier {
             endpoint,
           },
         });
-        console.log('✅ PASS: Azure Document Intelligence is configured');
+        console.log('PASS: Azure Document Intelligence is configured');
         console.log(`  Endpoint: ${endpoint}\n`);
       } else {
         this.results.push({
@@ -148,7 +148,7 @@ class AIServicesVerifier {
           status: 'FAIL',
           message: 'Azure Document Intelligence health check failed',
         });
-        console.log('❌ FAIL: Health check failed\n');
+        console.log('FAIL: Health check failed\n');
       }
     } catch (error: any) {
       this.results.push({
@@ -157,7 +157,7 @@ class AIServicesVerifier {
         message: `Azure Document Intelligence error: ${error.message}`,
         details: { error: error.message },
       });
-      console.log(`❌ FAIL: ${error.message}\n`);
+      console.log(`FAIL: ${error.message}\n`);
     }
   }
 
@@ -175,9 +175,9 @@ class AIServicesVerifier {
     const skipped = this.results.filter(r => r.status === 'SKIP').length;
 
     console.log(`Total tests: ${this.results.length}`);
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`⚠️  Skipped: ${skipped}`);
+  console.log(`Passed: ${passed}`);
+  console.log(`Failed: ${failed}`);
+  console.log(`Skipped: ${skipped}`);
     console.log('');
 
     if (failed > 0) {
@@ -192,11 +192,11 @@ class AIServicesVerifier {
 
     // Exit with error code if any tests failed
     if (failed > 0) {
-      console.log('⚠️  Some AI services are not working correctly.');
+      console.log('Some AI services are not working correctly.');
       console.log('Please check your environment variables and API keys.');
       process.exit(1);
     } else {
-      console.log('✅ All AI services are working correctly!');
+      console.log('All AI services are working correctly.');
       process.exit(0);
     }
   }

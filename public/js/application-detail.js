@@ -572,13 +572,13 @@
         icon.className = 'document-icon';
         // Use different icons based on document type
         const iconMap = {
-            'TAX_RETURN': '📊',
-            'BANK_STATEMENT': '🏦',
-            'BUSINESS_LICENSE': '📜',
-            'FINANCIAL_STATEMENT': '💰',
-            'BUSINESS_PLAN': '📋',
-            'ARTICLES_OF_INCORPORATION': '📑',
-            'default': '📄'
+            'TAX_RETURN': 'Metrics',
+            'BANK_STATEMENT': '',
+            'BUSINESS_LICENSE': '',
+            'FINANCIAL_STATEMENT': '',
+            'BUSINESS_PLAN': '',
+            'ARTICLES_OF_INCORPORATION': '',
+            'default': ''
         };
         icon.textContent = iconMap[doc.type] || iconMap.default;
         
@@ -663,7 +663,7 @@
         const icon = document.createElement('div');
         icon.style.fontSize = '3rem';
         icon.style.marginBottom = '1rem';
-        icon.textContent = '📁';
+        icon.textContent = '';
 
         const message = document.createElement('div');
         message.style.fontSize = '1rem';
@@ -714,7 +714,7 @@
 
         const icon = document.createElement('div');
         icon.className = 'document-icon';
-        icon.textContent = '📄';
+        icon.textContent = '';
         icon.style.opacity = '0.5';
 
         const details = document.createElement('div');

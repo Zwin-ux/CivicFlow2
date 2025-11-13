@@ -51,7 +51,7 @@ class DeploymentVerification {
    */
   private addResult(test: string, passed: boolean, message: string, duration?: number, details?: any): void {
     this.results.push({ test, passed, message, duration, details });
-    const status = passed ? '✓' : '✗';
+    const status = passed ? '' : '';
     const durationStr = duration ? ` (${duration}ms)` : '';
     logger.info(`${status} ${test}: ${message}${durationStr}`);
   }
@@ -351,7 +351,7 @@ class DeploymentVerification {
     console.log('-'.repeat(80));
 
     report.results.forEach((result, index) => {
-      const status = result.passed ? '✓ PASS' : '✗ FAIL';
+      const status = result.passed ? ' PASS' : ' FAIL';
       const duration = result.duration ? ` (${result.duration}ms)` : '';
       console.log(`${index + 1}. ${status} - ${result.test}${duration}`);
       console.log(`   ${result.message}`);

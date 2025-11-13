@@ -306,7 +306,7 @@
 }
 
 .ai-suggestion::before {
-    content: "💡";
+    content: "";
     font-size: 1rem;
 }
 

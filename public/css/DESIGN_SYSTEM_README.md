@@ -8,13 +8,13 @@ This design system provides a complete set of design tokens, components, and uti
 
 ## Features
 
-- 🎨 **Comprehensive Design Tokens** - Colors, typography, spacing, shadows, and more
-- 🌓 **Dark Mode Support** - Automatic theme switching based on system preferences
-- 📱 **Responsive Layout System** - Mobile-first grid and flexbox utilities
-- ✨ **Animation System** - Pre-built animations and micro-interactions
-- 🧩 **Component Library** - Reusable UI components (buttons, cards, modals, etc.)
-- ♿ **Accessibility** - WCAG 2.1 Level AA compliant
-- 🎭 **Theme System** - Easy theme customization and switching
+-  **Comprehensive Design Tokens** - Colors, typography, spacing, shadows, and more
+-  **Dark Mode Support** - Automatic theme switching based on system preferences
+-  **Responsive Layout System** - Mobile-first grid and flexbox utilities
+-  **Animation System** - Pre-built animations and micro-interactions
+-  **Component Library** - Reusable UI components (buttons, cards, modals, etc.)
+-  **Accessibility** - WCAG 2.1 Level AA compliant
+- Demo **Theme System** - Easy theme customization and switching
 
 ## Getting Started
 

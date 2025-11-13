@@ -71,7 +71,7 @@ function displayDocumentRecommendations(recommendations) {
     recommendationsList.innerHTML = recommendations.documents.map(doc => `
         <div class="recommendation-item ${doc.required ? 'required' : 'optional'}">
             <div class="recommendation-icon">
-                ${doc.required ? '📄' : '📋'}
+                ${doc.required ? '' : ''}
             </div>
             <div class="recommendation-content">
                 <div class="recommendation-title">
@@ -207,11 +207,11 @@ async function performQualityAnalysis(file, fileItem) {
         
         let qualityHTML = '';
         if (quality.score >= 80) {
-            qualityHTML = `<span class="badge badge-success">✓ Good Quality (${quality.score})</span>`;
+            qualityHTML = `<span class="badge badge-success"> Good Quality (${quality.score})</span>`;
         } else if (quality.score >= 60) {
-            qualityHTML = `<span class="badge badge-warning">⚠ Fair Quality (${quality.score})</span>`;
+            qualityHTML = `<span class="badge badge-warning">[WARN] Fair Quality (${quality.score})</span>`;
         } else {
-            qualityHTML = `<span class="badge badge-error">✗ Poor Quality (${quality.score})</span>`;
+            qualityHTML = `<span class="badge badge-error"> Poor Quality (${quality.score})</span>`;
         }
 
         if (quality.suggestions.length > 0) {

@@ -288,7 +288,7 @@ body.demo-banner-active .navbar {
 }
 
 .demo-info-list li::before {
-  content: '✓';
+  content: '';
   position: absolute;
   left: 0;
   color: #667eea;

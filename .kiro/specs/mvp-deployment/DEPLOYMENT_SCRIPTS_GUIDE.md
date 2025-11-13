@@ -108,16 +108,16 @@ npm run verify:deployment https://your-app.railway.app
 ```
 
 **What it tests:**
-1. ✓ Health Check - Basic health endpoint
-2. ✓ Detailed Health - All services healthy
-3. ✓ Demo Applicant Login - demo-applicant credentials
-4. ✓ Demo Staff Login - demo-staff credentials
-5. ✓ Demo Admin Login - demo-admin credentials
-6. ✓ Demo Data Check - Database has applications
-7. ✓ Applicant Profile - Authenticated API access
-8. ✓ Static Files - Homepage served correctly
-9. ✓ API Documentation - API docs accessible
-10. ✓ Metrics Endpoint - Admin-only access
+1.  Health Check - Basic health endpoint
+2.  Detailed Health - All services healthy
+3.  Demo Applicant Login - demo-applicant credentials
+4.  Demo Staff Login - demo-staff credentials
+5.  Demo Admin Login - demo-admin credentials
+6.  Demo Data Check - Database has applications
+7.  Applicant Profile - Authenticated API access
+8.  Static Files - Homepage served correctly
+9.  API Documentation - API docs accessible
+10.  Metrics Endpoint - Admin-only access
 
 **Exit Codes:**
 - `0` - All tests passed
@@ -137,11 +137,11 @@ Tests: 10/10 passed, 0 failed
 
 Test Results:
 --------------------------------------------------------------------------------
-1. ✓ PASS - Health Check (45ms)
+1.  PASS - Health Check (45ms)
    Basic health check passed
-2. ✓ PASS - Detailed Health (78ms)
+2.  PASS - Detailed Health (78ms)
    All services healthy
-3. ✓ PASS - Demo Applicant Login (120ms)
+3.  PASS - Demo Applicant Login (120ms)
    Login successful
 ...
 --------------------------------------------------------------------------------
@@ -227,19 +227,19 @@ curl https://your-app.railway.app/api/v1/health/detailed
 
 **Database Connection Error:**
 ```
-✗ Database connection error: ECONNREFUSED
+ Database connection error: ECONNREFUSED
 ```
 **Solution:** Check DATABASE_URL environment variable and ensure PostgreSQL is running.
 
 **Migration Error:**
 ```
-✗ Migration error: relation "applications" already exists
+ Migration error: relation "applications" already exists
 ```
 **Solution:** Check migration status with `npm run migrate:status` and manually resolve conflicts.
 
 **Demo Data Seeding Error:**
 ```
-✗ Demo data seeding error: duplicate key value
+ Demo data seeding error: duplicate key value
 ```
 **Solution:** This is non-critical. Demo data may already exist. Check logs for details.
 
@@ -275,21 +275,21 @@ curl https://your-app.railway.app/api/v1/health/detailed
 
 **Login Tests Fail:**
 ```
-✗ FAIL - Demo Applicant Login
+ FAIL - Demo Applicant Login
    Login failed: 401
 ```
 **Solution:** Check that demo data was seeded correctly. Run `npm run seed:demo` manually.
 
 **Demo Data Check Fails:**
 ```
-✗ FAIL - Demo Data Check
+ FAIL - Demo Data Check
    No applications found
 ```
 **Solution:** Database is empty. Ensure DEMO_MODE_ENABLED=true and re-run startup or seed manually.
 
 **Static Files Fail:**
 ```
-✗ FAIL - Static Files
+ FAIL - Static Files
    Unexpected response: 404
 ```
 **Solution:** Ensure `public` directory is included in deployment and static middleware is configured.
@@ -313,8 +313,8 @@ Set up alerts for:
 
 ### Logging
 Monitor logs for:
-- `✓` markers - Successful operations
-- `✗` markers - Failed operations
+- `` markers - Successful operations
+- `` markers - Failed operations
 - `Startup Status Summary` - Application initialization
 - `Migration completed` - Database updates
 - `Demo data seeded` - Demo mode initialization

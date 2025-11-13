@@ -5,7 +5,7 @@
 
 const http = require('http');
 
-console.log('\n🧪 Testing Demo Mode Activation...\n');
+console.log('\nTest Testing Demo Mode Activation...\n');
 
 // Wait for server to start
 setTimeout(() => {
@@ -29,33 +29,33 @@ setTimeout(() => {
         const response = JSON.parse(data);
         const demoModeHeader = res.headers['x-demo-mode'];
 
-        console.log('✅ Health Check Response:');
+        console.log('[OK] Health Check Response:');
         console.log(JSON.stringify(response, null, 2));
-        console.log('\n📋 Headers:');
+        console.log('\n Headers:');
         console.log(`X-Demo-Mode: ${demoModeHeader}`);
 
         if (response.demoMode && response.demoMode.active) {
-          console.log('\n✅ SUCCESS: Demo mode is active!');
+          console.log('\n[OK] SUCCESS: Demo mode is active!');
           console.log(`   Reason: ${response.demoMode.message}`);
         } else if (demoModeHeader === 'true') {
-          console.log('\n✅ SUCCESS: Demo mode detected via header!');
+          console.log('\n[OK] SUCCESS: Demo mode detected via header!');
         } else {
-          console.log('\n⚠️  WARNING: Demo mode not detected');
+          console.log('\n[WARN]  WARNING: Demo mode not detected');
           console.log('   This might be normal if database is connected');
         }
 
         // Test detailed health
         testDetailedHealth();
       } catch (error) {
-        console.error('❌ Error parsing response:', error.message);
+        console.error('[FAIL] Error parsing response:', error.message);
         process.exit(1);
       }
     });
   });
 
   req.on('error', (error) => {
-    console.error('❌ Error connecting to server:', error.message);
-    console.log('\n💡 Make sure the server is running:');
+    console.error('[FAIL] Error connecting to server:', error.message);
+    console.log('\n Make sure the server is running:');
     console.log('   npm start');
     process.exit(1);
   });
@@ -83,7 +83,7 @@ function testDetailedHealth() {
         try {
           const response = JSON.parse(data);
 
-          console.log('\n✅ Detailed Health Check:');
+          console.log('\n[OK] Detailed Health Check:');
           if (response.demoMode) {
             console.log('   Demo Mode Status:');
             console.log(`   - Active: ${response.demoMode.active}`);
@@ -96,8 +96,8 @@ function testDetailedHealth() {
           console.log(`   - Database: ${response.services?.database?.status || 'unknown'}`);
           console.log(`   - Redis: ${response.services?.redis?.status || 'unknown'}`);
 
-          console.log('\n✅ All tests passed!');
-          console.log('\n📚 Next steps:');
+          console.log('\n[OK] All tests passed!');
+          console.log('\n Next steps:');
           console.log('   1. Check the UI at http://localhost:3000');
           console.log('   2. Look for the purple demo mode banner');
           console.log('   3. Browse sample applications');
@@ -105,14 +105,14 @@ function testDetailedHealth() {
           console.log('\n');
           process.exit(0);
         } catch (error) {
-          console.error('❌ Error parsing detailed health:', error.message);
+          console.error('[FAIL] Error parsing detailed health:', error.message);
           process.exit(1);
         }
       });
     });
 
     req.on('error', (error) => {
-      console.error('❌ Error getting detailed health:', error.message);
+      console.error('[FAIL] Error getting detailed health:', error.message);
       process.exit(1);
     });
 

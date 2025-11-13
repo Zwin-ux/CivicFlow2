@@ -56,18 +56,15 @@ class DemoBanner {
     this.banner.className = 'demo-banner';
     this.banner.innerHTML = `
       <div class="demo-banner-content">
-        <div class="demo-banner-icon">🎭</div>
         <div class="demo-banner-text">
           <div class="demo-banner-title">Demo Mode Active</div>
           <div class="demo-banner-subtitle">
-            You're viewing a demonstration with sample data. 
-            Some services are simulated for demo purposes.
+            You're viewing a demonstration with sample data. Some services are simulated for demo purposes.
           </div>
         </div>
       </div>
       <div class="demo-banner-actions">
         <button class="demo-banner-info-btn" id="demo-info-btn">
-          <span>ℹ️</span>
           <span>Learn More</span>
         </button>
         <button class="demo-banner-close" id="demo-banner-close" aria-label="Dismiss banner">
@@ -113,11 +110,11 @@ class DemoBanner {
     modal.innerHTML = `
       <div class="demo-info-content">
         <div class="demo-info-header">
-          <h2>🎭 Demo Mode Information</h2>
+          <h2>Demo Mode Information</h2>
         </div>
         <div class="demo-info-body">
           <div class="demo-info-section">
-            <h3>📋 What is Demo Mode?</h3>
+            <h3>What is Demo Mode?</h3>
             <p>
               Demo Mode allows you to explore the Government Lending CRM platform 
               with realistic sample data without affecting any real applications or data.
@@ -125,7 +122,7 @@ class DemoBanner {
           </div>
 
           <div class="demo-info-section">
-            <h3>✨ Features Available in Demo Mode</h3>
+            <h3>Features Available in Demo Mode</h3>
             <ul class="demo-info-list">
               <li>Browse 25+ sample applications with varied statuses</li>
               <li>View AI-powered document analysis results</li>
@@ -136,7 +133,7 @@ class DemoBanner {
           </div>
 
           <div class="demo-info-section">
-            <h3>🔧 Mock Services</h3>
+            <h3>Mock Services</h3>
             <p>
               The following services are simulated in demo mode to provide 
               a complete experience without requiring external integrations:
@@ -149,7 +146,7 @@ class DemoBanner {
           </div>
 
           <div class="demo-info-section">
-            <h3>🤖 Real AI Services</h3>
+            <h3>Real AI Services</h3>
             <p>
               These AI features use actual AI models to demonstrate real capabilities:
             </p>
@@ -161,7 +158,7 @@ class DemoBanner {
           </div>
 
           <div class="demo-info-section">
-            <h3>👤 Demo User Accounts</h3>
+            <h3>Demo User Accounts</h3>
             <p>Use these credentials to explore different user roles:</p>
             <ul class="demo-info-list">
               <li><strong>Applicant:</strong> demo-applicant@demo.local / Demo123!</li>
@@ -171,7 +168,7 @@ class DemoBanner {
           </div>
 
           <div class="demo-info-section">
-            <h3>⚠️ Important Notes</h3>
+            <h3>Important Notes</h3>
             <ul class="demo-info-list">
               <li>All data is sample data and will be reset periodically</li>
               <li>Do not enter any real personal or business information</li>
@@ -237,7 +234,7 @@ class DemoBanner {
     const badge = document.createElement('span');
     badge.className = 'demo-service-badge';
     badge.innerHTML = `
-      <span class="demo-service-badge-icon">🎭</span>
+      <span class="demo-service-badge-icon">D</span>
       <span>Demo: ${serviceName}</span>
     `;
     element.appendChild(badge);

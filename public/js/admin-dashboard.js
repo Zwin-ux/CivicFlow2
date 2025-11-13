@@ -148,10 +148,10 @@ async function loadPerformanceMetrics() {
         
         const accuracyStatus = document.getElementById('perf-classification-status');
         if (accuracy >= 95) {
-            accuracyStatus.textContent = '✓ Target Met';
+            accuracyStatus.textContent = ' Target Met';
             accuracyStatus.className = 'metric-change positive';
         } else {
-            accuracyStatus.textContent = '⚠ Below Target';
+            accuracyStatus.textContent = '[WARN] Below Target';
             accuracyStatus.className = 'metric-change negative';
         }
         
@@ -161,10 +161,10 @@ async function loadPerformanceMetrics() {
         
         const reductionStatus = document.getElementById('perf-time-status');
         if (reduction >= 40) {
-            reductionStatus.textContent = '✓ Target Met';
+            reductionStatus.textContent = ' Target Met';
             reductionStatus.className = 'metric-change positive';
         } else {
-            reductionStatus.textContent = '⚠ Below Target';
+            reductionStatus.textContent = '[WARN] Below Target';
             reductionStatus.className = 'metric-change negative';
         }
         
@@ -174,10 +174,10 @@ async function loadPerformanceMetrics() {
         
         const breachStatus = document.getElementById('perf-breach-status');
         if (breaches === 0) {
-            breachStatus.textContent = '✓ No Breaches';
+            breachStatus.textContent = ' No Breaches';
             breachStatus.className = 'metric-change positive';
         } else {
-            breachStatus.textContent = '⚠ Action Required';
+            breachStatus.textContent = '[WARN] Action Required';
             breachStatus.className = 'metric-change negative';
             showSystemAlert('Privacy breach detected. Immediate action required.');
         }
@@ -186,11 +186,11 @@ async function loadPerformanceMetrics() {
         console.error('Error loading performance metrics:', error);
         // Use fallback values
         document.getElementById('perf-classification-accuracy').textContent = '96.5%';
-        document.getElementById('perf-classification-status').textContent = '✓ Target Met';
+        document.getElementById('perf-classification-status').textContent = ' Target Met';
         document.getElementById('perf-time-reduction').textContent = '42.3%';
-        document.getElementById('perf-time-status').textContent = '✓ Target Met';
+        document.getElementById('perf-time-status').textContent = ' Target Met';
         document.getElementById('perf-breach-count').textContent = '0';
-        document.getElementById('perf-breach-status').textContent = '✓ No Breaches';
+        document.getElementById('perf-breach-status').textContent = ' No Breaches';
     }
 }
 

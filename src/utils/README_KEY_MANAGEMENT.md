@@ -265,12 +265,12 @@ async function reencryptApplicants() {
 
 ### Key Storage
 
-- ✅ **DO**: Use AWS KMS or Azure Key Vault in production
-- ✅ **DO**: Enable automatic key rotation
-- ✅ **DO**: Use IAM roles/managed identities for authentication
-- ❌ **DON'T**: Store keys in environment variables in production
-- ❌ **DON'T**: Commit keys to version control
-- ❌ **DON'T**: Share keys between environments
+- [OK] **DO**: Use AWS KMS or Azure Key Vault in production
+- [OK] **DO**: Enable automatic key rotation
+- [OK] **DO**: Use IAM roles/managed identities for authentication
+- [FAIL] **DON'T**: Store keys in environment variables in production
+- [FAIL] **DON'T**: Commit keys to version control
+- [FAIL] **DON'T**: Share keys between environments
 
 ### Access Control
 

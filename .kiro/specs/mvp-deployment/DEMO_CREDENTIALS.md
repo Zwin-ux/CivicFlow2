@@ -15,11 +15,11 @@ Use these credentials to access different user roles in the demo environment.
 ### Password Details
 - **Password:** `Demo123!` (same for all accounts)
 - **Requirements Met:** 
-  - Minimum 8 characters ✓
-  - Uppercase letter ✓
-  - Lowercase letter ✓
-  - Number ✓
-  - Special character ✓
+  - Minimum 8 characters 
+  - Uppercase letter 
+  - Lowercase letter 
+  - Number 
+  - Special character 
 
 ## Portal Access
 
@@ -135,13 +135,13 @@ These services use actual AI models:
 
 ## Important Notes
 
-⚠️ **Demo Mode Warnings:**
+[WARN] **Demo Mode Warnings:**
 - All data is sample data and will be reset periodically
 - Do not enter any real personal or business information
 - Demo sessions expire after 30 minutes of inactivity
 - Changes made in demo mode do not affect production data
 
-✅ **Best Practices:**
+[OK] **Best Practices:**
 - Use demo accounts only for demonstration purposes
 - Share these credentials only with authorized stakeholders
 - Reset demo data before important demonstrations

@@ -43,7 +43,7 @@ mockEmailService.clearEmailLog();
 
 ```
 ============================================================
-📧 MOCK EMAIL SERVICE - Email Sent
+ MOCK EMAIL SERVICE - Email Sent
 ============================================================
 To: applicant@example.com
 From: noreply@example.com
@@ -111,7 +111,7 @@ const recentMeetings = mockTeamsService.getMeetingLog(10);
 
 ```
 ============================================================
-📢 MOCK TEAMS SERVICE - Adaptive Card Posted
+ MOCK TEAMS SERVICE - Adaptive Card Posted
 ============================================================
 Program Type: SMALL_BUSINESS_LOAN
 Card Type: SUBMISSION
@@ -159,25 +159,25 @@ AI Services Verification
 Testing LLM Service...
 Provider: openai
   - Testing basic completion...
-✅ PASS: LLM service is working
+[OK] PASS: LLM service is working
   Model: gpt-4
   Tokens used: 15
   Processing time: 1234ms
   Response: Hello, AI services are working!
 
 Testing Azure Document Intelligence...
-⚠️  SKIP: Not configured (optional service)
+[WARN]  SKIP: Not configured (optional service)
 
 ============================================================
 Verification Summary
 ============================================================
 
 Total tests: 2
-✅ Passed: 1
-❌ Failed: 0
-⚠️  Skipped: 1
+[OK] Passed: 1
+[FAIL] Failed: 0
+[WARN]  Skipped: 1
 
-✅ All AI services are working correctly!
+[OK] All AI services are working correctly!
 ```
 
 ## Configuration for MVP

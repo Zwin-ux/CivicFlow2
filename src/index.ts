@@ -66,36 +66,22 @@ const startServer = async (): Promise<void> => {
     // Start server
     server.listen(config.port, () => {
       const protocol = httpsOptions ? 'https' : 'http';
-      
-      console.log('\n');
-      console.log('╔════════════════════════════════════════════════════════════╗');
-      console.log('║                                                            ║');
-      console.log('║              🚀 CivicFlow2 Server Started 🚀               ║');
-      console.log('║                                                            ║');
-      console.log('╚════════════════════════════════════════════════════════════╝');
-      
+
+      // Concise startup output (no decorative banners or emojis)
+      console.log('\nCivicFlow2 Server Started');
       logger.info(`Server running on port ${config.port} in ${config.env} mode`);
       logger.info(`API available at ${protocol}://localhost:${config.port}/api/${config.apiVersion}`);
       logger.info(`WebSocket available at ${protocol === 'https' ? 'wss' : 'ws'}://localhost:${config.port}/api/dashboard/stream`);
-      
+
       if (httpsOptions) {
-        logger.info('TLS 1.3 enabled for secure communications');
+        logger.info('TLS enabled for secure communications');
       }
-      
+
       if (demoModeManager.isActive()) {
-        console.log('\n');
-        console.log('╔════════════════════════════════════════════════════════════╗');
-        console.log('║                                                            ║');
-        console.log('║              ⚠️  DEMO MODE ACTIVE ⚠️                       ║');
-        console.log('║                                                            ║');
-        console.log('║  Running in offline showcase mode                         ║');
-        console.log('║  All data operations are simulated                        ║');
-        console.log('║  No real database connections active                      ║');
-        console.log('║                                                            ║');
-        console.log(`║  Reason: ${demoModeManager.getReason().padEnd(44)} ║`);
-        console.log('║                                                            ║');
-        console.log('╚════════════════════════════════════════════════════════════╝');
-        console.log('\n');
+        // Short, clear demo mode notice
+        console.log('\nDEMO MODE ACTIVE: Running in offline showcase mode');
+        console.log(`Reason: ${demoModeManager.getReason()}`);
+        logger.warn('Demo mode active - using simulated data and in-memory services');
       }
     });
 

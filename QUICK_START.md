@@ -1,4 +1,4 @@
-# 🚀 CivicFlow2 - Quick Start Guide
+#  CivicFlow2 - Quick Start Guide
 
 ## 30-Second Deploy to Railway
 
@@ -6,7 +6,7 @@
 1. Click: https://railway.app/new/template
 2. Wait 60 seconds
 3. Visit your app URL
-4. Done! ✅
+4. Done! [OK]
 ```
 
 App runs immediately in demo mode with sample data - no configuration needed!
@@ -126,7 +126,7 @@ curl http://localhost:3000/api/v1/health
 ```bash
 # Demo mode will auto-activate after 3 retries
 # Check logs for:
-# "🎭 DEMO MODE ACTIVATED 🎭"
+# "Demo DEMO MODE ACTIVATED Demo"
 ```
 
 ---
@@ -142,13 +142,13 @@ curl http://localhost:3000/api/v1/health
 
 ## Key Features
 
-✅ Never crashes
-✅ Auto-enables demo mode on DB failure
-✅ Works without any infrastructure
-✅ Perfect for demos and showcases
-✅ Production-ready with proper config
-✅ Railway optimized
+[OK] Never crashes
+[OK] Auto-enables demo mode on DB failure
+[OK] Works without any infrastructure
+[OK] Perfect for demos and showcases
+[OK] Production-ready with proper config
+[OK] Railway optimized
 
 ---
 
-**That's it! You're ready to go! 🎉**
+**That's it! You're ready to go! **

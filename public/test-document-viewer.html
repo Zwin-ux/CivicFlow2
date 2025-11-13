@@ -182,7 +182,7 @@
 <body>
   <div class="test-container">
     <div class="test-header">
-      <h1>🧪 Document Viewer Integration Tests</h1>
+      <h1>Test Document Viewer Integration Tests</h1>
       <p>Comprehensive testing suite for document viewer and comparison features</p>
       
       <div class="test-summary">
@@ -214,7 +214,7 @@
 
     <!-- Document Viewer Tests -->
     <div class="test-section">
-      <h2>📄 Document Viewer Tests</h2>
+      <h2> Document Viewer Tests</h2>
       
       <div class="test-grid">
         <div class="test-card">
@@ -286,7 +286,7 @@
 
     <!-- Document Comparison Tests -->
     <div class="test-section">
-      <h2>🔄 Document Comparison Tests</h2>
+      <h2> Document Comparison Tests</h2>
       
       <div class="test-grid">
         <div class="test-card">
@@ -351,7 +351,7 @@
 
     <!-- Test Log -->
     <div class="test-section">
-      <h2>📋 Test Log</h2>
+      <h2> Test Log</h2>
       <div class="test-log" id="test-log">
         <div class="test-log-entry test-log-entry--info">Ready to run tests...</div>
       </div>
@@ -397,7 +397,7 @@
         const element = document.querySelector(`[data-test="${testName}"]`);
         if (element) {
           element.className = 'test-result test-result--pass';
-          element.textContent = '✅ Passed';
+          element.textContent = '[OK] Passed';
         }
         this.results.passed++;
         this.results.pending--;
@@ -409,7 +409,7 @@
         const element = document.querySelector(`[data-test="${testName}"]`);
         if (element) {
           element.className = 'test-result test-result--fail';
-          element.textContent = '❌ Failed';
+          element.textContent = '[FAIL] Failed';
         }
         this.results.failed++;
         this.results.pending--;

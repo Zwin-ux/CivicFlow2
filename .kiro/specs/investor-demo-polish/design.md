@@ -262,14 +262,14 @@ interface ApiResponse<T> {
 ## Testing Strategy
 
 ### Manual Testing Checklist
-1. ✅ Load app with no database → Shows demo data
-2. ✅ Load app with database → Shows real data
-3. ✅ Disconnect database mid-session → Gracefully switches to demo
-4. ✅ View on mobile → Responsive layout works
-5. ✅ Check all pages → No broken layouts
-6. ✅ Verify demo indicators → Subtle and professional
-7. ✅ Test loading states → Smooth transitions
-8. ✅ Check health endpoint → Returns 200
+1. [OK] Load app with no database → Shows demo data
+2. [OK] Load app with database → Shows real data
+3. [OK] Disconnect database mid-session → Gracefully switches to demo
+4. [OK] View on mobile → Responsive layout works
+5. [OK] Check all pages → No broken layouts
+6. [OK] Verify demo indicators → Subtle and professional
+7. [OK] Test loading states → Smooth transitions
+8. [OK] Check health endpoint → Returns 200
 
 ### Visual Testing
 1. Screenshot dashboard with demo data
@@ -313,7 +313,7 @@ interface ApiResponse<T> {
 
 ### Demo Indicators
 - **Badge**: Small purple pill with "Demo" text
-- **Icon**: Tiny purple sparkle icon (✨)
+- **Icon**: Tiny purple sparkle icon ()
 - **Banner**: Gradient purple bar, dismissible
 - **Tooltip**: "This is simulated data for demonstration"
 

@@ -180,7 +180,7 @@ class MigrationRunner {
       console.log(`Pending: ${allMigrations.length - executedMigrations.length}\n`);
       
       allMigrations.forEach(migration => {
-        const status = executedMigrations.includes(migration.filename) ? '✓' : '✗';
+        const status = executedMigrations.includes(migration.filename) ? '' : '';
         console.log(`${status} ${migration.filename}`);
       });
       

@@ -269,11 +269,11 @@ class PreDeploymentChecker {
    * Run all checks
    */
   public async runAllChecks(): Promise<void> {
-    console.log('\n=================================================');
-    console.log('🔍 Pre-Deployment Checklist for Railway');
-    console.log('=================================================\n');
+  console.log('\n=================================================');
+  console.log('Pre-Deployment Checklist for Railway');
+  console.log('=================================================\n');
     
-    console.log('Running checks...\n');
+  console.log('Running checks...\n');
     
     this.checkRequiredFiles();
     this.checkPackageJson();
@@ -295,9 +295,9 @@ class PreDeploymentChecker {
     const failed = this.results.filter(r => r.status === 'fail').length;
     const warnings = this.results.filter(r => r.status === 'warn').length;
     
-    console.log('=================================================');
-    console.log('📊 Check Results');
-    console.log('=================================================\n');
+  console.log('=================================================');
+  console.log('Check Results');
+  console.log('=================================================\n');
     
     // Group by status
     const failedChecks = this.results.filter(r => r.status === 'fail');
@@ -305,7 +305,7 @@ class PreDeploymentChecker {
     const passedChecks = this.results.filter(r => r.status === 'pass');
     
     if (failedChecks.length > 0) {
-      console.log('❌ FAILED CHECKS:\n');
+      console.log('FAILED CHECKS:\n');
       failedChecks.forEach(r => {
         console.log(`   ${r.name}: ${r.message}`);
       });
@@ -313,7 +313,7 @@ class PreDeploymentChecker {
     }
     
     if (warnChecks.length > 0) {
-      console.log('⚠️  WARNINGS:\n');
+      console.log('WARNINGS:\n');
       warnChecks.forEach(r => {
         console.log(`   ${r.name}: ${r.message}`);
       });
@@ -321,7 +321,7 @@ class PreDeploymentChecker {
     }
     
     if (passedChecks.length > 0) {
-      console.log('✓ PASSED CHECKS:\n');
+      console.log('PASSED CHECKS:\n');
       passedChecks.forEach(r => {
         console.log(`   ${r.name}: ${r.message}`);
       });
@@ -330,13 +330,13 @@ class PreDeploymentChecker {
     
     console.log('=================================================');
     console.log('Summary:');
-    console.log(`  ✓ Passed: ${passed}`);
-    console.log(`  ⚠️  Warnings: ${warnings}`);
-    console.log(`  ❌ Failed: ${failed}`);
+    console.log(`  Passed: ${passed}`);
+    console.log(`  Warnings: ${warnings}`);
+    console.log(`  Failed: ${failed}`);
     console.log('=================================================\n');
     
     if (failed === 0) {
-      console.log('✅ All critical checks passed! Ready for deployment.\n');
+      console.log('All critical checks passed! Ready for deployment.\n');
       console.log('Next steps:');
       console.log('1. Create Railway project');
       console.log('2. Add PostgreSQL and Redis services');
@@ -344,7 +344,7 @@ class PreDeploymentChecker {
       console.log('4. Deploy application\n');
       console.log('See RAILWAY_DEPLOYMENT_GUIDE.md for detailed instructions.\n');
     } else {
-      console.log('❌ Some checks failed. Please fix the issues before deploying.\n');
+      console.log('Some checks failed. Please fix the issues before deploying.\n');
       process.exit(1);
     }
   }

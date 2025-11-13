@@ -85,7 +85,7 @@ export function createSubmissionCard(application: Application): AdaptiveCard {
   if (application.fraudFlags && application.fraudFlags.length > 0) {
     facts.push({
       title: 'Fraud Flags',
-      value: `⚠️ ${application.fraudFlags.length} flag(s) detected`,
+      value: `Warning: ${application.fraudFlags.length} flag(s) detected`,
     });
   }
 
@@ -95,7 +95,7 @@ export function createSubmissionCard(application: Application): AdaptiveCard {
     body: [
       {
         type: 'TextBlock',
-        text: '🆕 New Application Submitted',
+        text: 'New Application Submitted',
         size: 'Large',
         weight: 'Bolder',
       },
@@ -164,7 +164,7 @@ export function createSLAWarningCard(
         items: [
           {
             type: 'TextBlock',
-            text: '⚠️ SLA Warning',
+            text: 'SLA Warning',
             size: 'Large',
             weight: 'Bolder',
             color: 'Warning',
@@ -212,7 +212,7 @@ export function createDecisionReadyCard(application: Application): AdaptiveCard 
   // Add risk score if available
   const riskScore = (application as any).riskScore;
   if (riskScore !== undefined) {
-    const riskLevel = riskScore > 70 ? '🔴 High' : riskScore > 40 ? '🟡 Medium' : '🟢 Low';
+    const riskLevel = riskScore > 70 ? 'High' : riskScore > 40 ? 'Medium' : 'Low';
     facts.push({ title: 'Risk Assessment', value: `${riskLevel} (${riskScore}/100)` });
   }
 
@@ -229,7 +229,7 @@ export function createDecisionReadyCard(application: Application): AdaptiveCard 
       value: application.missingDocuments.join(', '),
     });
   } else {
-    facts.push({ title: 'Documents', value: '✅ All documents received' });
+    facts.push({ title: 'Documents', value: 'All documents received' });
   }
 
   const card: AdaptiveCard = {
@@ -242,7 +242,7 @@ export function createDecisionReadyCard(application: Application): AdaptiveCard 
         items: [
           {
             type: 'TextBlock',
-            text: '✅ Ready for Decision',
+            text: 'Ready for Decision',
             size: 'Large',
             weight: 'Bolder',
             color: 'Good',
@@ -267,7 +267,7 @@ export function createDecisionReadyCard(application: Application): AdaptiveCard 
       },
       {
         type: 'Action.Submit',
-        title: '✓ Approve',
+        title: 'Approve',
         style: 'positive',
         data: {
           action: 'APPROVE',
@@ -276,7 +276,7 @@ export function createDecisionReadyCard(application: Application): AdaptiveCard 
       },
       {
         type: 'Action.Submit',
-        title: '✗ Reject',
+        title: 'Reject',
         style: 'destructive',
         data: {
           action: 'REJECT',
@@ -285,7 +285,7 @@ export function createDecisionReadyCard(application: Application): AdaptiveCard 
       },
       {
         type: 'Action.Submit',
-        title: '📄 Request More Info',
+        title: 'Request More Info',
         data: {
           action: 'REQUEST_INFO',
           applicationId: application.id,
@@ -344,17 +344,17 @@ export function createStatusUpdateCard(
     }
   }
 
-  let statusEmoji = '📋';
+  let statusEmoji = '';
   let statusColor: 'Default' | 'Good' | 'Warning' | 'Attention' = 'Default';
 
   if (application.status === 'APPROVED') {
-    statusEmoji = '✅';
+    statusEmoji = '[OK]';
     statusColor = 'Good';
   } else if (application.status === 'REJECTED') {
-    statusEmoji = '❌';
+    statusEmoji = '[FAIL]';
     statusColor = 'Attention';
   } else if (application.status === 'PENDING_DOCUMENTS') {
-    statusEmoji = '📄';
+    statusEmoji = '';
     statusColor = 'Warning';
   }
 
@@ -376,7 +376,7 @@ export function createStatusUpdateCard(
       items: [
         {
           type: 'TextBlock',
-          text: `✓ Action completed by ${actionCompleted.completedBy}`,
+          text: ` Action completed by ${actionCompleted.completedBy}`,
           color: 'Good',
           weight: 'Bolder',
         },

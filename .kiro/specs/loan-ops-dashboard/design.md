@@ -402,7 +402,7 @@ function createSLAWarningCard(application: Application): AdaptiveCard {
     body: [
       {
         type: 'TextBlock',
-        text: '⚠️ SLA Warning',
+        text: '[WARN] SLA Warning',
         size: 'Large',
         weight: 'Bolder',
         color: 'Warning',
@@ -438,7 +438,7 @@ function createDecisionReadyCard(application: Application): AdaptiveCard {
     body: [
       {
         type: 'TextBlock',
-        text: '✅ Ready for Decision',
+        text: '[OK] Ready for Decision',
         size: 'Large',
         weight: 'Bolder',
         color: 'Good',
@@ -456,19 +456,19 @@ function createDecisionReadyCard(application: Application): AdaptiveCard {
     actions: [
       {
         type: 'Action.Submit',
-        title: '✓ Approve',
+        title: ' Approve',
         style: 'positive',
         data: { action: 'APPROVE', applicationId: application.id },
       },
       {
         type: 'Action.Submit',
-        title: '✗ Reject',
+        title: ' Reject',
         style: 'destructive',
         data: { action: 'REJECT', applicationId: application.id },
       },
       {
         type: 'Action.Submit',
-        title: '📄 Request More Info',
+        title: ' Request More Info',
         data: { action: 'REQUEST_INFO', applicationId: application.id },
       },
     ],

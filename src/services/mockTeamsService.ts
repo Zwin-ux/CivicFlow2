@@ -46,7 +46,7 @@ class MockTeamsService {
 
     // Log to console with formatting
     console.log('\n' + '='.repeat(60));
-    console.log('📢 MOCK TEAMS SERVICE - Adaptive Card Posted');
+    console.log(' MOCK TEAMS SERVICE - Adaptive Card Posted');
     console.log('='.repeat(60));
     console.log(`Program Type: ${programType}`);
     console.log(`Card Type: ${cardType}`);
@@ -112,7 +112,7 @@ class MockTeamsService {
 
     // Log to console with formatting
     console.log('\n' + '='.repeat(60));
-    console.log('🔄 MOCK TEAMS SERVICE - Adaptive Card Updated');
+    console.log(' MOCK TEAMS SERVICE - Adaptive Card Updated');
     console.log('='.repeat(60));
     console.log(`Application ID: ${applicationId}`);
     console.log(`Card Type: ${cardType}`);
@@ -166,7 +166,7 @@ class MockTeamsService {
 
     // Log to console with formatting
     console.log('\n' + '='.repeat(60));
-    console.log('📅 MOCK TEAMS SERVICE - Meeting Created');
+    console.log(' MOCK TEAMS SERVICE - Meeting Created');
     console.log('='.repeat(60));
     console.log(`Application ID: ${applicationId}`);
     console.log(`Subject: ${subject}`);
@@ -223,7 +223,7 @@ class MockTeamsService {
     const channelName = this.generateChannelName(programType);
 
     console.log('\n' + '='.repeat(60));
-    console.log('🔧 MOCK TEAMS SERVICE - Channel Ensured');
+    console.log(' MOCK TEAMS SERVICE - Channel Ensured');
     console.log('='.repeat(60));
     console.log(`Program Type: ${programType}`);
     console.log(`Team ID: ${mockTeamId}`);

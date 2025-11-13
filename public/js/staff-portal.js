@@ -265,7 +265,7 @@ function displayApplicationReview(app) {
             
             return `
                 <div class="document-card">
-                    <div class="document-icon">📄</div>
+                    <div class="document-icon">Doc</div>
                     <div class="document-name">${doc.fileName}</div>
                     <div class="document-type">${doc.documentType || 'Unknown'}</div>
                     <div class="document-confidence ${confidenceClass}">
@@ -298,16 +298,16 @@ function displayApplicationReview(app) {
             'All required documents submitted',
             'No fraud flags detected'
         ];
-        recommendationCard.className = 'recommendation-card approve';
-        recommendationIcon.textContent = '✅';
+    recommendationCard.className = 'recommendation-card approve';
+    recommendationIcon.textContent = '';
         recommendationAction.textContent = 'Recommended: APPROVE';
     } else if (app.eligibilityScore < 50 || (app.fraudFlags && app.fraudFlags.some(f => f.severity === 'HIGH'))) {
         recommendation = 'REJECT';
         reasons = [];
         if (app.eligibilityScore < 50) reasons.push('Eligibility score below threshold');
         if (app.fraudFlags && app.fraudFlags.length > 0) reasons.push('Fraud flags detected');
-        recommendationCard.className = 'recommendation-card reject';
-        recommendationIcon.textContent = '❌';
+    recommendationCard.className = 'recommendation-card reject';
+    recommendationIcon.textContent = '';
         recommendationAction.textContent = 'Recommended: REJECT';
     } else {
         recommendation = 'REQUEST_INFO';
@@ -318,8 +318,8 @@ function displayApplicationReview(app) {
         if (app.eligibilityScore < 70) {
             reasons.push('Eligibility score requires review');
         }
-        recommendationCard.className = 'recommendation-card request-info';
-        recommendationIcon.textContent = '⚠️';
+    recommendationCard.className = 'recommendation-card request-info';
+    recommendationIcon.textContent = '';
         recommendationAction.textContent = 'Recommended: REQUEST MORE INFO';
     }
     
@@ -556,13 +556,14 @@ function displayAnomalyAlerts(anomalies) {
 }
 
 function getSeverityIcon(severity) {
-    const icons = {
-        'CRITICAL': '🚨',
-        'HIGH': '⚠️',
-        'MEDIUM': '⚡',
-        'LOW': 'ℹ️'
+    // Return a short textual label for severity (no emoji)
+    const labels = {
+        'CRITICAL': 'CRITICAL',
+        'HIGH': 'HIGH',
+        'MEDIUM': 'MEDIUM',
+        'LOW': 'LOW'
     };
-    return icons[severity] || 'ℹ️';
+    return labels[severity] || 'LOW';
 }
 
 function getSeverityBadgeClass(severity) {

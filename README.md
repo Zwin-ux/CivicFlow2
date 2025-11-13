@@ -2,17 +2,17 @@
 
 A resilient system designed to streamline micro-business grant and loan workflows for government agencies and lenders.
 
-## 🎭 Demo Mode - Never Crashes!
+## Demo Demo Mode - Never Crashes!
 
 CivicFlow2 includes **automatic demo mode** that ensures the application always runs, even without database or Redis connections. Perfect for:
-- 🚀 **Railway deployments** - Deploy instantly without setup
-- 🎪 **Demos & showcases** - Full functionality with sample data
-- 💻 **Development** - Work offline without infrastructure
-- 🛡️ **Production resilience** - Graceful degradation on failures
+-  **Railway deployments** - Deploy instantly without setup
+-  **Demos & showcases** - Full functionality with sample data
+-  **Development** - Work offline without infrastructure
+- ️ **Production resilience** - Graceful degradation on failures
 
-[📖 Read Demo Mode Documentation](docs/DEMO_MODE.md) | [🚂 Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
+[ Read Demo Mode Documentation](docs/DEMO_MODE.md) | [ Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
 
-## 🚀 Quick Start Options
+##  Quick Start Options
 
 ### Option 1: Railway (Fastest - 1 Click Deploy)
 
@@ -20,7 +20,7 @@ CivicFlow2 includes **automatic demo mode** that ensures the application always 
 
 The app runs immediately in demo mode - no database setup required!
 
-[📖 Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
+[ Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
 
 ### Option 2: Demo Mode (No Infrastructure)
 

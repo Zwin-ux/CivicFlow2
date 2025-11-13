@@ -335,7 +335,7 @@ class MetricsService {
    */
   private async sendAccuracyAlert(metrics: ClassificationAccuracyMetrics): Promise<void> {
     try {
-      const subject = '⚠️ Document Classification Accuracy Alert';
+  const subject = 'Document Classification Accuracy Alert';
       const body = `
         <h2>Classification Accuracy Below Threshold</h2>
         <p>The document classification accuracy has fallen below the required ${this.ACCURACY_THRESHOLD}% threshold.</p>
@@ -389,7 +389,7 @@ class MetricsService {
    */
   private async sendAdministratorAlert(alert: PrivacyBreachAlert): Promise<void> {
     try {
-      const subject = `🚨 Privacy Breach Alert: ${alert.alertType}`;
+  const subject = `Privacy Breach Alert: ${alert.alertType}`;
       const body = `
         <h2>Privacy Breach Detected</h2>
         <p><strong>Severity:</strong> ${alert.severity}</p>

@@ -122,9 +122,9 @@ echo -e "Tests failed: ${RED}$TESTS_FAILED${NC}"
 echo ""
 
 if [ $TESTS_FAILED -eq 0 ]; then
-    echo -e "${GREEN}✓ All smoke tests passed!${NC}"
+    echo -e "${GREEN} All smoke tests passed!${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some smoke tests failed${NC}"
+    echo -e "${RED} Some smoke tests failed${NC}"
     exit 1
 fi

@@ -50,7 +50,6 @@ class DemoModeUI {
     banner.className = 'demo-banner';
     banner.innerHTML = `
       <div class="demo-banner__content">
-        <div class="demo-banner__icon">🎭</div>
         <div class="demo-banner__text">
           <p class="demo-banner__title">Demo Mode Active</p>
           <p class="demo-banner__subtitle">You're viewing a demonstration with sample data. No changes will be saved.</p>
@@ -58,7 +57,6 @@ class DemoModeUI {
       </div>
       <div class="demo-banner__actions">
         <div class="demo-banner__timer" id="demo-timer">
-          <span>⏱️</span>
           <span id="demo-time-remaining">--:--</span>
         </div>
         <button class="demo-banner__button" onclick="demoModeUI.resetSession()">
@@ -102,7 +100,7 @@ class DemoModeUI {
 
       const badge = document.createElement('span');
       badge.className = 'demo-badge demo-badge--small';
-      badge.innerHTML = '🎭 Demo';
+  badge.innerHTML = 'Demo';
 
       // Try to add to header or prepend to element
       const header = element.querySelector('.card-header, .item-header, h3, h4');

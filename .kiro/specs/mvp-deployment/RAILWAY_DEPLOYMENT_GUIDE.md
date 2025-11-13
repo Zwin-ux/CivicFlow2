@@ -169,9 +169,9 @@ If deployment hasn't started automatically:
 1. Click on the deployment in progress
 2. View "Build Logs" tab
 3. Watch for:
-   - ✓ Dependencies installed
-   - ✓ TypeScript compilation successful
-   - ✓ Build completed
+   -  Dependencies installed
+   -  TypeScript compilation successful
+   -  Build completed
 
 **Common Build Issues:**
 - **TypeScript errors:** Fix in code and push again
@@ -189,9 +189,9 @@ After build completes, watch "Deploy Logs":
 **Expected Output:**
 ```
 Running database migrations...
-✓ Migrations completed
+ Migrations completed
 Seeding demo data...
-✓ Demo data seeded
+ Demo data seeded
 Server listening on port 3000
 ```
 
@@ -292,12 +292,12 @@ npm run verify-deployment
 
 **Expected Output:**
 ```
-✓ Health check passed
-✓ Demo applicant login successful
-✓ Demo staff login successful
-✓ Demo admin login successful
-✓ Demo data verified
-✓ All tests passed
+ Health check passed
+ Demo applicant login successful
+ Demo staff login successful
+ Demo admin login successful
+ Demo data verified
+ All tests passed
 ```
 
 ---
@@ -416,16 +416,16 @@ After successful deployment:
 
 ## Security Reminders
 
-- ✓ Never commit secrets to Git
-- ✓ Rotate JWT_SECRET and ENCRYPTION_KEY regularly
-- ✓ Use environment variables for all secrets
-- ✓ Enable HTTPS (Railway does this automatically)
-- ✓ Update CORS_ORIGIN to specific domain
-- ✓ Monitor access logs for suspicious activity
+-  Never commit secrets to Git
+-  Rotate JWT_SECRET and ENCRYPTION_KEY regularly
+-  Use environment variables for all secrets
+-  Enable HTTPS (Railway does this automatically)
+-  Update CORS_ORIGIN to specific domain
+-  Monitor access logs for suspicious activity
 
 ---
 
-## Deployment Complete! 🎉
+## Deployment Complete! 
 
 Your Government Lending CRM MVP is now live on Railway!
 

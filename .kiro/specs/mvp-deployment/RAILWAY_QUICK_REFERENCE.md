@@ -1,6 +1,6 @@
 # Railway Deployment Quick Reference Card
 
-## 🚀 Quick Start (5 Minutes)
+##  Quick Start (5 Minutes)
 
 ### 1. Create Railway Project
 ```
@@ -13,8 +13,8 @@
 ### 2. Add Services
 ```
 Click "New" → "Database" → Add:
-  ✓ PostgreSQL
-  ✓ Redis
+   PostgreSQL
+   Redis
 ```
 
 ### 3. Configure Environment Variables
@@ -50,7 +50,7 @@ Login: demo-applicant / Demo123!
 
 ---
 
-## 📋 Pre-Deployment Checklist
+##  Pre-Deployment Checklist
 
 Run before deploying:
 ```bash
@@ -59,12 +59,12 @@ npm run pre-deployment-check
 
 Expected output:
 ```
-✅ All critical checks passed! Ready for deployment.
+[OK] All critical checks passed! Ready for deployment.
 ```
 
 ---
 
-## 🔐 Generate Secrets
+## Secure Generate Secrets
 
 ```bash
 npm run generate-secrets
@@ -74,7 +74,7 @@ Copy the output to Railway environment variables.
 
 ---
 
-## 🔍 Verify Deployment
+##  Verify Deployment
 
 After deployment:
 ```bash
@@ -87,7 +87,7 @@ npm run verify-deployment
 
 ---
 
-## 👥 Demo User Credentials
+##  Demo User Credentials
 
 **Applicant:**
 - Username: `demo-applicant`
@@ -106,7 +106,7 @@ npm run verify-deployment
 
 ---
 
-## 🛠️ Common Commands
+## Tools Common Commands
 
 ### View Logs
 ```
@@ -130,7 +130,7 @@ Railway Dashboard → Service → Variables → Edit → Update Variables
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Build Fails
 ```
@@ -171,7 +171,7 @@ Railway Dashboard → Service → Variables → Edit → Update Variables
 
 ---
 
-## 📊 Monitoring
+## Metrics Monitoring
 
 ### View Metrics
 ```
@@ -198,7 +198,7 @@ Expected: { "status": "healthy", ... }
 
 ---
 
-## 💰 Cost Management
+##  Cost Management
 
 **Hobby Plan:** $5/month
 - 512MB RAM
@@ -216,7 +216,7 @@ Railway Dashboard → Usage
 
 ---
 
-## 🔒 Security Checklist
+## Secure Security Checklist
 
 - [ ] JWT_SECRET is unique and secure (32+ chars)
 - [ ] ENCRYPTION_KEY is unique and secure (32+ chars)
@@ -227,7 +227,7 @@ Railway Dashboard → Usage
 
 ---
 
-## 📞 Support
+##  Support
 
 - **Railway Docs:** https://docs.railway.app
 - **Railway Discord:** https://discord.gg/railway
@@ -236,7 +236,7 @@ Railway Dashboard → Usage
 
 ---
 
-## ⚡ Quick Commands Reference
+##  Quick Commands Reference
 
 ```bash
 # Generate secrets
@@ -266,7 +266,7 @@ npm run verify-deployment
 
 ---
 
-## 🎯 Success Criteria
+## Target Success Criteria
 
 Deployment is successful when:
 - [ ] Health check returns "healthy"
@@ -278,7 +278,7 @@ Deployment is successful when:
 
 ---
 
-## 📝 Post-Deployment Tasks
+##  Post-Deployment Tasks
 
 1. **Update CORS:**
    ```
@@ -302,7 +302,7 @@ Deployment is successful when:
 
 ---
 
-## 🎉 Deployment Complete!
+##  Deployment Complete!
 
 Your Government Lending CRM MVP is live!
 

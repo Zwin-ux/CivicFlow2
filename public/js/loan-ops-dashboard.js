@@ -357,7 +357,7 @@ const WebSocketManager = {
         
         // Show prominent warning notification
         Utils.showToast(
-            `⚠️ SLA Warning: Application ${appIdShort} ${applicantName ? `(${applicantName})` : ''} is approaching deadline`,
+            `[WARN] SLA Warning: Application ${appIdShort} ${applicantName ? `(${applicantName})` : ''} is approaching deadline`,
             'warning'
         );
         
@@ -382,7 +382,7 @@ const WebSocketManager = {
         
         // Show critical error notification
         Utils.showToast(
-            `🚨 SLA Breach: Application ${appIdShort} ${applicantName ? `(${applicantName})` : ''} has exceeded deadline!`,
+            ` SLA Breach: Application ${appIdShort} ${applicantName ? `(${applicantName})` : ''} has exceeded deadline!`,
             'error'
         );
         

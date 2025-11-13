@@ -25,7 +25,7 @@
                 <li><a href="#" id="logout-btn">Logout</a></li>
             </ul>
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-                <span class="theme-icon">🌙</span>
+                <span class="theme-icon"></span>
             </button>
         </div>
     </nav>
@@ -175,7 +175,7 @@
                             </div>
                             <div id="ai-analysis-results" class="ai-analysis-grid">
                                 <div class="ai-metric-card">
-                                    <div class="metric-icon">📊</div>
+                                    <div class="metric-icon">Metrics</div>
                                     <div class="metric-content">
                                         <div class="metric-label">Document Quality</div>
                                         <div class="metric-value" id="ai-quality-score">--</div>
@@ -183,7 +183,7 @@
                                     </div>
                                 </div>
                                 <div class="ai-metric-card">
-                                    <div class="metric-icon">🎯</div>
+                                    <div class="metric-icon">Target</div>
                                     <div class="metric-content">
                                         <div class="metric-label">Extraction Confidence</div>
                                         <div class="metric-value" id="ai-extraction-confidence">--</div>
@@ -191,7 +191,7 @@
                                     </div>
                                 </div>
                                 <div class="ai-metric-card">
-                                    <div class="metric-icon">⚠️</div>
+                                    <div class="metric-icon">[WARN]</div>
                                     <div class="metric-content">
                                         <div class="metric-label">Risk Score</div>
                                         <div class="metric-value" id="ai-risk-score">--</div>
@@ -199,7 +199,7 @@
                                     </div>
                                 </div>
                                 <div class="ai-metric-card">
-                                    <div class="metric-icon">✓</div>
+                                    <div class="metric-icon"></div>
                                     <div class="metric-content">
                                         <div class="metric-label">AI Recommendation</div>
                                         <div class="metric-value" id="ai-recommendation">--</div>
@@ -232,7 +232,7 @@
                         <!-- Anomaly Alerts -->
                         <div id="anomaly-alerts-section" class="review-section" style="display: none;">
                             <div class="section-header">
-                                <h3>⚠️ Anomaly Alerts</h3>
+                                <h3>[WARN] Anomaly Alerts</h3>
                                 <span class="badge badge-error" id="anomaly-count">0</span>
                             </div>
                             <div id="anomaly-alerts-list" class="anomaly-alerts"></div>
@@ -240,7 +240,7 @@
 
                         <!-- Fraud Flags -->
                         <div id="fraud-flags-section" class="review-section" style="display: none;">
-                            <h3>⚠️ Fraud Alerts</h3>
+                            <h3>[WARN] Fraud Alerts</h3>
                             <div id="fraud-flags-list" class="fraud-flags"></div>
                         </div>
 

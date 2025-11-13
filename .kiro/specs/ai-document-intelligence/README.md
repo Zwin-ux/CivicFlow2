@@ -6,46 +6,46 @@ This spec defines a comprehensive AI-powered document intelligence system that t
 
 ## Key Features
 
-### 🤖 AI-Powered Analysis
+###  AI-Powered Analysis
 - Automatic document quality assessment (0-100 score)
 - Smart data extraction from PDFs and images
 - Real-time quality feedback during upload
 - Parallel processing for multiple documents
 
-### 🔍 Fraud Detection
+###  Fraud Detection
 - Image manipulation detection
 - Cross-document inconsistency identification
 - Risk scoring and automatic escalation
 - Evidence collection and audit trails
 
-### 📝 LLM Integration
+###  LLM Integration
 - Automatic document summarization
 - Natural language Q&A about documents
 - AI-generated recommendations
 - Decision support with confidence scores
 
-### 🎨 Enhanced Visual Design
+###  Enhanced Visual Design
 - Modern design system with consistent tokens
 - Dark mode support with system preference detection
 - Smooth animations and micro-interactions
 - Skeleton loaders and progressive enhancement
 - WCAG 2.1 Level AA accessibility
 
-### 🎭 Demo Mode
+### Demo Demo Mode
 - Bypass authentication for demonstrations
 - Realistic sample data across all features
 - Simulated operations without data persistence
 - Automatic session reset after 30 minutes
 - Prominent demo mode indicators
 
-### 📊 Interactive Document Viewer
+### Metrics Interactive Document Viewer
 - AI annotations with bounding boxes
 - Hover tooltips showing extracted values
 - Color-coded anomaly highlights
 - Accept/reject AI suggestions
 - Document comparison view
 
-### 📈 Performance Monitoring
+###  Performance Monitoring
 - AI model accuracy tracking
 - Processing time monitoring
 - Confidence score distributions

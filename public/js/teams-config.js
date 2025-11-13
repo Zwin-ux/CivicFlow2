@@ -136,7 +136,7 @@ function displayEmptyState(message) {
     const container = document.getElementById('config-list');
     container.innerHTML = `
         <div class="empty-state">
-            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-icon"></div>
             <p>${message}</p>
         </div>
     `;
@@ -330,7 +330,7 @@ async function testConnectivity() {
             throw new Error(result.error || 'Connectivity test failed');
         }
 
-        showAlert(`✓ ${result.message}`, 'success');
+        showAlert(` ${result.message}`, 'success');
     } catch (error) {
         console.error('Connectivity test failed:', error);
         showAlert(error.message || 'Connectivity test failed', 'error');

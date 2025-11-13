@@ -9,8 +9,8 @@ const DEMO_MODE = process.env.DEMO_MODE === 'true';
 const PORT = process.env.PORT || 3000;
 const BASE_URL = `http://localhost:${PORT}`;
 
-console.log('🧪 Testing Demo Mode Response Indicators\n');
-console.log(`Demo Mode: ${DEMO_MODE ? '✅ ENABLED' : '❌ DISABLED'}`);
+console.log('Test Testing Demo Mode Response Indicators\n');
+console.log(`Demo Mode: ${DEMO_MODE ? '[OK] ENABLED' : '[FAIL] DISABLED'}`);
 console.log(`Testing against: ${BASE_URL}\n`);
 
 // Helper function to make HTTP requests
@@ -45,25 +45,25 @@ async function runTests() {
       name: 'Health Check - Basic',
       path: '/api/v1/health',
       checks: [
-        (res) => res.body.isDemo !== undefined ? '✅' : '❌',
-        (res) => res.headers['x-demo-mode'] ? '✅' : '❌',
+        (res) => res.body.isDemo !== undefined ? '[OK]' : '[FAIL]',
+        (res) => res.headers['x-demo-mode'] ? '[OK]' : '[FAIL]',
       ],
     },
     {
       name: 'Health Check - Detailed',
       path: '/api/v1/health/detailed',
       checks: [
-        (res) => res.body.isDemo !== undefined ? '✅' : '❌',
-        (res) => res.body.demoMode ? '✅' : '❌',
-        (res) => res.headers['x-demo-mode'] ? '✅' : '❌',
+        (res) => res.body.isDemo !== undefined ? '[OK]' : '[FAIL]',
+        (res) => res.body.demoMode ? '[OK]' : '[FAIL]',
+        (res) => res.headers['x-demo-mode'] ? '[OK]' : '[FAIL]',
       ],
     },
     {
       name: 'Health Check - Circuit Breakers',
       path: '/api/v1/health/circuit-breakers',
       checks: [
-        (res) => res.body.isDemo !== undefined ? '✅' : '❌',
-        (res) => res.headers['x-demo-mode'] ? '✅' : '❌',
+        (res) => res.body.isDemo !== undefined ? '[OK]' : '[FAIL]',
+        (res) => res.headers['x-demo-mode'] ? '[OK]' : '[FAIL]',
       ],
     },
   ];
@@ -72,7 +72,7 @@ async function runTests() {
 
   for (const test of tests) {
     try {
-      console.log(`📋 ${test.name}`);
+      console.log(` ${test.name}`);
       console.log(`   Path: ${test.path}`);
       
       const response = await makeRequest(test.path);
@@ -93,11 +93,11 @@ async function runTests() {
       
       console.log('');
     } catch (error) {
-      console.log(`   ❌ Error: ${error.message}\n`);
+      console.log(`   [FAIL] Error: ${error.message}\n`);
     }
   }
 
-  console.log('✅ Tests complete!\n');
+  console.log('[OK] Tests complete!\n');
   console.log('Expected behavior:');
   console.log('- All responses should have isDemo flag');
   console.log('- When DEMO_MODE=true, isDemo should be true');

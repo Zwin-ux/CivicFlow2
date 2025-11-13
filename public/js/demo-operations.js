@@ -403,7 +403,7 @@ class DemoOperations {
     document.body.appendChild(modal);
 
     setTimeout(() => {
-      modal.querySelector('.modal-content').innerHTML += '<p class="success">✓ Batch processing complete!</p>';
+      modal.querySelector('.modal-content').innerHTML += '<p class="success"> Batch processing complete!</p>';
     }, job.estimatedCompletionTime);
   }
 
@@ -418,7 +418,7 @@ class DemoOperations {
     
     modal.innerHTML = `
       <div class="modal-content">
-        <h3>⚠️ Anomalies Detected</h3>
+        <h3>[WARN] Anomalies Detected</h3>
         <div class="risk-score ${severityClass}">
           Risk Score: ${riskScore}
         </div>
