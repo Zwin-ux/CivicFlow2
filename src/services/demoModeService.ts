@@ -34,6 +34,8 @@ class DemoModeService {
   private readonly DEFAULT_DURATION_MINUTES = 30;
   private readonly CACHE_PREFIX = 'demo:session:';
   private readonly CACHE_TTL = 1800; // 30 minutes in seconds
+  // In-memory fallback store for demo sessions when DB/Redis are unavailable
+  private inMemorySessions: Map<string, DemoSession> = new Map();
 
   /**
    * Create a new demo session
@@ -62,25 +64,58 @@ class DemoModeService {
       options.userAgent || null,
     ];
 
-    const result = await pool.query(query, values);
-    const session = this.mapRowToSession(result.rows[0]);
+    try {
+      const result = await pool.query(query, values);
+      const session = this.mapRowToSession(result.rows[0]);
 
-    // Cache the session
-    await this.cacheSession(session);
+      // Cache the session
+      await this.cacheSession(session);
 
-    logger.info('Demo session created', {
-      sessionId,
-      userRole: options.userRole,
-      expiresAt,
-    });
+      logger.info('Demo session created (db)', {
+        sessionId,
+        userRole: options.userRole,
+        expiresAt,
+      });
 
-    return session;
+      return session;
+    } catch (error) {
+      // If DB is unavailable, fall back to an in-memory session so demo can start
+      const session: DemoSession = {
+        id: `inmem-${sessionId}`,
+        sessionId,
+        userRole: options.userRole,
+        startedAt: new Date(),
+        expiresAt,
+        lastActivityAt: new Date(),
+        interactions: [],
+        isActive: true,
+        ipAddress: options.ipAddress,
+        userAgent: options.userAgent,
+      };
+
+      this.inMemorySessions.set(sessionId, session);
+
+      // Best-effort cache to Redis (may warn internally)
+      await this.cacheSession(session);
+
+      logger.warn('Demo session created (in-memory fallback)', {
+        sessionId,
+        userRole: options.userRole,
+        reason: error instanceof Error ? error.message : String(error),
+      });
+
+      return session;
+    }
   }
 
   /**
    * Get demo session by session ID
    */
   async getSession(sessionId: string): Promise<DemoSession | null> {
+    // Check in-memory fallback first
+    if (this.inMemorySessions.has(sessionId)) {
+      return this.inMemorySessions.get(sessionId) || null;
+    }
     // Try cache first
     const cached = await this.getCachedSession(sessionId);
     if (cached) {
@@ -138,13 +173,26 @@ class DemoModeService {
       WHERE session_id = $1 AND is_active = true
     `;
 
-    await pool.query(query, [sessionId]);
+    try {
+      await pool.query(query, [sessionId]);
 
-    // Update cache
-    const session = await this.getSession(sessionId);
-    if (session) {
-      session.lastActivityAt = new Date();
-      await this.cacheSession(session);
+      // Update cache
+      const session = await this.getSession(sessionId);
+      if (session) {
+        session.lastActivityAt = new Date();
+        await this.cacheSession(session);
+      }
+    } catch (error) {
+      // Fallback to in-memory session if DB unavailable
+      const session = this.inMemorySessions.get(sessionId);
+      if (session) {
+        session.lastActivityAt = new Date();
+        this.inMemorySessions.set(sessionId, session);
+        // Best-effort cache
+        await this.cacheSession(session);
+      } else {
+        logger.warn('Failed to updateActivity on DB and no in-memory session found', { sessionId, error: error instanceof Error ? error.message : String(error) });
+      }
     }
   }
 
@@ -172,16 +220,31 @@ class DemoModeService {
       WHERE session_id = $2 AND is_active = true
     `;
 
-    await pool.query(query, [JSON.stringify(interaction), sessionId]);
+    try {
+      await pool.query(query, [JSON.stringify(interaction), sessionId]);
 
-    // Invalidate cache to force refresh
-    await this.invalidateCache(sessionId);
+      // Invalidate cache to force refresh
+      await this.invalidateCache(sessionId);
 
-    logger.debug('Demo interaction tracked', {
-      sessionId,
-      action,
-      page,
-    });
+      logger.debug('Demo interaction tracked (db)', {
+        sessionId,
+        action,
+        page,
+      });
+    } catch (error) {
+      // Fallback to in-memory interactions
+      const session = this.inMemorySessions.get(sessionId);
+      if (session) {
+        session.interactions.push(interaction);
+        session.lastActivityAt = new Date();
+        this.inMemorySessions.set(sessionId, session);
+        // Best-effort: update cache
+        await this.cacheSession(session);
+        logger.debug('Demo interaction tracked (in-memory fallback)', { sessionId, action, page });
+      } else {
+        logger.warn('Failed to track interaction on DB and no in-memory session found', { sessionId, error: error instanceof Error ? error.message : String(error) });
+      }
+    }
   }
 
   /**
@@ -198,12 +261,24 @@ class DemoModeService {
       WHERE session_id = $1 AND is_active = true
     `;
 
-    await pool.query(query, [sessionId]);
-
-    // Invalidate cache
-    await this.invalidateCache(sessionId);
-
-    logger.info('Demo session reset', { sessionId });
+    try {
+      await pool.query(query, [sessionId]);
+      await this.invalidateCache(sessionId);
+      logger.info('Demo session reset (db)', { sessionId });
+    } catch (error) {
+      const session = this.inMemorySessions.get(sessionId);
+      if (session) {
+        session.interactions = [];
+        session.lastActivityAt = new Date();
+        session.startedAt = new Date();
+        session.expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+        this.inMemorySessions.set(sessionId, session);
+        await this.cacheSession(session);
+        logger.info('Demo session reset (in-memory fallback)', { sessionId });
+      } else {
+        logger.warn('Failed to reset session on DB and no in-memory session found', { sessionId, error: error instanceof Error ? error.message : String(error) });
+      }
+    }
   }
 
   /**
@@ -216,12 +291,21 @@ class DemoModeService {
       WHERE session_id = $1
     `;
 
-    await pool.query(query, [sessionId]);
-
-    // Remove from cache
-    await this.invalidateCache(sessionId);
-
-    logger.info('Demo session ended', { sessionId });
+    try {
+      await pool.query(query, [sessionId]);
+      await this.invalidateCache(sessionId);
+      logger.info('Demo session ended (db)', { sessionId });
+    } catch (error) {
+      const session = this.inMemorySessions.get(sessionId);
+      if (session) {
+        session.isActive = false;
+        this.inMemorySessions.set(sessionId, session);
+        await this.invalidateCache(sessionId);
+        logger.info('Demo session ended (in-memory fallback)', { sessionId });
+      } else {
+        logger.warn('Failed to end session on DB and no in-memory session found', { sessionId, error: error instanceof Error ? error.message : String(error) });
+      }
+    }
   }
 
   /**
