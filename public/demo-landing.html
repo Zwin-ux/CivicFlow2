@@ -205,41 +205,62 @@
 
     <div class="features">
       <div class="feature">
-        <h3>AI Document Analysis</h3>
-        <p>Automatic document processing with quality scoring and data extraction</p>
+        <h3>Relationship Workbench</h3>
+        <p>Blend borrower history, outreach, and documents into one CRM-style experience.</p>
       </div>
 
       <div class="feature">
-        <h3>Fraud Detection</h3>
-        <p>Advanced anomaly detection and risk assessment powered by AI</p>
+        <h3>Pipeline Intelligence</h3>
+        <p>See where every deal sits, who owns it, and which SLAs are at risk in real time.</p>
       </div>
 
       <div class="feature">
-        <h3>Smart Insights</h3>
-        <p>AI-generated summaries and recommendations for faster decisions</p>
+        <h3>AI Document Copilot</h3>
+        <p>Automatic validation, missing item detection, and instant status memos for credit teams.</p>
       </div>
 
       <div class="feature">
-        <h3>Real-time Updates</h3>
-        <p>Live dashboard with WebSocket updates and instant notifications</p>
+        <h3>Omnichannel Follow-ups</h3>
+        <p>One-click SMS, email, or Teams reminders using templates tuned for SBA lending.</p>
       </div>
     </div>
 
     <h2 class="section-title">Select Your Role</h2>
     
-    <div class="roles">
-      <button class="role-button" onclick="startDemo(event, 'APPLICANT')">
-        Applicant Portal
+    <div class="roles" id="role-buttons">
+      <button class="role-button" data-role="APPLICANT">
+        <span class="role-label">Applicant Portal</span>
+        <small>Guided checklists + instant AI feedback</small>
       </button>
-      <button class="role-button" onclick="startDemo(event, 'REVIEWER')">
-        Staff Portal
+      <button class="role-button" data-role="REVIEWER">
+        <span class="role-label">Staff Workspace</span>
+        <small>Pipeline + borrower timeline for call prep</small>
       </button>
-      <button class="role-button" onclick="startDemo(event, 'APPROVER')">
-        Approver Dashboard
+      <button class="role-button" data-role="APPROVER">
+        <span class="role-label">Approver Dashboard</span>
+        <small>Decision-ready narratives and alerts</small>
       </button>
-      <button class="role-button" onclick="startDemo(event, 'ADMIN')">
-        Admin Dashboard
+      <button class="role-button" data-role="ADMIN">
+        <span class="role-label">Program Command</span>
+        <small>Live SLA, intake mix, and audit health</small>
       </button>
+    </div>
+
+    <div class="role-preview" id="role-preview">
+      <p class="preview-eyebrow">Role Spotlight</p>
+      <h3 id="preview-title">Select a role to see the CRM storyline</h3>
+      <p id="preview-description">Modernize lending operations with a guided workspace for every persona.</p>
+      <div class="preview-metrics">
+        <div>
+          <span class="preview-headline" id="preview-headline">Pipeline + AI coaching in one tab</span>
+          <span class="preview-stat" id="preview-heroStat">Live SLA visibility</span>
+        </div>
+        <ul id="preview-highlights">
+          <li>AI document guardrails + CRM context</li>
+          <li>Omnichannel reminders from one panel</li>
+          <li>Role-based walkthroughs & demo data</li>
+        </ul>
+      </div>
     </div>
 
     <p class="disclaimer">
@@ -251,7 +272,15 @@
   <div id="toast-container"></div>
 
   <script>
-    // Toast manager
+    const roleCatalog = {};
+    let activeRole = null;
+    const fallbackDestinations = {
+      APPLICANT: '/demo-sba.html',
+      REVIEWER: '/demo-sba.html',
+      APPROVER: '/demo-sba.html',
+      ADMIN: '/demo-sba.html',
+    };
+
     function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -265,18 +294,50 @@
       }, 3000);
     }
 
-    async function startDemo(event, role) {
-      try {
-        const button = event.target;
-        const originalText = button.textContent;
-        button.textContent = 'Starting...';
-        button.disabled = true;
+    function renderRolePreview(roleKey) {
+      const role = roleCatalog[roleKey];
+      if (!role) return;
+      activeRole = roleKey;
 
+      document.querySelectorAll('.role-button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.role === roleKey);
+      });
+
+      document.getElementById('preview-title').textContent = role.title;
+      document.getElementById('preview-description').textContent = role.description;
+      document.getElementById('preview-headline').textContent = role.headline;
+      document.getElementById('preview-heroStat').textContent = role.heroStat;
+
+      const highlights = document.getElementById('preview-highlights');
+      highlights.innerHTML = role.highlights.map(item => `<li>${item}</li>`).join('');
+    }
+
+    async function loadRoleCatalog() {
+      try {
+        const response = await fetch('/api/v1/sba-demo/roles');
+        if (!response.ok) return;
+        const data = await response.json();
+        data.roles.forEach(role => {
+          roleCatalog[role.role] = role;
+        });
+        renderRolePreview('REVIEWER');
+      } catch (error) {
+        console.warn('Failed to load role showcase', error);
+      }
+    }
+
+    async function startDemo(event, role) {
+      const button = event.currentTarget || event.target;
+      const originalLabel = button.innerHTML;
+      button.dataset.originalLabel = originalLabel;
+      button.disabled = true;
+      button.classList.add('loading');
+      button.innerHTML = '<span>Starting…</span>';
+
+      try {
         const response = await fetch('/api/v1/demo/start', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userRole: role }),
         });
 
@@ -285,7 +346,6 @@
         }
 
         const data = await response.json();
-
         sessionStorage.setItem('demo_session', data.sessionId);
         sessionStorage.setItem('demo_role', data.userRole);
         sessionStorage.setItem('demo_expires', data.expiresAt);
@@ -293,63 +353,45 @@
         showToast('Demo session started successfully!', 'success');
 
         setTimeout(() => {
-          switch (role) {
-            case 'APPLICANT':
-              window.location.href = '/applicant-portal.html';
-              break;
-            case 'REVIEWER':
-              window.location.href = '/staff-portal.html';
-              break;
-            case 'APPROVER':
-              window.location.href = '/loan-ops-dashboard.html';
-              break;
-            case 'ADMIN':
-              window.location.href = '/admin-dashboard.html';
-              break;
-            default:
-              window.location.href = '/index.html';
-          }
-        }, 500);
-
+          const roleDetails = roleCatalog[role] || {};
+          const destination = roleDetails.entryPoint || fallbackDestinations[role] || '/demo-sba.html';
+          const targetUrl = new URL(destination, window.location.origin);
+          targetUrl.searchParams.set('role', role);
+          targetUrl.searchParams.set('demoSession', data.sessionId);
+          window.location.href = `${targetUrl.pathname}${targetUrl.search}`;
+        }, 400);
       } catch (error) {
-        console.error('Error starting demo:', error);
+        console.error('Error starting demo', error);
         showToast('Failed to start demo session. Please try again.', 'error');
-        
-        const button = event.target;
-        button.textContent = button.getAttribute('data-original-text') || 'Try Again';
         button.disabled = false;
+        button.classList.remove('loading');
+        button.innerHTML = button.dataset.originalLabel || originalLabel;
       }
     }
 
-    // Check if already in demo mode
+    // Existing active session redirect
     if (sessionStorage.getItem('demo_session')) {
       const role = sessionStorage.getItem('demo_role');
       showToast('You already have an active demo session', 'info');
-      
+
       setTimeout(() => {
-        switch (role) {
-          case 'APPLICANT':
-            window.location.href = '/applicant-portal.html';
-            break;
-          case 'REVIEWER':
-            window.location.href = '/staff-portal.html';
-            break;
-          case 'APPROVER':
-            window.location.href = '/loan-ops-dashboard.html';
-            break;
-          case 'ADMIN':
-            window.location.href = '/admin-dashboard.html';
-            break;
-          default:
-            window.location.href = '/index.html';
-        }
+        const roleDetails = roleCatalog[role] || {};
+        const destination = roleDetails.entryPoint || fallbackDestinations[role] || '/demo-sba.html';
+        const targetUrl = new URL(destination, window.location.origin);
+        targetUrl.searchParams.set('role', role || 'REVIEWER');
+        targetUrl.searchParams.set('demoSession', sessionStorage.getItem('demo_session'));
+        window.location.href = `${targetUrl.pathname}${targetUrl.search}`;
       }, 1500);
     }
 
-    // Store original button text
     document.querySelectorAll('.role-button').forEach(btn => {
-      btn.setAttribute('data-original-text', btn.textContent.trim());
+      const roleKey = btn.dataset.role;
+      btn.addEventListener('click', (event) => startDemo(event, roleKey));
+      btn.addEventListener('mouseenter', () => renderRolePreview(roleKey));
+      btn.addEventListener('focus', () => renderRolePreview(roleKey));
     });
+
+    loadRoleCatalog();
   </script>
 </body>
 </html>

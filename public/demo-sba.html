@@ -31,7 +31,46 @@
         </div>
       </div>
       <p class="lead">Select your loan type, upload documents, and let OctoDoc help you identify missing items and next steps. Demo data is ephemeral.</p>
+      <div class="role-context" id="roleContext">
+        <div class="role-copy">
+          <p class="eyebrow" id="roleEyebrow">OctoDoc Relationship Cockpit</p>
+          <h2 id="roleHeadline">Modern Lending CRM + Document AI</h2>
+          <p id="roleDescription">See borrower health, pipeline momentum, and document quality in one console tailored to your role.</p>
+          <ul id="roleHighlights" class="role-highlights">
+            <li>Pipeline view that tracks SBA-ready files</li>
+            <li>AI nudges for outreach and missing items</li>
+            <li>Relationship timeline that blends every touch</li>
+          </ul>
+        </div>
+        <div class="role-metric" id="roleHeroStat">
+          <span class="metric-label">Live SLA health</span>
+          <span class="metric-value">92% on-time</span>
+        </div>
+      </div>
     </header>
+
+    <section id="sessionPulse" class="panel pulse-grid" aria-live="polite">
+      <article class="pulse-card">
+        <p class="label">Documents</p>
+        <strong id="metricDocs">0</strong>
+        <small id="metricDocsDetail">Upload files to begin</small>
+      </article>
+      <article class="pulse-card">
+        <p class="label">Quality signal</p>
+        <strong id="metricQuality">--</strong>
+        <small id="metricQualityDetail">Avg quality</small>
+      </article>
+      <article class="pulse-card">
+        <p class="label">Risk lens</p>
+        <strong id="metricRisk">LOW</strong>
+        <small id="metricRiskDetail">Avg risk</small>
+      </article>
+      <article class="pulse-card highlight" id="metricActionCard">
+        <p class="label">Next action</p>
+        <strong id="metricAction">Kick off a session</strong>
+        <small id="metricActionDetail">AI will recommend steps here</small>
+      </article>
+    </section>
 
     <section class="panel left" aria-labelledby="page-title">
       <label for="loanType">Loan type</label>
@@ -58,159 +97,76 @@
         <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload files dropzone">Drag & drop files here or click to browse</div>
       </div>
 
-      <div id="uploads" class="uploads"></div>
+      <div id="uploads" class="uploads" aria-live="polite"></div>
+
+      <section id="aiDetail" class="ai-detail" aria-live="polite">
+        <div class="section-header condensed">
+          <h3>AI Readout</h3>
+          <button id="aiDetailClear" class="ghost-btn small" type="button">Clear</button>
+        </div>
+        <div id="aiDetailContent" class="ai-detail__body">
+          <p class="empty-state">Select a processed document to see AI quality, risk, and extraction details.</p>
+        </div>
+      </section>
     </section>
 
     <aside class="panel right">
-      <h2>Agent Suggestions</h2>
-  <div id="suggestions" aria-live="polite">No suggestions yet. Upload documents to get suggestions from OctoDoc.</div>
+      <div class="section-header">
+        <div>
+          <h2>Relationship Coach</h2>
+          <p class="section-subhead">AI nudges across CRM + docs</p>
+        </div>
+        <button id="refreshCrm" class="ghost-btn" aria-label="Refresh CRM insights">↻</button>
+      </div>
+      <div id="suggestions" aria-live="polite">No suggestions yet. Upload documents to get suggestions from OctoDoc.</div>
+      <div id="insightStream" class="insight-stream" aria-live="polite"></div>
+
+      <section class="crm-block">
+        <div class="section-header condensed">
+          <h3>Pipeline Pulse</h3>
+        </div>
+        <div id="pipelineStages" class="pipeline-list"></div>
+      </section>
+
+      <section class="crm-block">
+        <div class="section-header condensed">
+          <h3>Relationship Focus</h3>
+        </div>
+        <div id="relationshipList" class="relationship-list"></div>
+      </section>
+
+      <section class="crm-block">
+        <div class="section-header condensed">
+          <h3>Next Actions</h3>
+        </div>
+        <div id="actionItems" class="action-list"></div>
+        <div id="quickReplies" class="quick-replies"></div>
+      </section>
+
+      <section class="crm-block">
+        <div class="section-header condensed">
+          <h3>Relationship Timeline</h3>
+        </div>
+        <div id="relationshipTimeline" class="timeline"></div>
+      </section>
 
       <div class="actions">
         <button id="scheduleBtn" disabled class="secondary" aria-disabled="true">Request Pickup</button>
       </div>
+
+      <section class="crm-block control-room">
+        <div class="section-header condensed">
+          <h3>Demo Control Room</h3>
+          <button id="controlRefresh" class="ghost-btn small" type="button" aria-label="Refresh control room status">Refresh</button>
+        </div>
+        <div id="controlOverview" class="control-overview" aria-live="polite">
+          <p class="empty-state">Control signals load once a demo session is active.</p>
+        </div>
+      </section>
     </aside>
   </main>
 
-<script>
-const apiBase = '/api/v1/sba-demo';
-let session = null;
-let polling = {};
-
-function el(id){return document.getElementById(id)}
-
-function renderChecklist(checklist){
-  const container = el('checklist');
-  container.innerHTML = '';
-  checklist.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'check-item';
-    div.innerHTML = `<input type="checkbox" data-id="${item.id}" ${item.required? 'checked':''} disabled> <strong>${item.title}</strong> ${item.required?'<em>(required)</em>':''}`;
-    container.appendChild(div);
-  });
-}
-
-async function startDemo(){
-  const loanType = el('loanType').value;
-  const applicantName = el('applicantName').value;
-  const email = el('email').value;
-  el('startBtn').disabled = true;
-  el('startBtn').textContent = 'Starting...';
-  const res = await fetch(apiBase + '/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({loanType, applicantName, email})});
-  if (!res.ok) { alert('Failed to start demo'); return; }
-  session = await res.json();
-  el('scheduleBtn').disabled = false;
-  el('scheduleBtn').setAttribute('aria-disabled','false');
-  el('suggestions').innerText = 'Upload your documents to get suggestions.';
-  fetchDocs();
-  el('startBtn').textContent = 'Start OctoDoc Demo';
-  el('startBtn').disabled = false;
-}
-
-async function fetchDocs(){
-  if (!session) return;
-  const res = await fetch(apiBase + '/documents/' + session.sessionId);
-  if (!res.ok) return;
-  const data = await res.json();
-  renderChecklist(data.requiredChecklist || []);
-  renderUploads(data.documents || []);
-}
-
-function renderUploads(docs){
-  const container = el('uploads');
-  container.innerHTML = '';
-  docs.forEach(d=>{
-    const div = document.createElement('div');
-    div.className = 'upload-item';
-    div.innerHTML = `<div><strong>${d.originalName}</strong> <small>${(d.size/1024).toFixed(1)} KB</small></div>
-      <div>Status: <span class="status">${d.status}</span></div>
-      <div class="validation">${d.validation? (d.validation.accepted? 'Accepted':'Needs attention') : 'Processing...'}</div>`;
-    container.appendChild(div);
-    // start polling jobs if processing
-  });
-}
-
-async function handleFiles(files){
-  if (!session) { alert('Start a demo session first'); return; }
-  for (const file of files){
-    const form = new FormData();
-    form.append('sessionId', session.sessionId);
-    form.append('file', file, file.name);
-    const res = await fetch(apiBase + '/upload', { method: 'POST', body: form });
-    if (!res.ok) { alert('Upload failed'); continue; }
-    const data = await res.json();
-    pollJob(data.jobId);
-    fetchDocs();
-  }
-}
-
-function pollJob(jobId){
-  if (polling[jobId]) return;
-  polling[jobId] = setInterval(async ()=>{
-    const res = await fetch(apiBase + '/status/' + jobId);
-    if (!res.ok){ clearInterval(polling[jobId]); delete polling[jobId]; return; }
-    const data = await res.json();
-    if (data.status === 'done' || data.status === 'failed'){
-      clearInterval(polling[jobId]); delete polling[jobId];
-      fetchDocs();
-      // Announce completion and update suggestions
-      updateSuggestions();
-      const msg = document.createElement('div');
-      msg.className = 'visually-hidden';
-      msg.setAttribute('role','status');
-      msg.textContent = `Document processing ${data.status}`;
-      document.body.appendChild(msg);
-      setTimeout(()=> msg.remove(),2000);
-    }
-  }, 800);
-}
-
-async function updateSuggestions(){
-  // Simple client-side heuristics: if any doc needs_attention, show suggestion
-  if (!session) return;
-  const res = await fetch(apiBase + '/documents/' + session.sessionId);
-  if (!res.ok) return;
-  const data = await res.json();
-  const needs = data.documents.filter(d=>d.status === 'needs_attention');
-  const suggestions = el('suggestions');
-  if (needs.length === 0){ suggestions.innerHTML = '<div class="ok">All documents look good so far.</div>'; return; }
-  suggestions.innerHTML = '';
-  needs.forEach(d=>{
-    const div = document.createElement('div');
-    div.className = 'suggestion';
-    div.innerHTML = `<strong>${d.originalName}</strong>: ${d.validation?.reasons.join(', ')} <button data-doc="${d.documentId}" class="revalidate">Re-run validation</button>`;
-    suggestions.appendChild(div);
-  });
-}
-
-// Event wiring
-el('startBtn').addEventListener('click', startDemo);
-el('fileInput').addEventListener('change', (e)=> handleFiles(e.target.files));
-const dropzone = el('dropzone');
-dropzone.addEventListener('click', ()=> el('fileInput').click());
-dropzone.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el('fileInput').click(); } });
-dropzone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzone.classList.add('drag'); });
-dropzone.addEventListener('dragleave', (e)=>{ dropzone.classList.remove('drag'); });
-dropzone.addEventListener('drop', (e)=>{ e.preventDefault(); dropzone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
-
-el('scheduleBtn').addEventListener('click', async ()=>{
-  if (!session) return;
-  const res = await fetch(apiBase + '/schedule-pickup', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ sessionId: session.sessionId }) });
-  if (!res.ok) { alert('Failed to schedule'); return; }
-  const data = await res.json();
-  alert('Pickup scheduled: ' + new Date(data.scheduledAt).toLocaleString());
-});
-
-// Delegated listener for revalidate
-el('suggestions').addEventListener('click', async (e)=>{
-  if (e.target && e.target.matches('.revalidate')){
-    const docId = e.target.dataset.doc;
-    const res = await fetch(apiBase + '/validate/' + docId, { method: 'POST' });
-    if (res.ok){ const data = await res.json(); pollJob(data.jobId); }
-  }
-});
-
-// keyboard shortcut: Enter on start button
-el('startBtn').addEventListener('keydown', (e)=>{ if (e.key === 'Enter') startDemo(); });
-</script>
+<script src="/js/demo-sba.js"></script>
 </body>
 </html>
+

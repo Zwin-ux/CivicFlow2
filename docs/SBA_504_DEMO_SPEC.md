@@ -58,6 +58,21 @@ POST /schedule-pickup
 - Request: { sessionId, preferredDate, contactPhone }
 - Response: 200: { confirmationId, scheduledAt }
 
+GET /analysis/:documentId
+- Response 200: { document, validation, analysis } where `analysis` includes quality, AI, risk, suggestion, and processing metadata. 404 if document pending.
+
+GET /analytics/:sessionId
+- Response 200: Session-level analytics summary (doc counts, averages, recommended actions).
+
+GET /insights/:sessionId
+- Response 200: Bundle of session metadata, analytics, and document snapshots (quality/risk scores, AI summaries, suggestions).
+
+GET /stream/:sessionId (Server-Sent Events)
+- Stream payload: { analytics, crm, timeline, documents } emitted every few seconds to keep CRM widgets and doc cards fresh.
+
+GET /control-room/overview
+- Response 200: { demoMode, redis, sessions, recentDocuments } used for the on-page control room / observability widget.
+
 Agentic behaviors
 - Adaptive checklist: required checklist depends on loanType and dynamically updates when the user uploads files or marks substitutions.
 - Auto-scan + classification: detect document type from filename and OCR snippets; if documentType missing, propose one.

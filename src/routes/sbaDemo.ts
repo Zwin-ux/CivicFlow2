@@ -3,6 +3,8 @@ import multer from 'multer';
 import sbaDemoService from '../services/sbaDemoService';
 import { requireDemoMode } from '../middleware/demoMode';
 import logger from '../utils/logger';
+import demoModeManager from '../services/demoModeManager';
+import redisClient from '../config/redis';
 
 const router = express.Router();
 const upload = multer({ limits: { fileSize: 25 * 1024 * 1024 } }); // 25MB
@@ -42,7 +44,7 @@ router.post('/upload', upload.single('file'), async (req: Request, res: Response
 router.get('/status/:jobId', async (req: Request, res: Response) => {
   try {
     const { jobId } = req.params;
-    const job = await (sbaDemoService.getStatus(jobId) as any);
+    const job = await sbaDemoService.getStatus(jobId);
     res.json(job);
   } catch (error: any) {
     res.status(404).json({ error: { code: 'JOB_NOT_FOUND', message: 'Job not found' } });
@@ -80,6 +82,133 @@ router.post('/schedule-pickup', (req: Request, res: Response) => {
     res.json(result);
   } catch (error: any) {
     res.status(500).json({ error: { code: 'SCHEDULE_FAILED', message: 'Failed to schedule pickup' } });
+  }
+});
+
+// Document analysis detail
+router.get('/analysis/:documentId', (req: Request, res: Response) => {
+  try {
+    const { documentId } = req.params;
+    const payload = sbaDemoService.getDocumentAnalysis(documentId);
+    res.json(payload);
+  } catch (error: any) {
+    res.status(404).json({ error: { code: 'DOCUMENT_NOT_READY', message: error.message || 'Document not found' } });
+  }
+});
+
+// Session analytics snapshot
+router.get('/analytics/:sessionId', (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+    const analytics = sbaDemoService.getSessionAnalyticsSnapshot(sessionId);
+    res.json(analytics);
+  } catch (error: any) {
+    res.status(404).json({ error: { code: 'SESSION_NOT_FOUND', message: 'Session not found' } });
+  }
+});
+
+// Session insights bundle
+router.get('/insights/:sessionId', (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+    const insights = sbaDemoService.getSessionInsights(sessionId);
+    res.json(insights);
+  } catch (error: any) {
+    res.status(404).json({ error: { code: 'SESSION_NOT_FOUND', message: 'Session not found' } });
+  }
+});
+
+// Live stream (Server Sent Events)
+router.get('/stream/:sessionId', (req: Request, res: Response) => {
+  const { sessionId } = req.params;
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  (res as any).flushHeaders?.();
+
+  const pushUpdate = () => {
+    try {
+      const payload = {
+        analytics: sbaDemoService.getSessionAnalyticsSnapshot(sessionId),
+        crm: sbaDemoService.getCrmSnapshot(sessionId),
+        timeline: sbaDemoService.getRelationshipTimeline(sessionId),
+        documents: sbaDemoService.getSessionInsights(sessionId).documents,
+      };
+      res.write(`data: ${JSON.stringify(payload)}\n\n`);
+    } catch (error: any) {
+      res.write(`event: error\ndata: ${JSON.stringify({ message: error.message || 'Session not found' })}\n\n`);
+      clearInterval(streamInterval);
+      res.end();
+    }
+  };
+
+  const streamInterval = setInterval(pushUpdate, 5000);
+  pushUpdate();
+
+  req.on('close', () => {
+    clearInterval(streamInterval);
+  });
+});
+
+// CRM showcase snapshot
+router.get('/crm/:sessionId/overview', (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+    const overview = sbaDemoService.getCrmSnapshot(sessionId);
+    res.json(overview);
+  } catch (error: any) {
+    res.status(404).json({ error: { code: 'SESSION_NOT_FOUND', message: 'Session not found' } });
+  }
+});
+
+// Relationship timeline
+router.get('/crm/:sessionId/timeline', (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+    const timeline = sbaDemoService.getRelationshipTimeline(sessionId);
+    res.json({ events: timeline });
+  } catch (error: any) {
+    res.status(404).json({ error: { code: 'SESSION_NOT_FOUND', message: 'Session not found' } });
+  }
+});
+
+// Role showcase catalog
+router.get('/roles', (_req: Request, res: Response) => {
+  res.json({ roles: sbaDemoService.getRoleShowcases() });
+});
+
+router.get('/roles/:role', (req: Request, res: Response) => {
+  const role = sbaDemoService.getRoleShowcase(req.params.role);
+  if (!role) {
+    return res.status(404).json({ error: { code: 'ROLE_NOT_FOUND', message: 'Role not found' } });
+  }
+  return res.json(role);
+});
+
+// Control room overview (demo mode + infra status)
+router.get('/control-room/overview', async (_req: Request, res: Response) => {
+  try {
+    const demoMode = demoModeManager.getStatus();
+    let redisHealthy = true;
+    try {
+      redisHealthy = await redisClient.healthCheck();
+    } catch (error) {
+      logger.warn('Redis health check (control room) failed', { error });
+      redisHealthy = false;
+    }
+
+    res.json({
+      demoMode,
+      redis: {
+        healthy: redisHealthy,
+        inMemory: redisClient.isDemoMode(),
+      },
+      sessions: sbaDemoService.getAllSessionAnalytics(),
+      recentDocuments: sbaDemoService.getRecentDocuments(),
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: { code: 'CONTROL_OVERVIEW_FAILED', message: error.message || 'Failed to load control overview' } });
   }
 });
 

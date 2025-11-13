@@ -5,10 +5,14 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy package files
+# Copying package files first so we can install dependencies in the builder
 COPY package*.json ./
 
-# Install ALL dependencies (including dev dependencies for build)
-RUN npm ci && \
+# Install ALL dependencies (including dev dependencies needed for the build)
+# Skip Chromium download during install to keep builder fast; visual tests can
+# install Chromium locally when needed. This is safe because Chromium is not
+# required for the production image.
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm install && \
     npm cache clean --force
 
 # Copy source code
@@ -30,11 +34,12 @@ RUN addgroup -g 1001 -S nodejs && \
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (use the builder's package-lock.json so `npm ci` can run reproducibly)
+COPY --from=builder /app/package*.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production && \
+# Install production dependencies only (omit dev dependencies)
+# Using `npm ci --omit=dev` here will use the lockfile produced in the builder stage.
+RUN npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy built application from builder
