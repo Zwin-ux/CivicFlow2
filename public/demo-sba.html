@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>OctoDoc — SBA Documentation Drop-off (Demo)</title>
+  <link rel="stylesheet" href="/styles/tokens.css">
   <link rel="stylesheet" href="/css/sba-demo.css">
 </head>
 <body>
@@ -29,6 +30,9 @@
           <h1 id="page-title">OctoDoc</h1>
           <p class="tag">SBA Documentation Drop-off — Interactive Demo</p>
         </div>
+      </div>
+      <div class="hero-meta">
+        <span id="demoBadge" class="demo-pill" role="status" aria-live="polite" aria-label="Demo mode badge">Demo mode · idle</span>
       </div>
       <p class="lead">Select your loan type, upload documents, and let OctoDoc help you identify missing items and next steps. Demo data is ephemeral.</p>
       <div class="role-context" id="roleContext">
@@ -92,12 +96,14 @@
     </section>
 
     <section class="panel middle">
-      <div id="uploader" class="uploader">
-        <input id="fileInput" type="file" multiple aria-label="Upload documents" />
-        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload files dropzone">Drag & drop files here or click to browse</div>
+      <div id="react-intake" class="uploader">
+        <div class="dropzone" tabindex="0" role="button" aria-label="Loading intake component">Loading intake …</div>
       </div>
 
       <div id="uploads" class="uploads" aria-live="polite"></div>
+      <section id="processingTimeline" class="processing-timeline" aria-live="polite">
+        <p class="empty-state">Uploads stream through OctoDoc's stages here.</p>
+      </section>
 
       <section id="aiDetail" class="ai-detail" aria-live="polite">
         <div class="section-header condensed">
@@ -166,6 +172,9 @@
     </aside>
   </main>
 
+<script src="/js/demo-stream.js" defer></script>
+<script src="/js/demo-events.js" defer></script>
+<script src="/js/bundles/demo-intake.js" defer></script>
 <script src="/js/demo-sba.js"></script>
 </body>
 </html>

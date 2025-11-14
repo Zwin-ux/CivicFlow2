@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Investor Demo - OctoDoc</title>
+    <link rel="stylesheet" href="/styles/tokens.css">
     <link rel="stylesheet" href="/css/professional-theme.css">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/components/demo-indicator.css">
@@ -22,6 +23,24 @@
             --border-color: #e5e7eb;
             --text-primary: #1f2937;
             --text-secondary: #6b7280;
+        }
+
+        .demo-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: rgba(86, 245, 197, 0.18);
+            color: #065f46;
+        }
+
+        .demo-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
 
         * {
@@ -136,6 +155,14 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
         }
 
         .hero-buttons {
@@ -362,6 +389,10 @@
                 Live Interactive Demo
             </div>
             <h1>Transform Government Lending with AI</h1>
+            <div class="hero-meta">
+                <span class="demo-pill" data-demo-status>Demo mode · idle</span>
+                <p class="demo-hint" data-demo-hint>Waiting for OctoDoc session…</p>
+            </div>
             <p>Experience a fully functional Document Intelligence Platform with AI-powered document processing, fraud detection, and real-time insights. Process loans 10x faster with 95% accuracy.</p>
             <div class="hero-buttons">
                 <a href="/investor-dashboard.html" class="btn btn-primary">
@@ -639,7 +670,10 @@
     <script src="/js/components/demo-indicator.js"></script>
     <script src="/js/api-client.js"></script>
     <script src="/js/demo-investor-enhanced.js"></script>
-    <script></script>
+    <script src="/js/components/demo-mode.js" defer></script>
+    <script src="/js/demo-stream.js" defer></script>
+    <script src="/js/demo-events.js" defer></script>
+    <script>
         // Load demo metrics
         async function loadMetrics() {
             const container = document.getElementById('metrics-preview');

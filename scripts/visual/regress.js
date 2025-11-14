@@ -12,21 +12,27 @@ const pixelmatch = require('pixelmatch');
   const currentPath = path.join(outDir, 'current-demo-sba.png');
   const diffPath = path.join(outDir, 'diff-demo-sba.png');
 
-  const demoPath = path.resolve(__dirname, '../../public/demo-sba.html');
-  const fileUrl = `file://${demoPath}`;
+  const demoPath = process.env.VISUAL_BASE_URL || 'http://localhost:3000/demo-sba';
+  const fallbackPath = path.resolve(__dirname, '../../public/demo-sba.html');
+  const targetUrl = demoPath.startsWith('http') ? demoPath : `file://${fallbackPath}`;
 
   console.log('Launching headless browser...');
   const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   try {
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 900, deviceScaleFactor: 1 });
-    console.log('Opening demo page:', fileUrl);
-    await page.goto(fileUrl, { waitUntil: 'networkidle2' });
-    // Wait a moment for fonts/styles to settle
-    await page.waitForTimeout(600);
+    await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1 });
+    console.log('Opening demo page:', targetUrl);
+    await page.goto(targetUrl, { waitUntil: 'networkidle2' });
+    await page.waitForSelector('.demo-ready', { timeout: 8000 }).catch(() => {
+      console.warn('demo-ready class not detected; continuing after grace period.');
+    });
+    await page.waitForTimeout(400);
 
-    // Dismiss any dialogs (none expected) and capture screenshot
-    await page.screenshot({ path: currentPath, fullPage: false });
+    await page.screenshot({
+      path: currentPath,
+      fullPage: false,
+      clip: { x: 0, y: 0, width: 1280, height: 800 },
+    });
     console.log('Captured screenshot to', currentPath);
 
     if (!fs.existsSync(baselinePath)) {

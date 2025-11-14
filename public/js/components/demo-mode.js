@@ -2,6 +2,8 @@
  * Demo Mode UI Components
  */
 
+const DEMO_EVENT_CHANNEL = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('octodoc-demo-bus') : null;
+
 class DemoModeUI {
   constructor() {
     this.sessionId = null;
@@ -21,6 +23,7 @@ class DemoModeUI {
 
     // Add demo mode class to body
     document.body.classList.add('demo-mode-active');
+    document.body.dataset.demoMode = 'active';
 
     // Show demo banner
     this.showBanner();
@@ -35,6 +38,8 @@ class DemoModeUI {
     sessionStorage.setItem('demo_session', sessionId);
     sessionStorage.setItem('demo_role', userRole);
     sessionStorage.setItem('demo_expires', expiresAt);
+
+    this.broadcastState('active', { sessionId, userRole, expiresAt });
   }
 
   /**
@@ -72,6 +77,12 @@ class DemoModeUI {
     this.bannerElement = banner;
   }
 
+  broadcastState(state, context = {}) {
+    const detail = { state, context };
+    window.dispatchEvent(new CustomEvent('demo:session-state', { detail }));
+    DEMO_EVENT_CHANNEL?.postMessage({ name: 'demo:session-state', detail });
+  }
+
   /**
    * Hide demo mode banner
    */
@@ -81,6 +92,7 @@ class DemoModeUI {
       this.bannerElement = null;
     }
     document.body.classList.remove('demo-mode-active');
+    document.body.dataset.demoMode = 'inactive';
   }
 
   /**
@@ -205,6 +217,7 @@ class DemoModeUI {
         if (window.toastManager) {
           window.toastManager.show('Demo session reset successfully', 'success');
         }
+        this.broadcastState('resetting', { sessionId: this.sessionId, userRole: this.userRole });
         
         // Reload page
         setTimeout(() => {
@@ -249,6 +262,8 @@ class DemoModeUI {
     sessionStorage.removeItem('demo_session');
     sessionStorage.removeItem('demo_role');
     sessionStorage.removeItem('demo_expires');
+    document.body.dataset.demoMode = 'inactive';
+    this.broadcastState('idle', {});
 
     // Redirect
     window.location.href = '/demo-landing.html';

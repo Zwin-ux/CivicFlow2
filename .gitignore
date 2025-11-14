@@ -5,6 +5,8 @@ yarn.lock
 # Build output
 dist/
 build/
+apps/demo-ui/.next/
+apps/demo-ui/out/
 
 # Environment variables
 .env

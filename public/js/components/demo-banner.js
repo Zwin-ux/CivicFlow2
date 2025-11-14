@@ -3,10 +3,16 @@
  * Displays a banner indicating demo mode is active with information about mock services
  */
 
+const DEMO_EVENT_CHANNEL = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('octodoc-demo-bus') : null;
+
 class DemoBanner {
   constructor() {
     this.banner = null;
     this.isDismissed = false;
+    this.stateHandler = detail => this.updateState(detail);
+    this.timelineHandler = detail => this.updateTimelineHint(detail);
+    this.statusBadge = null;
+    this.timelineHint = null;
     this.init();
   }
 
@@ -15,6 +21,8 @@ class DemoBanner {
     if (this.isDemoMode()) {
       this.createBanner();
       this.attachEventListeners();
+      this.bindLiveIndicators();
+      this.syncFromDataset();
     }
   }
 
@@ -57,15 +65,17 @@ class DemoBanner {
     this.banner.innerHTML = `
       <div class="demo-banner-content">
         <div class="demo-banner-text">
-          <div class="demo-banner-title">Demo Mode Active</div>
-          <div class="demo-banner-subtitle">
-            You're viewing a demonstration with sample data. Some services are simulated for demo purposes.
-          </div>
+          <p class="demo-banner-title">
+            <span aria-live="polite" id="demo-banner-status">Demo mode · idle</span>
+          </p>
+          <p class="demo-banner-subtitle" id="demo-banner-hint">
+            You're viewing curated data. No changes persist.
+          </p>
         </div>
       </div>
       <div class="demo-banner-actions">
         <button class="demo-banner-info-btn" id="demo-info-btn">
-          <span>Learn More</span>
+          <span>What’s simulated?</span>
         </button>
         <button class="demo-banner-close" id="demo-banner-close" aria-label="Dismiss banner">
           ×
@@ -75,6 +85,8 @@ class DemoBanner {
 
     document.body.insertBefore(this.banner, document.body.firstChild);
     document.body.classList.add('demo-banner-active');
+    this.statusBadge = this.banner.querySelector('#demo-banner-status');
+    this.timelineHint = this.banner.querySelector('#demo-banner-hint');
   }
 
   attachEventListeners() {
@@ -91,6 +103,56 @@ class DemoBanner {
     if (infoBtn) {
       infoBtn.addEventListener('click', () => this.showInfoModal());
     }
+  }
+
+  bindLiveIndicators() {
+    window.addEventListener('demo:session-state', event => this.stateHandler(event.detail));
+    window.addEventListener('demo:timeline-update', event => this.timelineHandler(event.detail));
+    if (DEMO_EVENT_CHANNEL) {
+      DEMO_EVENT_CHANNEL.addEventListener('message', event => {
+        if (event.data?.name === 'demo:session-state') {
+          this.stateHandler(event.data.detail);
+        }
+        if (event.data?.name === 'demo:timeline-update') {
+          this.timelineHandler(event.data.detail);
+        }
+      });
+    }
+  }
+
+  syncFromDataset() {
+    const state = document.body.dataset.demoMode === 'active' ? 'active' : 'idle';
+    this.updateState({ state });
+  }
+
+  updateState(detail) {
+    if (!this.statusBadge) return;
+    if (!detail || !detail.state) return;
+    const { state, context = {} } = detail;
+    if (state === 'active') {
+      const loanLabel = context.loanType === '5a' ? 'SBA 5(a)' : 'SBA 504';
+      this.statusBadge.textContent = `Demo mode · ${loanLabel}`;
+    } else if (state === 'error') {
+      this.statusBadge.textContent = 'Demo mode · retry needed';
+    } else {
+      this.statusBadge.textContent = 'Demo mode · idle';
+    }
+  }
+
+  updateTimelineHint(detail) {
+    if (!this.timelineHint || !detail) return;
+    const { jobs = [] } = detail;
+    if (!jobs.length) {
+      this.timelineHint.textContent = "Uploads stream here—click 'Start OctoDoc demo' to begin.";
+      return;
+    }
+    const active = jobs.find(job => job.status !== 'done');
+    if (active) {
+      this.timelineHint.textContent = `Processing ${active.documentId?.slice(0, 6) || 'doc'} (${active.status})`;
+      return;
+    }
+    const latest = jobs[0];
+    this.timelineHint.textContent = `Latest: ${latest.documentId?.slice(0, 6)} · ${latest.status}`;
   }
 
   dismissBanner() {

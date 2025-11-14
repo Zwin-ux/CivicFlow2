@@ -3,6 +3,8 @@ const crmBase = `${apiBase}/crm`;
 const urlParams = new URLSearchParams(window.location.search);
 const selectedRole = (urlParams.get('role') || 'REVIEWER').toUpperCase();
 const rehearsalSeed = (urlParams.get('seed') || '').trim();
+const demoBadgeEl = document.getElementById('demoBadge');
+const demoBroadcast = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('octodoc-demo-bus') : null;
 let roleShowcase = null;
 let session = null;
 const polling = {};
@@ -21,6 +23,12 @@ hydrateRoleContext();
 updateSessionPulse();
 loadControlOverview();
 attachEventListeners();
+updateDemoBadge('idle');
+
+window.addEventListener('demo:intake-upload', event => {
+  if (!event.detail?.files?.length) return;
+  handleFiles(event.detail.files);
+});
 
 function el(id) {
   return document.getElementById(id);
@@ -64,6 +72,12 @@ function formatStatusLabel(status) {
       return 'Rejected';
     case 'processing':
       return 'Processing';
+    case 'queued':
+      return 'Queued';
+    case 'done':
+      return 'Done';
+    case 'failed':
+      return 'Failed';
     default:
       return status;
   }
@@ -132,6 +146,8 @@ async function startDemo() {
     });
     if (!res.ok) throw new Error('Failed to start session');
     session = await res.json();
+    updateDemoBadge('active', { loanType: session.loanType, expiresAt: session.expiresAt });
+    document.body.dataset.demoMode = 'active';
     el('scheduleBtn').disabled = false;
     el('scheduleBtn').setAttribute('aria-disabled', 'false');
     latestDocuments = [];
@@ -149,6 +165,7 @@ async function startDemo() {
   } catch (error) {
     console.error('Unable to start demo session', error);
     alert('Failed to start demo session. Please try again.');
+    updateDemoBadge('error');
   } finally {
     startBtn.textContent = 'Start OctoDoc Demo';
     startBtn.disabled = false;
@@ -201,10 +218,12 @@ function applyStreamPayload(payload) {
     latestDocuments = mergeDocuments(latestDocuments, payload.documents);
     renderUploads(latestDocuments);
     renderSuggestionStream(latestDocuments, sessionAnalytics);
+    markDemoReady();
   }
   if (payload.jobs) {
     jobStages = payload.jobs;
     window.octodocJobs = jobStages;
+    renderProcessingTimeline(jobStages);
   }
 }
 
@@ -340,6 +359,88 @@ function renderSuggestionStream(docs, analytics) {
       }
     )
     .join('');
+}
+
+function renderProcessingTimeline(jobs) {
+  const container = el('processingTimeline');
+  if (!container) return;
+  if (!jobs || !jobs.length) {
+    container.innerHTML = '<p class="empty-state">Uploads stream through OctoDoc\'s stages here.</p>';
+    return;
+  }
+  const ordered = [...jobs].sort((a, b) => new Date(b.startedAt || 0) - new Date(a.startedAt || 0));
+  const latest = ordered.slice(0, 2);
+  container.innerHTML = latest
+    .map(job => {
+      const stageMarkup = (job.stages || [])
+        .map(
+          stage => `
+        <div class="stage-pill ${stage.status || 'pending'}">
+          <span>${stage.label}</span>
+          <small>${stage.detail || formatStageStatus(stage.status)}</small>
+        </div>`
+        )
+        .join('');
+      return `
+      <div class="processing-job">
+        <div class="processing-job__meta">
+          <div>
+            <strong>${job.status === 'done' ? 'Processed' : 'Processing'} · ${formatStatusLabel(job.status)}</strong>
+            <small>${formatTime(job.completedAt || job.startedAt)}</small>
+          </div>
+          <div>${job.documentId?.slice(0, 8) || 'pending'}</div>
+        </div>
+        <div class="processing-stage-grid">
+          ${stageMarkup}
+        </div>
+      </div>`;
+    })
+    .join('');
+  emitDemoEvent('demo:timeline-update', { jobs: latest });
+}
+
+function formatStageStatus(status) {
+  switch (status) {
+    case 'running':
+      return 'In progress';
+    case 'done':
+      return 'Complete';
+    case 'failed':
+      return 'Failed';
+    default:
+      return 'Pending';
+  }
+}
+
+function markDemoReady() {
+  if (document.body.classList.contains('demo-ready')) {
+    return;
+  }
+  const root = document.querySelector('main.container');
+  if (root) {
+    document.body.classList.add('demo-ready');
+    root.setAttribute('data-demo-ready', 'true');
+  }
+}
+
+function updateDemoBadge(state, context = {}) {
+  if (!demoBadgeEl) return;
+  let label = 'Demo mode · idle';
+  if (state === 'active') {
+    const loanLabel = context.loanType === '5a' ? 'SBA 5(a)' : 'SBA 504';
+    label = `Demo mode · ${loanLabel}`;
+  } else if (state === 'error') {
+    label = 'Demo mode · retry needed';
+  }
+  demoBadgeEl.textContent = label;
+  demoBadgeEl.dataset.state = state;
+  emitDemoEvent('demo:session-state', { state, context });
+}
+
+function emitDemoEvent(name, detail) {
+  const payload = { detail };
+  window.dispatchEvent(new CustomEvent(name, payload));
+  demoBroadcast?.postMessage({ name, detail });
 }
 
 function updateSessionPulse(analytics = null) {
@@ -687,26 +788,6 @@ function attachEventListeners() {
   startBtn.addEventListener('click', startDemo);
   startBtn.addEventListener('keydown', e => {
     if (e.key === 'Enter') startDemo();
-  });
-
-  el('fileInput').addEventListener('change', e => handleFiles(e.target.files));
-  const dropzone = el('dropzone');
-  dropzone.addEventListener('click', () => el('fileInput').click());
-  dropzone.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      el('fileInput').click();
-    }
-  });
-  dropzone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropzone.classList.add('drag');
-  });
-  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
-  dropzone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropzone.classList.remove('drag');
-    handleFiles(e.dataTransfer.files);
   });
 
   el('scheduleBtn').addEventListener('click', async () => {

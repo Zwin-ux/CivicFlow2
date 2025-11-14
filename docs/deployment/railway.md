@@ -47,6 +47,27 @@ railway up
 
 The new `railway.json` pins the builder to our Dockerfile and applies `/api/v1/health` as the deployment health-check so no further Nixpacks config is required.
 
+### Next.js demo workspace (optional second service)
+
+The new App Router UI lives in `apps/demo-ui`. When you want to host it on Railway alongside the API:
+
+```bash
+cd apps/demo-ui
+npm install   # first time only
+npm run build
+npm run start
+```
+
+In Railway create a second service:
+
+| Setting        | Value                                |
+|----------------|--------------------------------------|
+| Build command  | `npm install && npm run demo:build`  |
+| Start command  | `npm run demo:start`                 |
+| Port           | Railway `PORT` env (Next uses it)    |
+
+Point the service to the same environment variables used by the API (at minimum `NODE_ENV=production`). The UI talks to `/api/v1/*`, so when both services sit behind the same domain, add a rewrite/proxy (or environment-specific `NEXT_PUBLIC_API_BASE_URL`) if you need cross-origin access.
+
 ## 4. Post-Deploy Tasks
 
 1. **Run migrations/seeds** (each run happens inside the Railway container):

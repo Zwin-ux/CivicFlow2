@@ -431,7 +431,15 @@ class AIRecommendationEngine {
         submittedDocuments
       );
 
-      return [...recommendations, ...qualityRecommendations];
+      return [...recommendations, ...qualityRecommendations]
+        .filter(Boolean)
+        .map(rec => ({
+          ...rec,
+          description: this.trimRecommendationText(rec.description),
+          reasoning: this.trimRecommendationText(rec.reasoning),
+          suggestedAction: this.trimRecommendationText(rec.suggestedAction),
+        }))
+        .slice(0, 4);
     } catch (error: any) {
       logger.error('Failed to generate AI recommendations', {
         applicationId: application.id,
@@ -511,20 +519,38 @@ class AIRecommendationEngine {
       return this.generateBasicRecommendations(missingDocuments);
     }
 
-    return recommendations;
+    return recommendations.slice(0, 4).map(rec => ({
+      ...rec,
+      description: this.trimRecommendationText(rec.description),
+      reasoning: this.trimRecommendationText(rec.reasoning),
+      suggestedAction: this.trimRecommendationText(rec.suggestedAction),
+    }));
   }
 
   /**
    * Generate basic recommendations (fallback)
    */
   private generateBasicRecommendations(missingDocuments: string[]): DocumentRecommendation[] {
-    return missingDocuments.map((doc) => ({
-      type: 'MISSING_DOCUMENT' as const,
-      priority: 'HIGH' as const,
+    if (!missingDocuments?.length) {
+      return [
+        {
+          type: 'ADDITIONAL_INFO',
+          priority: 'LOW',
+          description: 'Everything looks good. Continue monitoring for updates.',
+          reasoning: 'No missing documents detected',
+          suggestedAction: 'Proceed with underwriting when ready.',
+          isRequired: false,
+        },
+      ];
+    }
+
+    return missingDocuments.slice(0, 4).map(doc => ({
+      type: 'MISSING_DOCUMENT',
+      priority: 'HIGH',
       documentType: doc,
-      description: `${doc} is required for this application`,
-      reasoning: 'This document is part of the standard requirements for this program type',
-      suggestedAction: `Please upload ${doc}`,
+      description: this.trimRecommendationText(`${doc} is required for this application.`),
+      reasoning: 'This document is part of the standard requirements for this program type.',
+      suggestedAction: this.trimRecommendationText(`Request ${doc} from the borrower and flag once received.`),
       isRequired: true,
     }));
   }
@@ -611,6 +637,17 @@ class AIRecommendationEngine {
     }
 
     return { required, optional };
+  }
+
+  private trimRecommendationText(value?: string, maxLength = 220): string {
+    if (!value) {
+      return '';
+    }
+    const cleaned = value.replace(/\s+/g, ' ').trim();
+    if (cleaned.length <= maxLength) {
+      return cleaned;
+    }
+    return `${cleaned.slice(0, maxLength).trim()}…`;
   }
 }
 

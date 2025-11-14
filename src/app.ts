@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -30,6 +30,24 @@ import { apiLimiter, authLimiter, uploadLimiter, aiLimiter, reportLimiter } from
 import demoModeManager from './services/demoModeManager';
 
 const app: Application = express();
+
+const setStaticCacheHeaders = (res: Response, filePath: string) => {
+  if (filePath.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
+    return;
+  }
+  if (filePath.match(/\.(css|js)$/)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    return;
+  }
+  if (filePath.match(/\.(jpg|jpeg|png|gif|svg|ico|webp)$/)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    return;
+  }
+  if (filePath.match(/\.(woff|woff2|ttf|eot)$/)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+};
 
 // Security middleware - Helmet.js for secure HTTP headers
 app.use(
@@ -165,28 +183,26 @@ app.use(wrapResponseWithDemoIndicator);
 // General API rate limiter for all routes
 app.use('/api/', apiLimiter);
 
+// Serve shared style tokens separately so /styles/tokens.css is available to demo pages
+app.use(
+  '/styles',
+  express.static(path.join(__dirname, '../styles'), {
+    maxAge: config.env === 'production' ? '1y' : 0,
+    etag: true,
+    lastModified: true,
+    setHeaders: setStaticCacheHeaders,
+  })
+);
+
 // Serve static files from public directory with caching
-app.use(express.static(path.join(__dirname, '../public'), {
-  maxAge: config.env === 'production' ? '1y' : 0, // Cache for 1 year in production
-  etag: true, // Enable ETags for cache validation
-  lastModified: true, // Enable Last-Modified header
-  setHeaders: (res, filePath) => {
-    // Set specific cache headers based on file type
-    if (filePath.endsWith('.html')) {
-      // HTML files: short cache, must revalidate
-      res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
-    } else if (filePath.match(/\.(css|js)$/)) {
-      // CSS/JS files: long cache with immutable flag
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    } else if (filePath.match(/\.(jpg|jpeg|png|gif|svg|ico|webp)$/)) {
-      // Images: long cache
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    } else if (filePath.match(/\.(woff|woff2|ttf|eot)$/)) {
-      // Fonts: long cache
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    }
-  }
-}));
+app.use(
+  express.static(path.join(__dirname, '../public'), {
+    maxAge: config.env === 'production' ? '1y' : 0, // Cache for 1 year in production
+    etag: true, // Enable ETags for cache validation
+    lastModified: true, // Enable Last-Modified header
+    setHeaders: setStaticCacheHeaders,
+  })
+);
 
 // Routes
 app.use('/api-docs', swaggerRoutes); // Swagger documentation (no version prefix)
