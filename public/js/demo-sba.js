@@ -2,6 +2,7 @@ const apiBase = '/api/v1/sba-demo';
 const crmBase = `${apiBase}/crm`;
 const urlParams = new URLSearchParams(window.location.search);
 const selectedRole = (urlParams.get('role') || 'REVIEWER').toUpperCase();
+const rehearsalSeed = (urlParams.get('seed') || '').trim();
 let roleShowcase = null;
 let session = null;
 const polling = {};
@@ -9,6 +10,7 @@ let crmSnapshot = null;
 let sessionStream = null;
 let latestDocuments = [];
 let sessionAnalytics = null;
+let jobStages = [];
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -119,10 +121,14 @@ async function startDemo() {
   startBtn.disabled = true;
   startBtn.textContent = 'Starting...';
   try {
+    const payload = { loanType, applicantName, email };
+    if (rehearsalSeed) {
+      payload.seed = rehearsalSeed;
+    }
     const res = await fetch(apiBase + '/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ loanType, applicantName, email }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error('Failed to start session');
     session = await res.json();
@@ -195,6 +201,10 @@ function applyStreamPayload(payload) {
     latestDocuments = mergeDocuments(latestDocuments, payload.documents);
     renderUploads(latestDocuments);
     renderSuggestionStream(latestDocuments, sessionAnalytics);
+  }
+  if (payload.jobs) {
+    jobStages = payload.jobs;
+    window.octodocJobs = jobStages;
   }
 }
 

@@ -12,6 +12,7 @@ export interface SBASession {
   email?: string;
   startedAt: Date;
   expiresAt: Date;
+  seed: string;
 }
 
 export interface SBADocument {
@@ -38,10 +39,28 @@ export interface SBADocument {
 
 type JobStatus = 'queued' | 'processing' | 'done' | 'failed';
 
+type JobStageStatus = 'pending' | 'running' | 'done' | 'failed';
+
+interface ProcessingStage {
+  id: 'ingest' | 'threat_scan' | 'ocr' | 'policy' | 'ai_review';
+  label: string;
+  status: JobStageStatus;
+  detail?: string;
+  startedAt?: Date;
+  completedAt?: Date;
+  durationMs?: number;
+}
+
 interface ProcessingJob {
   jobId: string;
   documentId: string;
+  sessionId: string;
   status: JobStatus;
+  stages: ProcessingStage[];
+  createdAt: Date;
+  updatedAt: Date;
+  startedAt?: Date;
+  completedAt?: Date;
   result?: DocumentProcessingResult;
 }
 
@@ -259,8 +278,10 @@ class SBADemoService {
     },
   };
 
-  startSession(loanType: LoanType, applicantName?: string, email?: string) {
+  startSession(loanType: LoanType, applicantName?: string, email?: string, seedInput?: string) {
     const sessionId = uuidv4();
+    const normalizedSeed = (seedInput || '').trim();
+    const seed = normalizedSeed.length > 0 ? normalizedSeed : uuidv4().replace(/-/g, '');
     const now = new Date();
     const session: SBASession = {
       sessionId,
@@ -269,9 +290,10 @@ class SBADemoService {
       email,
       startedAt: now,
       expiresAt: new Date(now.getTime() + this.SESSION_TTL_MS),
+      seed,
     };
     this.sessions.set(sessionId, session);
-    this.crmSnapshots.set(sessionId, this.generateCrmSnapshot(loanType, applicantName));
+    this.crmSnapshots.set(sessionId, this.generateCrmSnapshot(loanType, applicantName, sessionId));
     this.crmTimelines.set(sessionId, this.generateTimeline(applicantName));
     this.updateSessionAnalytics(sessionId);
     // Best-effort persist to Redis
@@ -285,17 +307,24 @@ class SBADemoService {
       }
     })();
 
-    logger.info('OctoDoc demo session started', { sessionId, loanType, applicantName });
+    logger.info('OctoDoc demo session started', {
+      sessionId,
+      loanType,
+      applicantName,
+      deterministicSeed: seed,
+      userProvidedSeed: Boolean(normalizedSeed.length),
+    });
     return session;
   }
 
   uploadDocument(sessionId: string, file: { originalname: string; size: number; mimetype?: string }, documentType?: string) {
-    if (!this.sessions.has(sessionId)) {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
       throw new Error('Session not found');
     }
 
     const documentId = uuidv4();
-    const classification = this.generateClassification(documentId, file.originalname, documentType);
+    const classification = this.generateClassification(session.sessionId, documentId, file.originalname, documentType);
     const canonicalType =
       classification.predictedType === 'supporting_documents' && documentType
         ? this.normalizeChecklistId(documentType)
@@ -319,7 +348,15 @@ class SBADemoService {
 
     // Create processing job
     const jobId = uuidv4();
-    const job: ProcessingJob = { jobId, documentId, status: 'queued' };
+    const job: ProcessingJob = {
+      jobId,
+      documentId,
+      sessionId,
+      status: 'queued',
+      stages: this.createProcessingStages(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
     this.jobs.set(jobId, job);
 
     // Best-effort persist document and job to Redis
@@ -335,29 +372,85 @@ class SBADemoService {
       }
     })();
 
-    // Simulate processing
-    setTimeout(() => this.runProcessingJob(jobId), 500 + Math.random() * 1200);
+    const queueDelay = this.getDeterministicDelay(session.sessionId, `queue:${jobId}`, 320, 820);
+    setTimeout(() => this.startProcessingJob(jobId), queueDelay);
 
     logger.info('Document uploaded (demo)', { sessionId, documentId, jobId, fileName: file.originalname });
 
     return { documentId, jobId, fileName: file.originalname, size: file.size, uploadedAt: doc.uploadedAt };
   }
 
-  private runProcessingJob(jobId: string) {
+  private startProcessingJob(jobId: string) {
     const job = this.jobs.get(jobId);
     if (!job) return;
+    if (job.status === 'done' || job.status === 'failed') {
+      return;
+    }
     job.status = 'processing';
+    job.startedAt = job.startedAt || new Date();
+    job.updatedAt = new Date();
+    this.jobs.set(jobId, job);
+    this.advanceJobStage(jobId, 0);
+  }
+
+  private advanceJobStage(jobId: string, stageIndex: number) {
+    const job = this.jobs.get(jobId);
+    if (!job) return;
+    const stage = job.stages[stageIndex];
+    if (!stage) {
+      this.finalizeProcessingJob(jobId);
+      return;
+    }
+    if (stage.status === 'done') {
+      this.advanceJobStage(jobId, stageIndex + 1);
+      return;
+    }
+
+    const doc = this.documents.get(job.documentId);
+    stage.status = 'running';
+    stage.startedAt = new Date();
+    job.stages[stageIndex] = stage;
+    job.updatedAt = new Date();
     this.jobs.set(jobId, job);
 
+    const delay = this.getDeterministicDelay(job.sessionId, `stage:${stage.id}:${stageIndex}:${job.jobId}`, 260, 780);
+    setTimeout(() => {
+      const activeJob = this.jobs.get(jobId);
+      if (!activeJob) return;
+      const activeStage = activeJob.stages[stageIndex];
+      if (!activeStage) return;
+      activeStage.status = 'done';
+      activeStage.completedAt = new Date();
+      activeStage.durationMs =
+        activeStage.startedAt && activeStage.completedAt
+          ? activeStage.completedAt.getTime() - activeStage.startedAt.getTime()
+          : undefined;
+      activeStage.detail = this.describeStage(activeStage.id, doc);
+      activeJob.stages[stageIndex] = activeStage;
+      activeJob.updatedAt = new Date();
+      this.jobs.set(jobId, activeJob);
+      if (stageIndex === activeJob.stages.length - 1) {
+        this.finalizeProcessingJob(jobId);
+      } else {
+        this.advanceJobStage(jobId, stageIndex + 1);
+      }
+    }, delay);
+  }
+
+  private finalizeProcessingJob(jobId: string) {
+    const job = this.jobs.get(jobId);
+    if (!job) return;
     const doc = this.documents.get(job.documentId);
     if (!doc) {
       job.status = 'failed';
+      job.completedAt = new Date();
+      job.updatedAt = new Date();
       this.jobs.set(jobId, job);
       return;
     }
 
-    const session = this.sessions.get(doc.sessionId);
-    const rand = this.createSeededRandom(`${job.jobId}:${doc.documentId}`);
+    const session = this.sessions.get(job.sessionId);
+    const rand = this.createSessionScopedRandom(job.sessionId, `final:${job.jobId}:${doc.documentId}`);
     const reasons: string[] = [];
     let accepted = true;
 
@@ -366,7 +459,7 @@ class SBADemoService {
       reasons.push('File too large (>25MB)');
     }
 
-    const ocrConfidence = Math.floor(55 + rand() * 40); // 55-95%
+    const ocrConfidence = Math.floor(55 + rand() * 40);
     const ocrText = `Simulated OCR extraction for ${doc.originalName} (confidence ${ocrConfidence}%)`;
     const extractedFields: Record<string, string | boolean> = {
       borrowerName: session?.applicantName || 'Demo Borrower',
@@ -393,12 +486,31 @@ class SBADemoService {
 
     doc.validation = validation;
     doc.status = accepted ? 'accepted' : 'needs_attention';
-    const analysis = this.generateDocumentAnalysis(doc, validation);
+    const pipeline = job.stages.map(stage => stage.label);
+    const completedAt = new Date();
+    const analysis = this.generateDocumentAnalysis(doc, validation, pipeline);
+    if (job.startedAt) {
+      analysis.processing.durationMs = completedAt.getTime() - job.startedAt.getTime();
+    }
+    analysis.processing.completedAt = completedAt;
     doc.analysis = analysis;
     this.documents.set(doc.documentId, doc);
 
     job.status = 'done';
+    job.completedAt = completedAt;
+    job.updatedAt = new Date();
     job.result = { validation, analysis };
+    job.stages = job.stages.map(stage => ({
+      ...stage,
+      status: 'done',
+      completedAt: stage.completedAt || job.completedAt,
+      durationMs:
+        stage.durationMs ||
+        (stage.startedAt && stage.completedAt
+          ? stage.completedAt.getTime() - stage.startedAt.getTime()
+          : undefined),
+      detail: stage.detail || this.describeStage(stage.id, doc),
+    }));
     this.jobs.set(jobId, job);
 
     logger.info('Document processing complete (demo)', {
@@ -422,6 +534,40 @@ class SBADemoService {
         logger.warn('Could not persist processed document/job to Redis (OctoDoc)', { documentId: doc.documentId, jobId, error: err?.message || err });
       }
     })();
+  }
+
+  private createProcessingStages(): ProcessingStage[] {
+    return [
+      { id: 'ingest', label: 'File intake', status: 'pending' },
+      { id: 'threat_scan', label: 'Threat scan', status: 'pending' },
+      { id: 'ocr', label: 'OCR & classification', status: 'pending' },
+      { id: 'policy', label: 'Policy heuristics', status: 'pending' },
+      { id: 'ai_review', label: 'AI coaching', status: 'pending' },
+    ];
+  }
+
+  private describeStage(stageId: ProcessingStage['id'], doc?: SBADocument) {
+    switch (stageId) {
+      case 'ingest':
+        return `Captured ${doc?.originalName || 'document'} metadata`;
+      case 'threat_scan':
+        return 'Virus scan cleared with no findings';
+      case 'ocr':
+        return 'OCR extracted entities + classification';
+      case 'policy':
+        return 'Policy heuristics evaluated eligibility';
+      case 'ai_review':
+        return 'AI Copilot drafted coaching guidance';
+      default:
+        return 'Processing stage completed';
+    }
+  }
+
+  private getDeterministicDelay(sessionId: string, key: string, min: number, max: number) {
+    const rand = this.createSessionScopedRandom(sessionId, key);
+    const lower = Math.max(min, 50);
+    const upper = Math.max(max, lower + 1);
+    return lower + Math.round(rand() * (upper - lower));
   }
 
   async getStatus(jobId: string): Promise<ProcessingJob> {
@@ -534,6 +680,28 @@ class SBADemoService {
     };
   }
 
+  getStreamSnapshot(sessionId: string) {
+    const insights = this.getSessionInsights(sessionId);
+    return {
+      analytics: insights.analytics,
+      crm: this.getCrmSnapshot(sessionId),
+      timeline: this.getRelationshipTimeline(sessionId),
+      documents: insights.documents,
+      jobs: this.getJobStageSnapshots(sessionId),
+    };
+  }
+
+  private getJobStageSnapshots(sessionId: string) {
+    return this.getJobsForSession(sessionId).map(job => ({
+      jobId: job.jobId,
+      documentId: job.documentId,
+      status: job.status,
+      stages: job.stages,
+      startedAt: job.startedAt,
+      completedAt: job.completedAt,
+    }));
+  }
+
   getRecentDocuments(limit: number = 5) {
     return Array.from(this.documents.values())
       .sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime())
@@ -557,6 +725,10 @@ class SBADemoService {
     );
   }
 
+  private getJobsForSession(sessionId: string): ProcessingJob[] {
+    return Array.from(this.jobs.values()).filter(job => job.sessionId === sessionId);
+  }
+
   validateDocument(documentId: string) {
     const doc = this.documents.get(documentId);
     if (!doc) throw new Error('Document not found');
@@ -569,9 +741,18 @@ class SBADemoService {
 
     // Create a re-validation job
     const jobId = uuidv4();
-    const job: ProcessingJob = { jobId, documentId, status: 'queued' };
+    const job: ProcessingJob = {
+      jobId,
+      documentId,
+      sessionId: doc.sessionId,
+      status: 'queued',
+      stages: this.createProcessingStages(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
     this.jobs.set(jobId, job);
-    setTimeout(() => this.runProcessingJob(jobId), 400 + Math.random() * 1000);
+    const delay = this.getDeterministicDelay(doc.sessionId, `queue:revalidate:${jobId}`, 320, 780);
+    setTimeout(() => this.startProcessingJob(jobId), delay);
     return { jobId };
   }
 
@@ -596,7 +777,7 @@ class SBADemoService {
       throw new Error('Session not found');
     }
 
-    const regenerated = this.generateCrmSnapshot(session.loanType, session.applicantName);
+    const regenerated = this.generateCrmSnapshot(session.loanType, session.applicantName, session.sessionId);
     this.crmSnapshots.set(sessionId, regenerated);
     return regenerated;
   }
@@ -629,7 +810,12 @@ class SBADemoService {
     return Array.from(this.documents.values()).filter(doc => doc.sessionId === sessionId);
   }
 
-  private generateClassification(documentId: string, originalName: string, providedType?: string): NonNullable<SBADocument['classification']> {
+  private generateClassification(
+    sessionId: string,
+    documentId: string,
+    originalName: string,
+    providedType?: string
+  ): NonNullable<SBADocument['classification']> {
     const heuristics = [
       { id: 'app_form', matches: ['application', '1919', 'form 1919'] },
       { id: 'tax_returns', matches: ['tax', 'irs', '1040', 'return'] },
@@ -652,11 +838,11 @@ class SBADemoService {
 
     const filenameMatch = tryMatch(originalName);
     if (filenameMatch) {
-      const rand = this.createSeededRandom(`${documentId}:${originalName}`);
+      const rand = this.createSessionScopedRandom(sessionId, `classification:${documentId}:${originalName}`);
       return { predictedType: filenameMatch.id, confidence: this.round(0.78 + rand() * 0.18, 2) };
     }
 
-    const rand = this.createSeededRandom(`${documentId}:${originalName}`);
+    const rand = this.createSessionScopedRandom(sessionId, `classification:${documentId}:${originalName}:fallback`);
     return {
       predictedType: 'supporting_documents',
       confidence: this.round(0.55 + rand() * 0.3, 2),
@@ -665,9 +851,10 @@ class SBADemoService {
 
   private generateDocumentAnalysis(
     doc: SBADocument,
-    validation: NonNullable<SBADocument['validation']>
+    validation: NonNullable<SBADocument['validation']>,
+    pipeline?: string[]
   ): DocumentAnalysis {
-    const rand = this.createSeededRandom(`analysis:${doc.documentId}`);
+    const rand = this.createSessionScopedRandom(doc.sessionId, `analysis:${doc.documentId}`);
     const resolutionDpi = 180 + Math.round(rand() * 240);
     const clarity = this.round(0.55 + rand() * 0.4, 2);
     const orientation = this.round((rand() - 0.5) * 6, 1);
@@ -742,7 +929,7 @@ class SBADemoService {
     const processing: DocumentProcessingSummary = {
       durationMs: 1200 + Math.round(rand() * 900),
       completedAt: new Date(),
-      pipeline: ['ingest', 'virus_scan', 'ocr', 'quality', 'risk'],
+      pipeline: pipeline && pipeline.length ? pipeline : ['File intake', 'Threat scan', 'OCR', 'Policy heuristics', 'AI coaching'],
     };
 
     const suggestions = this.buildDocumentSuggestions(validation, quality, ai, risk, doc);
@@ -1067,6 +1254,15 @@ class SBADemoService {
       .replace(/^_+|_+$/g, '');
   }
 
+  private createSessionScopedRandom(sessionId: string | undefined, key: string): () => number {
+    if (!sessionId) {
+      return this.createSeededRandom(`global:${key}`);
+    }
+    const session = this.sessions.get(sessionId);
+    const seed = session?.seed || sessionId;
+    return this.createSeededRandom(`${seed}:${key}`);
+  }
+
   private createSeededRandom(seed: string): () => number {
     let h = 1779033703 ^ seed.length;
     for (let i = 0; i < seed.length; i += 1) {
@@ -1117,23 +1313,41 @@ class SBADemoService {
   }
 
   private hydrateJobRecord(job: ProcessingJob): ProcessingJob {
+    if (job.createdAt) {
+      job.createdAt = new Date(job.createdAt);
+    }
+    if (job.updatedAt) {
+      job.updatedAt = new Date(job.updatedAt);
+    }
+    if (job.startedAt) {
+      job.startedAt = new Date(job.startedAt);
+    }
+    if (job.completedAt) {
+      job.completedAt = new Date(job.completedAt);
+    }
+    job.stages = (job.stages || []).map(stage => ({
+      ...stage,
+      startedAt: stage.startedAt ? new Date(stage.startedAt) : undefined,
+      completedAt: stage.completedAt ? new Date(stage.completedAt) : undefined,
+    }));
     if (job.result?.analysis?.processing?.completedAt) {
       job.result.analysis.processing.completedAt = new Date(job.result.analysis.processing.completedAt);
     }
     return job;
   }
 
-  private generateCrmSnapshot(loanType: LoanType, applicantName?: string): DemoCrmSnapshot {
-    const randomVariance = (base: number, variance: number) => {
-      return base + Math.round((Math.random() - 0.5) * variance);
+  private generateCrmSnapshot(loanType: LoanType, applicantName?: string, sessionId?: string): DemoCrmSnapshot {
+    const randomVariance = (key: string, base: number, variance: number) => {
+      const rand = this.createSessionScopedRandom(sessionId, `crm:${key}`);
+      return base + Math.round((rand() - 0.5) * variance);
     };
 
     const pipelineStages: PipelineStage[] = [
-      { stage: 'Intake', count: randomVariance(7, 2), avgAmount: randomVariance(180000, 40000), momentum: 'up', stuck: 1 },
-      { stage: 'Document Review', count: randomVariance(6, 2), avgAmount: randomVariance(240000, 50000), momentum: 'flat', stuck: 2 },
-      { stage: 'Underwriting', count: randomVariance(4, 2), avgAmount: randomVariance(360000, 60000), momentum: 'up', stuck: 1 },
-      { stage: 'Credit Committee', count: randomVariance(3, 1), avgAmount: randomVariance(415000, 40000), momentum: 'flat', stuck: 1 },
-      { stage: 'Closing', count: randomVariance(2, 1), avgAmount: randomVariance(500000, 80000), momentum: 'up', stuck: 0 },
+      { stage: 'Intake', count: randomVariance('pipeline:intake:count', 7, 2), avgAmount: randomVariance('pipeline:intake:avg', 180000, 40000), momentum: 'up', stuck: 1 },
+      { stage: 'Document Review', count: randomVariance('pipeline:review:count', 6, 2), avgAmount: randomVariance('pipeline:review:avg', 240000, 50000), momentum: 'flat', stuck: 2 },
+      { stage: 'Underwriting', count: randomVariance('pipeline:underwriting:count', 4, 2), avgAmount: randomVariance('pipeline:underwriting:avg', 360000, 60000), momentum: 'up', stuck: 1 },
+      { stage: 'Credit Committee', count: randomVariance('pipeline:committee:count', 3, 1), avgAmount: randomVariance('pipeline:committee:avg', 415000, 40000), momentum: 'flat', stuck: 1 },
+      { stage: 'Closing', count: randomVariance('pipeline:closing:count', 2, 1), avgAmount: randomVariance('pipeline:closing:avg', 500000, 80000), momentum: 'up', stuck: 0 },
     ];
 
     const borrowerRoster = [
@@ -1151,7 +1365,7 @@ class SBADemoService {
       businessName: borrower.includes(' ') ? `${borrower.split(' ')[0]} Holdings` : `${borrower} LLC`,
       stage: pipelineStages[index % pipelineStages.length].stage,
       owner: owners[index % owners.length],
-      requestedAmount: randomVariance(180000 + index * 40000, 25000),
+      requestedAmount: randomVariance(`relationship:${index}:requested`, 180000 + index * 40000, 25000),
       lastTouch: new Date(Date.now() - (index + 1) * 45 * 60 * 1000),
       nextStep: ['Schedule site visit', 'Collect 4506-T', 'Prep credit memo', 'Confirm collateral'][index % 4],
       sentiment: sentiments[index % sentiments.length],

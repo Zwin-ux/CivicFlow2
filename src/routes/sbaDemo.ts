@@ -12,12 +12,14 @@ const upload = multer({ limits: { fileSize: 25 * 1024 * 1024 } }); // 25MB
 // Start a demo session (OctoDoc)
 router.post('/start', async (req: Request, res: Response) => {
   try {
-    const { loanType, applicantName, email } = req.body;
+    const { loanType, applicantName, email, seed: bodySeed } = req.body;
+    const querySeed = typeof req.query.seed === 'string' ? req.query.seed : undefined;
+    const seed = (bodySeed || querySeed)?.toString()?.trim();
     if (!loanType || !['504', '5a'].includes(loanType)) {
       return res.status(400).json({ error: { code: 'INVALID_LOAN_TYPE', message: 'loanType must be 504 or 5a' } });
     }
 
-    const session = sbaDemoService.startSession(loanType as any, applicantName, email);
+    const session = sbaDemoService.startSession(loanType as any, applicantName, email, seed);
     res.status(201).json(session);
   } catch (error: any) {
     logger.error('Failed to start OctoDoc demo session', { error: error.message || error });
@@ -129,12 +131,7 @@ router.get('/stream/:sessionId', (req: Request, res: Response) => {
 
   const pushUpdate = () => {
     try {
-      const payload = {
-        analytics: sbaDemoService.getSessionAnalyticsSnapshot(sessionId),
-        crm: sbaDemoService.getCrmSnapshot(sessionId),
-        timeline: sbaDemoService.getRelationshipTimeline(sessionId),
-        documents: sbaDemoService.getSessionInsights(sessionId).documents,
-      };
+      const payload = sbaDemoService.getStreamSnapshot(sessionId);
       res.write(`data: ${JSON.stringify(payload)}\n\n`);
     } catch (error: any) {
       res.write(`event: error\ndata: ${JSON.stringify({ message: error.message || 'Session not found' })}\n\n`);
