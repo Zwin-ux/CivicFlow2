@@ -1,0 +1,38 @@
+@import "../../styles/tokens.css";
+@import "tailwindcss";
+
+/* CivicFlow institutional aesthetic */
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--cc-bg);
+  color: var(--cc-text);
+  font-family: var(--font-sans);
+  line-height: var(--text-base-lh);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth reset for common elements */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Accessibility: visible focus states */
+:focus-visible {
+  outline: 2px solid var(--cc-accent);
+  outline-offset: 2px;
+}
