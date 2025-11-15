@@ -27,6 +27,7 @@
     "validate-secrets": "ts-node src/scripts/generate-secrets.ts --validate",
     "pre-deployment-check": "ts-node src/scripts/pre-deployment-check.ts",
     "test:visual": "node scripts/visual/regress.js",
+    "test:web": "npm run test --prefix apps/web",
     "demo:dev": "npm run dev --prefix apps/demo-ui",
     "demo:build": "npm run build --prefix apps/demo-ui",
     "demo:start": "npm run start --prefix apps/demo-ui"

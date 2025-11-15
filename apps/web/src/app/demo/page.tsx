@@ -1,218 +1,191 @@
-'use client';
+﻿import Link from 'next/link';
 
-/**
- * Demo Landing Page
- * Hero section with demo overview and Start Demo CTA
- */
+const pipeline = [
+  {
+    title: 'Intake',
+    status: 'Live now',
+    next: 'Document upload',
+    description: 'Autofill EIN, business identity, and contact data with confidence indicators.',
+  },
+  {
+    title: 'Upload',
+    status: 'Starts after intake',
+    next: 'Validation pipeline',
+    description: 'Drag-and-drop documents, see ingest status, and monitor OCR + policy stages.',
+  },
+  {
+    title: 'Validation',
+    status: 'Simulated pipeline',
+    next: 'Decision + timeline',
+    description: 'Threat scan, OCR, policy, and AI review update every 500ms in demo mode.',
+  },
+  {
+    title: 'Decision',
+    status: 'Coming soon',
+    next: 'Team timeline + underwriting snapshot',
+    description: 'Review collaboration timeline, risk snapshot, and final approvals.',
+  },
+];
 
-import Link from 'next/link';
+const assurances = [
+  {
+    title: 'Always demo-ready',
+    description: 'If Postgres or Redis fail, demo mode activates instantly and keeps responses deterministic.',
+  },
+  {
+    title: 'Stage + next stage',
+    description: 'Every module displays current status and what comes next, so lenders stay oriented.',
+  },
+  {
+    title: 'Confidence signals',
+    description: 'Green/amber/red badges communicate whether data is trustworthy, needs review, or must be corrected.',
+  },
+];
+
+const confidenceLegend = [
+  { label: '80%+', tone: 'var(--cc-success)', text: 'Auto-accept, editable' },
+  { label: '70-79%', tone: 'var(--cc-warning)', text: 'Verify before sending' },
+  { label: '<70%', tone: 'var(--cc-error)', text: 'Manual review required' },
+];
 
 export default function DemoLanding() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'var(--cc-bg)',
-        padding: 'var(--s-12)',
-      }}
-    >
-      {/* Hero Section */}
-      <div
+    <div className="space-y-12" style={{ paddingTop: 'var(--s-8)', paddingBottom: 'var(--s-12)' }}>
+      <section
+        className="rounded-4 border shadow-sm"
         style={{
-          maxWidth: '800px',
-          textAlign: 'center',
+          borderColor: 'var(--cc-border)',
+          backgroundColor: 'var(--cc-surface)',
+          padding: 'var(--s-12)',
         }}
       >
-        {/* Headline */}
-        <h1
-          style={{
-            fontSize: 'var(--text-3xl)',
-            fontWeight: '700',
-            color: 'var(--cc-text)',
-            marginBottom: 'var(--s-4)',
-            lineHeight: '1.2',
-            letterSpacing: '-1px',
-          }}
-        >
-          Institutional Lending,{' '}
-          <span style={{ color: 'var(--cc-accent)' }}>Simplified</span>
-        </h1>
-
-        {/* Subheading */}
-        <p
-          style={{
-            fontSize: 'var(--text-lg)',
-            color: 'var(--cc-text-secondary)',
-            marginBottom: 'var(--s-8)',
-            lineHeight: '1.7',
-          }}
-        >
-          Fast intake, clear validation, confident decisions. Watch how CivicFlow streamlines SBA 504
-          and 5(a) loan workflows from application to approval.
+        <p className="text-sm" style={{ color: 'var(--cc-text-secondary)' }}>
+          Demo narrative overview
         </p>
+        <h1 className="text-3xl" style={{ color: 'var(--cc-text)', marginTop: 'var(--s-2)' }}>
+          Follow a lender from intake to decision without leaving demo mode.
+        </h1>
+        <p className="text-lg" style={{ color: 'var(--cc-text-secondary)', marginTop: 'var(--s-4)', maxWidth: '65ch' }}>
+          This walkthrough mirrors production flow while running entirely on deterministic demo data.
+          Every call returns X-Demo-Mode: true so stakeholders know the environment is simulated but
+          realistic.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/intake"
+            className="rounded-4 px-6 py-3 text-base font-semibold"
+            style={{ backgroundColor: 'var(--cc-accent)', color: '#ffffff' }}
+          >
+            Start intake in demo mode
+          </Link>
+          <Link
+            href="/intake"
+            className="rounded-4 px-6 py-3 text-base font-semibold"
+            style={{ border: '1px solid var(--cc-accent)', color: 'var(--cc-accent-dark)' }}
+          >
+            Skip ahead to uploads
+          </Link>
+        </div>
+      </section>
 
-        {/* 3-Step Overview */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 'var(--s-8)',
-            marginBottom: 'var(--s-12)',
-          }}
-        >
-          {[
-            {
-              step: '1',
-              title: 'Intake',
-              description: 'Structured form with auto-extraction and confidence scores',
-            },
-            {
-              step: '2',
-              title: 'Validate',
-              description: 'Documents analyzed, risks flagged, compliance ready',
-            },
-            {
-              step: '3',
-              title: 'Approve',
-              description: 'Full timeline, team collaboration, instant decisions',
-            },
-          ].map((item) => (
-            <div
-              key={item.step}
-              style={{
-                padding: 'var(--s-8)',
-                borderRadius: 'var(--r-4)',
-                backgroundColor: 'var(--cc-surface)',
-                border: '1px solid var(--cc-border)',
-                transition: 'all var(--dur-gentle) ease',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLDivElement;
-                el.style.boxShadow = 'var(--shadow-md)';
-                el.style.borderColor = 'var(--cc-accent)';
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLDivElement;
-                el.style.boxShadow = 'none';
-                el.style.borderColor = 'var(--cc-border)';
-              }}
+      <section aria-labelledby="pipeline-map" className="space-y-6">
+        <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
+          <div>
+            <h2 id="pipeline-map" className="text-2xl font-semibold" style={{ color: 'var(--cc-text)' }}>
+              Pipeline clarity
+            </h2>
+            <p className="text-sm" style={{ color: 'var(--cc-text-secondary)' }}>
+              Each step lists the next outcome so lenders are never surprised.
+            </p>
+          </div>
+          <p className="text-xs" style={{ color: 'var(--cc-muted)' }}>
+            Responses include X-Demo-Mode headers. Status refreshes every 500ms in validation.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {pipeline.map((stage) => (
+            <article
+              key={stage.title}
+              className="rounded-4 border p-6"
+              style={{ borderColor: 'var(--cc-border)', backgroundColor: 'var(--cc-surface)' }}
             >
-              <div
-                style={{
-                  fontSize: 'var(--text-2xl)',
-                  fontWeight: '700',
-                  color: 'var(--cc-accent)',
-                  marginBottom: 'var(--s-2)',
-                }}
-              >
-                {item.step}
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-semibold" style={{ color: 'var(--cc-text)' }}>
+                  {stage.title}
+                </h3>
+                <span className="text-xs uppercase" style={{ color: 'var(--cc-muted)' }}>
+                  Next: {stage.next}
+                </span>
               </div>
-              <h3
-                style={{
-                  fontSize: 'var(--text-base)',
-                  fontWeight: '600',
-                  color: 'var(--cc-text)',
-                  marginBottom: 'var(--s-2)',
-                }}
-              >
+              <p className="text-sm" style={{ color: 'var(--cc-text-secondary)', marginTop: 'var(--s-2)' }}>
+                {stage.description}
+              </p>
+              <p className="text-sm font-semibold" style={{ color: 'var(--cc-accent-dark)', marginTop: 'var(--s-2)' }}>
+                Status: {stage.status}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="demo-assurances" className="space-y-4">
+        <h2 id="demo-assurances" className="text-2xl font-semibold" style={{ color: 'var(--cc-text)' }}>
+          Demo mode safeguards
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {assurances.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-4 border p-5"
+              style={{ borderColor: 'var(--cc-border)', backgroundColor: 'var(--cc-surface)' }}
+            >
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--cc-text)' }}>
                 {item.title}
               </h3>
-              <p
-                style={{
-                  fontSize: 'var(--text-sm)',
-                  color: 'var(--cc-muted)',
-                  margin: 0,
-                  lineHeight: '1.6',
-                }}
-              >
+              <p className="text-sm" style={{ color: 'var(--cc-text-secondary)', marginTop: 'var(--s-2)' }}>
                 {item.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="confidence-legend" className="space-y-4">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 id="confidence-legend" className="text-2xl font-semibold" style={{ color: 'var(--cc-text)' }}>
+              Confidence legend
+            </h2>
+            <p className="text-sm" style={{ color: 'var(--cc-text-secondary)' }}>
+              Intake and document pages reuse these tiers so reviewers know when to trust extracted
+              data.
+            </p>
+          </div>
+          <Link href="/intake" className="text-sm font-semibold" style={{ color: 'var(--cc-accent-dark)' }}>
+            See badges in context ->
+          </Link>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {confidenceLegend.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-4 border p-4"
+              style={{ borderColor: 'var(--cc-border)', backgroundColor: 'var(--cc-surface)' }}
+            >
+              <p className="text-xs uppercase" style={{ color: 'var(--cc-muted)' }}>
+                Tier
+              </p>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.tone }} aria-hidden="true" />
+                <strong style={{ color: 'var(--cc-text)' }}>{item.label}</strong>
+              </div>
+              <p className="text-sm" style={{ color: 'var(--cc-text-secondary)', marginTop: 'var(--s-2)' }}>
+                {item.text}
               </p>
             </div>
           ))}
         </div>
-
-        {/* Call to Action */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 'var(--s-4)',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-          }}
-        >
-          <Link
-            href="/intake"
-            style={{
-              padding: 'var(--s-4) var(--s-8)',
-              backgroundColor: 'var(--cc-accent)',
-              color: 'white',
-              borderRadius: 'var(--r-4)',
-              fontWeight: '600',
-              fontSize: 'var(--text-base)',
-              textDecoration: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all var(--dur-micro) ease',
-              boxShadow: 'var(--shadow-md)',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                'var(--cc-accent-dark)';
-              (e.currentTarget as HTMLAnchorElement).style.boxShadow = 'var(--shadow-lg)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                'var(--cc-accent)';
-              (e.currentTarget as HTMLAnchorElement).style.boxShadow = 'var(--shadow-md)';
-            }}
-          >
-            Start Guided Walkthrough
-          </Link>
-
-          <Link
-            href="/intake"
-            style={{
-              padding: 'var(--s-4) var(--s-8)',
-              backgroundColor: 'transparent',
-              color: 'var(--cc-accent)',
-              borderRadius: 'var(--r-4)',
-              fontWeight: '600',
-              fontSize: 'var(--text-base)',
-              textDecoration: 'none',
-              border: '2px solid var(--cc-accent)',
-              cursor: 'pointer',
-              transition: 'all var(--dur-micro) ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'var(--cc-accent)';
-              (e.currentTarget as HTMLAnchorElement).style.color = 'white';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                'transparent';
-              (e.currentTarget as HTMLAnchorElement).style.color = 'var(--cc-accent)';
-            }}
-          >
-            Try Intake Form
-          </Link>
-        </div>
-
-        {/* Demo Note */}
-        <p
-          style={{
-            marginTop: 'var(--s-12)',
-            fontSize: 'var(--text-sm)',
-            color: 'var(--cc-muted)',
-            fontStyle: 'italic',
-          }}
-        >
-          This is a demonstration environment. Data is simulated and not persisted.
-        </p>
-      </div>
+      </section>
     </div>
   );
 }

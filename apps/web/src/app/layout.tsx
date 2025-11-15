@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import DemoModeBadge from "@/components/Demo/DemoModeBadge";
-import CommonLayout from "@/components/Common/Layout";
+import type { Metadata } from 'next';
+import './globals.css';
+import DemoModeBadge from '@/components/Demo/DemoModeBadge';
+import CommonLayout from '@/components/Common/Layout';
 
 export const metadata: Metadata = {
-  title: "CivicFlow — Institutional Lending Workflows",
-  description: "Fast, clear, auditable government lending platform for microbusiness and SBA-style lenders",
-  viewport: "width=device-width, initial-scale=1",
+  title: 'CivicFlow - Institutional Demo Mode',
+  description:
+    'CivicFlow keeps lenders oriented with demo-first SBA 504 and 7a workflows that run even when core systems are down.',
+  viewport: 'width=device-width, initial-scale=1',
 };
 
 export default function RootLayout({
@@ -16,12 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ backgroundColor: 'var(--cc-bg)', color: 'var(--cc-text)' }}>
         <DemoModeBadge />
-        <CommonLayout>
-          {children}
-        </CommonLayout>
+        <CommonLayout>{children}</CommonLayout>
       </body>
     </html>
   );
 }
+
