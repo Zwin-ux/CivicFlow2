@@ -145,7 +145,7 @@ export default function DemoLanding() {
           }}
         >
           <Link
-            href="/demo/walkthrough"
+            href="/intake"
             style={{
               padding: 'var(--s-4) var(--s-8)',
               backgroundColor: 'var(--cc-accent)',
@@ -174,7 +174,7 @@ export default function DemoLanding() {
           </Link>
 
           <Link
-            href="/demo/intake"
+            href="/intake"
             style={{
               padding: 'var(--s-4) var(--s-8)',
               backgroundColor: 'transparent',
