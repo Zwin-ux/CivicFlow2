@@ -18,7 +18,7 @@ COPY package*.json ./
 # Skip Chromium download during install to keep builder fast; visual tests can
 # install Chromium locally when needed. This is safe because Chromium is not
 # required for the production image.
-RUN --mount=type=cache,id=npm-packages,target=/root/.npm \
+RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm ci --prefer-offline && \
     npm cache clean --force
 
@@ -27,7 +27,7 @@ RUN --mount=type=cache,id=npm-packages,target=/root/.npm \
 COPY . .
 
 # Install frontend dependencies (Next.js) so `next` is available under apps/web
-RUN --mount=type=cache,id=npm-packages,target=/root/.npm npm ci --prefer-offline --prefix apps/web
+RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm npm ci --prefer-offline --prefix apps/web
 
 # Build TypeScript
 RUN npm run build
@@ -50,7 +50,7 @@ COPY --from=builder /app/package*.json ./
 
 # Install production dependencies only (omit dev dependencies)
 # Using `npm ci --omit=dev` here will use the lockfile produced in the builder stage.
-RUN --mount=type=cache,id=npm-packages,target=/root/.npm npm ci --omit=dev && \
+RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy built application from builder
