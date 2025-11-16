@@ -18,6 +18,9 @@ RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm install && \
 # Copy source code
 COPY . .
 
+# Install frontend dependencies (Next.js) so `next` is available under apps/web
+RUN npm ci --prefix apps/web
+
 # Build TypeScript
 RUN npm run build
 
