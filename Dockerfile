@@ -4,6 +4,10 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
+ENV NPM_CONFIG_AUDIT=false \
+    NPM_CONFIG_FUND=false \
+    NPM_CONFIG_PROGRESS=false
+
 # Copy package files
 # Copying package files first so we can install dependencies in the builder
 COPY package*.json ./
