@@ -32,6 +32,10 @@
     "demo:build": "npm run build --prefix apps/demo-ui",
     "demo:start": "npm run start --prefix apps/demo-ui"
   },
+  "workspaces": [
+    "apps/web",
+    "apps/demo-ui"
+  ],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
