@@ -68,14 +68,14 @@
   <script src="/js/demo/scenario-player.js"></script>
   <script>
     const scenarioCatalog = [
-      { id: 'rush-application', label: 'Rush Application', file: '/data/scenarios/rush-application.json' },
-      { id: 'complex-review', label: 'Complex Review', file: '/data/scenarios/complex-review.json' },
-      { id: 'document-issues', label: 'Document Issues', file: '/data/scenarios/document-issues.json' },
-      { id: 'ai-assisted-decision', label: 'AI-Assisted Decision', file: '/data/scenarios/ai-assisted-decision.json' },
-      { id: 'rejection-appeal', label: 'Rejection & Appeal', file: '/data/scenarios/rejection-appeal.json' }
+      { id: 'rush-application', label: 'Rush Application' },
+      { id: 'complex-review', label: 'Complex Review' },
+      { id: 'document-issues', label: 'Document Issues' },
+      { id: 'ai-assisted-decision', label: 'AI-Assisted Decision' },
+      { id: 'rejection-appeal', label: 'Rejection & Appeal' }
     ];
 
-    const player = new ScenarioPlayer();
+    const player = new ScenarioPlayer(window.demoOrchestrator);
     const scenarioSelect = document.getElementById('scenario-select');
     const timelineEl = document.getElementById('timeline-events');
     const progressBar = document.getElementById('scenario-progress');
@@ -91,40 +91,32 @@
       });
     }
 
-    async function loadScenario(id) {
-      const scenario = scenarioCatalog.find((item) => item.id === id);
-      if (!scenario) {
+    async function handleScenarioChange(event) {
+      const id = event.target.value;
+      const scenarioDefinition = await player.startScenario(id);
+      if (!scenarioDefinition) {
         return;
       }
-      const response = await fetch(scenario.file);
-      if (!response.ok) {
-        console.error('Failed to load scenario', id);
-        return;
-      }
-      const definition = await response.json();
-      descriptionEl.textContent = definition.description || '';
-      timelineEl.innerHTML = '';
-      player.loadScenario(definition);
-      if (definition.events.length) {
-        definition.events.forEach((event) => appendTimelineItem(event));
-      }
-      updateNarration(definition.narration?.[0]?.text || 'Ready to play.');
+      descriptionEl.textContent = scenarioDefinition.description || '';
+      renderTimeline(scenarioDefinition.steps || []);
+      updateNarration('Scenario loaded. Press play to begin.');
     }
 
-    function appendTimelineItem(event) {
-      const item = document.createElement('div');
-      item.className = 'timeline-item';
-      item.innerHTML = `
-        <div>
-          <strong>${event.title}</strong>
-          <p>${event.details}</p>
-        </div>
-        <span>${(event.timestamp / 1000).toFixed(1)}s</span>
-      `;
-      timelineEl.appendChild(item);
-      if (timelineEl.children.length > 8) {
-        timelineEl.removeChild(timelineEl.firstChild);
-      }
+    function renderTimeline(steps) {
+      timelineEl.innerHTML = '';
+      steps.forEach((step, index) => {
+        const item = document.createElement('div');
+        item.className = 'scenario-step';
+        item.dataset.index = index;
+        item.innerHTML = `
+          <div>
+            <strong>${step.title}</strong>
+            <span>${step.description}</span>
+          </div>
+          <span>${(step.duration || 2000) / 1000}s</span>
+        `;
+        timelineEl.appendChild(item);
+      });
     }
 
     function updateNarration(text) {
@@ -136,7 +128,7 @@
         button.addEventListener('click', () => {
           const action = button.dataset.action;
           if (action === 'play') {
-            player.play();
+            player.startScenario(scenarioSelect.value);
           } else if (action === 'pause') {
             player.pause();
           } else if (action === 'stop') {
@@ -154,38 +146,34 @@
         });
       });
 
-      scenarioSelect.addEventListener('change', (event) => {
-        loadScenario(event.target.value);
+      scenarioSelect.addEventListener('change', handleScenarioChange);
+    }
+
+    function highlightStep(index) {
+      timelineEl.querySelectorAll('.scenario-step').forEach((element) => {
+        element.classList.toggle('active', Number(element.dataset.index) === index);
       });
     }
 
-    function startProgressLoop() {
-      const update = () => {
-        const percent = player.getProgress() * 100;
-        progressBar.style.width = `${percent}%`;
-        requestAnimationFrame(update);
-      };
-      requestAnimationFrame(update);
+    function updateProgress() {
+      progressBar.style.width = `${player.getProgress() * 100}%`;
+      requestAnimationFrame(updateProgress);
     }
 
-    player.on('event', (event) => {
-      appendTimelineItem(event);
-      updateNarration(event.details);
+    player.on('step-played', ({ step, index }) => {
+      updateNarration(step.narration || step.description || step.title);
+      highlightStep(index);
     });
 
-    player.on('seek', () => {
-      updateNarration('Seeked to new point in the scenario.');
+    player.on('scenario-complete', () => {
+      updateNarration('Scenario complete. Choose another or replay.');
     });
 
-    player.on('complete', () => {
-      updateNarration('Scenario complete. Replay or choose another scenario.');
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       populateScenarios();
       bindControls();
-      startProgressLoop();
-      loadScenario(scenarioCatalog[0].id);
+      updateProgress();
+      await handleScenarioChange({ target: { value: scenarioCatalog[0].id } });
     });
   </script>
 </body>

@@ -1,60 +1,31 @@
 {
   "id": "rejection-appeal",
   "title": "Rejection & Appeal",
-  "description": "Handles a rejection followed by an appeal and reevaluation.",
-  "duration": 260000,
-  "events": [
+  "description": "Demonstrate how appeal workflows recover rejected loans.",
+  "steps": [
     {
-      "timestamp": 0,
-      "title": "Application Submitted",
-      "details": "Applicant applies for a sensitive industry loan.",
-      "type": "submission",
-      "actor": "Applicant"
+      "title": "Rejection trigger",
+      "description": "System rejects application due to risk threshold breach.",
+      "duration": 2100,
+      "narration": "Application slides into the rejection track with audit context."
     },
     {
-      "timestamp": 25000,
-      "title": "Review Flags Risk",
-      "details": "Review team cites industry risk and documentation gaps.",
-      "type": "review",
-      "actor": "Senior Reviewer"
+      "title": "Appeal request",
+      "description": "Applicant submits appeal with supplemental docs.",
+      "duration": 2300,
+      "narration": "The appeal form collects new evidence and explanation."
     },
     {
-      "timestamp": 70000,
-      "title": "Rejection Issued",
-      "details": "Application rejected with appeal rights and timeline.",
-      "type": "rejection",
-      "actor": "Decision Committee"
+      "title": "Re-review with AI",
+      "description": "AI reevaluates new evidence and updates risk score.",
+      "duration": 2000,
+      "narration": "Fresh analysis flows into the reconsideration queue."
     },
     {
-      "timestamp": 110000,
-      "title": "Appeal Submitted",
-      "details": "Applicant responds with clarifications and evidence.",
-      "type": "appeal",
-      "actor": "Applicant"
-    },
-    {
-      "timestamp": 170000,
-      "title": "Appeal Review",
-      "details": "Appeals committee reviews the fresh documentation.",
-      "type": "review",
-      "actor": "Appeals Committee"
-    },
-    {
-      "timestamp": 230000,
-      "title": "Reversal & Approval",
-      "details": "Rejection reversed; approval issued with watchlist.",
-      "type": "approval",
-      "actor": "Appeals Committee"
-    }
-  ],
-  "narration": [
-    {
-      "timestamp": 70000,
-      "text": "System explains rejection reasons and next steps."
-    },
-    {
-      "timestamp": 230000,
-      "text": "Appeal success triggers funding readiness."
+      "title": "Final outcome",
+      "description": "Approver either reinstates or finalizes rejection.",
+      "duration": 2200,
+      "narration": "Final decision gets logged and shared with the applicant."
     }
   ]
 }

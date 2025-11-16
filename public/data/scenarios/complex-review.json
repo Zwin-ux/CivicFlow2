@@ -1,64 +1,31 @@
 {
   "id": "complex-review",
   "title": "Complex Review",
-  "description": "Multi-reviewer workflow for high-dollar, high-risk opportunity.",
-  "duration": 320000,
-  "events": [
+  "description": "Workflows for multi-reviewer handoffs and layered approvals.",
+  "steps": [
     {
-      "timestamp": 0,
-      "title": "Application Intake",
-      "details": "Enterprise request received for $1.2M capital.",
-      "type": "submission",
-      "actor": "Applicant"
+      "title": "Assign review team",
+      "description": "System assigns multiple reviewers with specialized scopes.",
+      "duration": 2200,
+      "narration": "The orchestrator splits tasks across underwriting and compliance."
     },
     {
-      "timestamp": 20000,
-      "title": "Initial Review",
-      "details": "Credit analyst validates financial statements.",
-      "type": "review",
-      "actor": "Credit Analyst"
+      "title": "Document deep-dive",
+      "description": "Each reviewer inspects different documents with AI highlights.",
+      "duration": 2500,
+      "narration": "Teams cross-comment on flagged sections and share insights."
     },
     {
-      "timestamp": 60000,
-      "title": "Document QA",
-      "details": "Document issues flagged for compliance sign-off.",
-      "type": "document",
-      "actor": "Compliance"
+      "title": "Consensus meeting",
+      "description": "Reviewers evaluate risks, adjust conditions, and vote.",
+      "duration": 2300,
+      "narration": "A consensus view forms around risk appetite and limits."
     },
     {
-      "timestamp": 120000,
-      "title": "Secondary Review",
-      "details": "Operations reviewer assesses supply chain risk.",
-      "type": "review",
-      "actor": "Operations Reviewer"
-    },
-    {
-      "timestamp": 210000,
-      "title": "Senior Committee Review",
-      "details": "Committee meets to debate approval with conditions.",
-      "type": "committee",
-      "actor": "Senior Committee"
-    },
-    {
-      "timestamp": 280000,
-      "title": "Approval with Conditions",
-      "details": "Approved with collateral and reporting requirements.",
-      "type": "approval",
-      "actor": "Committee"
-    }
-  ],
-  "narration": [
-    {
-      "timestamp": 0,
-      "text": "Dashboard highlights the larger review scope."
-    },
-    {
-      "timestamp": 210000,
-      "text": "Senior committee weighs risk vs. reward."
-    },
-    {
-      "timestamp": 280000,
-      "text": "Approval granted with enhanced monitoring."
+      "title": "Approval routing",
+      "description": "Routing engine escalates to senior decision authority.",
+      "duration": 2000,
+      "narration": "Senior approver receives consolidated context and signs off."
     }
   ]
 }

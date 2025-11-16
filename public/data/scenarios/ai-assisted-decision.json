@@ -1,53 +1,31 @@
 {
   "id": "ai-assisted-decision",
   "title": "AI-Assisted Decision",
-  "description": "AI insights guide final recommendation with confidence meters.",
-  "duration": 220000,
-  "events": [
+  "description": "AI recommendations shape decisioning during team reviews.",
+  "steps": [
     {
-      "timestamp": 0,
-      "title": "Application Onboarded",
-      "details": "Applicant enters details and selects AI feedback.",
-      "type": "submission",
-      "actor": "Applicant"
+      "title": "AI insight briefing",
+      "description": "AI surfaces risk buckets, confidence, and suggested actions.",
+      "duration": 2300,
+      "narration": "AI presents concise insights to orient reviewers."
     },
     {
-      "timestamp": 18000,
-      "title": "AI Risk Score",
-      "details": "AI computes 38 risk score with a medium risk profile.",
-      "type": "ai",
-      "actor": "AI Engine"
+      "title": "Reviewer evaluation",
+      "description": "Reviewers compare AI suggestions, adjust risk scoring.",
+      "duration": 2200,
+      "narration": "Human judgment pairs with AI outlooks for richer context."
     },
     {
-      "timestamp": 45000,
-      "title": "Recommendations Rendered",
-      "details": "AI suggests approve with quarterly reporting.",
-      "type": "ai",
-      "actor": "AI Engine"
+      "title": "Recommendation review",
+      "description": "Senior approver either accepts AI recommendation or overrides.",
+      "duration": 2100,
+      "narration": "Decisioning includes AI suggestions while audit logs capture overrides."
     },
     {
-      "timestamp": 90000,
-      "title": "Human Review",
-      "details": "Reviewer validates AI reasoning and considers collateral.",
-      "type": "review",
-      "actor": "Reviewer"
-    },
-    {
-      "timestamp": 150000,
-      "title": "Approval Decision",
-      "details": "Decision follows AI recommendation with monitoring dashboard.",
-      "type": "approval",
-      "actor": "Approver"
-    }
-  ],
-  "narration": [
-    {
-      "timestamp": 45000,
-      "text": "AI highlights risk factors and confidence for the reviewer."
-    },
-    {
-      "timestamp": 150000,
-      "text": "Final approval uses AI guidance to speed the path."
+      "title": "Narrated summary",
+      "description": "System generates narrative for investor communication.",
+      "duration": 1900,
+      "narration": "Final narration and actions are recorded for reporting."
     }
   ]
 }

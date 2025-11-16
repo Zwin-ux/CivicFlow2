@@ -1,60 +1,31 @@
 {
   "id": "document-issues",
   "title": "Document Issues",
-  "description": "Handling problematic or incomplete documentation.",
-  "duration": 200000,
-  "events": [
+  "description": "Handle problematic documents with quality assessments and updates.",
+  "steps": [
     {
-      "timestamp": 0,
-      "title": "Application Received",
-      "details": "Application submitted with partial documentation.",
-      "type": "submission",
-      "actor": "Applicant"
+      "title": "Initial scan",
+      "description": "AI identifies missing pages, corrupt uploads, or low confidence.",
+      "duration": 2100,
+      "narration": "Document scanner flags issues before reviewers open the file."
     },
     {
-      "timestamp": 15000,
-      "title": "Document Review",
-      "details": "Missing schedule flagged via OCR verification.",
-      "type": "document",
-      "actor": "Document Team"
+      "title": "Issue queue",
+      "description": "Team routes the file to specialists who request corrections.",
+      "duration": 2400,
+      "narration": "Specialists send a corrected document request to the applicant."
     },
     {
-      "timestamp": 40000,
-      "title": "Issue Escalated",
-      "details": "Underwriter requests follow-up on missing invoices.",
-      "type": "issue",
-      "actor": "Underwriter"
+      "title": "Re-upload & verify",
+      "description": "Applicant uploads fix, AI revalidates signatures and data.",
+      "duration": 2000,
+      "narration": "The application returns with clean files and updated confidence."
     },
     {
-      "timestamp": 70000,
-      "title": "Applicant Response",
-      "details": "New documents uploaded with enhanced metadata.",
-      "type": "document",
-      "actor": "Applicant"
-    },
-    {
-      "timestamp": 110000,
-      "title": "QA Approval",
-      "details": "Quality review cleared; documents verified.",
-      "type": "review",
-      "actor": "QA Team"
-    },
-    {
-      "timestamp": 160000,
-      "title": "Workflow Resumes",
-      "details": "Application returns to the normal underwriting path.",
-      "type": "workflow",
-      "actor": "Orchestrator"
-    }
-  ],
-  "narration": [
-    {
-      "timestamp": 0,
-      "text": "System surfaces missing paperwork for correction."
-    },
-    {
-      "timestamp": 110000,
-      "text": "QA marks documents as verified and trustworthy."
+      "title": "Release from hold",
+      "description": "System clears blocks and reinserts application into queue.",
+      "duration": 1800,
+      "narration": "Application rejoins the review pipeline with a clean audit trail."
     }
   ]
 }
