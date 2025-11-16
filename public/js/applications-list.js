@@ -10,6 +10,10 @@
     let loadingTimeout = null;
     let applicationsData = [];
     let isDemo = false;
+    let liveAppListenerAttached = false;
+    let liveAppAttachAttempts = 0;
+    const MAX_LIVE_APP_ATTACH_ATTEMPTS = 6;
+    const LIVE_APP_ATTACH_DELAY = 800;
 
     /**
      * Initialize applications list
@@ -25,6 +29,7 @@
 
         // Try to load real data
         await loadApplications();
+        initLiveApplicationFeed();
     }
 
     /**
@@ -379,6 +384,130 @@
                 day: 'numeric',
                 year: 'numeric'
             });
+        }
+    }
+
+    /**
+     * Initialize live application feed listeners
+     */
+    function initLiveApplicationFeed() {
+        if (liveAppListenerAttached) {
+            return;
+        }
+
+        const orchestrator = window.demoOrchestrator;
+
+        if (!orchestrator) {
+            liveAppAttachAttempts++;
+            if (liveAppAttachAttempts <= MAX_LIVE_APP_ATTACH_ATTEMPTS) {
+                setTimeout(initLiveApplicationFeed, LIVE_APP_ATTACH_DELAY);
+            }
+            return;
+        }
+
+        orchestrator.on('simulated-event', handleApplicationLiveEvent);
+        liveAppListenerAttached = true;
+    }
+
+    /**
+     * Handle simulated events for application list
+     */
+    function handleApplicationLiveEvent(event) {
+        if (!event) {
+            return;
+        }
+
+        switch (event.type) {
+            case 'new_application':
+                prependLiveApplication(mapEventToApplication(event.data));
+                break;
+            case 'status_change':
+            case 'approval_granted':
+            case 'rejection_issued':
+            case 'review_completed':
+                updateApplicationCardStatus(event.data);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Map event data to application card data
+     */
+    function mapEventToApplication(data = {}) {
+        const applicationId = data.applicationId || `APP-${Date.now()}`;
+        return {
+            id: applicationId,
+            businessName: data.businessName || 'Live Application',
+            applicantName: data.applicantName || 'Demo Applicant',
+            status: data.status || data.newStatus || 'pending',
+            loanAmount: data.loanAmount || 0,
+            programType: data.programType || data.loanProgram || 'SBA 7(a)',
+            submittedAt: data.submittedAt || new Date().toISOString(),
+            riskScore: data.riskScore,
+            reviewType: data.reviewType
+        };
+    }
+
+    /**
+     * Prepend a new application card with animation
+     */
+    function prependLiveApplication(application) {
+        const grid = document.getElementById('applications-grid');
+        if (!grid || !application) {
+            return;
+        }
+
+        const card = createApplicationCard(application, true);
+        card.classList.add('live-slide-in');
+        grid.insertBefore(card, grid.firstChild);
+        requestAnimationFrame(() => {
+            card.classList.add('live-visible');
+        });
+
+        applicationsData.unshift(application);
+        if (applicationsData.length > 12) {
+            applicationsData.pop();
+        }
+
+        const gridChildren = grid.querySelectorAll('.application-card');
+        if (gridChildren.length > 12) {
+            const last = gridChildren[gridChildren.length - 1];
+            last?.remove();
+        }
+
+        setTimeout(() => {
+            card.classList.remove('live-slide-in', 'live-visible');
+        }, 800);
+    }
+
+    /**
+     * Update existing card status based on event
+     */
+    function updateApplicationCardStatus(data = {}) {
+        const applicationId = data.applicationId || data.id;
+        if (!applicationId) {
+            return;
+        }
+
+        const card = document.querySelector(`[data-application-id="${applicationId}"]`);
+        const status = data.newStatus || data.status;
+
+        if (card && status) {
+            const badge = card.querySelector('.status-badge');
+            if (badge) {
+                const normalized = normalizeStatus(status);
+                badge.className = `status-badge ${normalized}`;
+                badge.textContent = formatStatus(status);
+                badge.classList.add('status-transition');
+                setTimeout(() => badge.classList.remove('status-transition'), 900);
+            }
+        }
+
+        const index = applicationsData.findIndex((app) => app.id === applicationId);
+        if (index !== -1) {
+            applicationsData[index].status = status;
         }
     }
 

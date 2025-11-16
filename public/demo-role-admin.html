@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Experience - OctoDoc Demo</title>
+    <link rel="stylesheet" href="/css/professional-theme.css">
+    <link rel="stylesheet" href="/css/components/role-switcher.css">
+    <link rel="stylesheet" href="/css/components/role-views.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        body {
+            background: #fdf4ff;
+            color: var(--color-text-primary, #111827);
+            font-family: var(--font-family-primary, 'Inter', sans-serif);
+            margin: 0;
+        }
+
+        nav.navbar {
+            background: #fff;
+            box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        nav.navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--color-primary, #667eea);
+            font-weight: 700;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.25rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: var(--color-text-secondary, #4b5563);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a.active {
+            color: #8b5cf6;
+        }
+
+        main.container {
+            max-width: 1100px;
+            margin: 3rem auto 1rem;
+            padding: 0 1.5rem;
+        }
+
+        .role-hero {
+            background: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
+            border-radius: 24px;
+            color: white;
+            padding: 3rem;
+            box-shadow: 0 25px 45px rgba(15, 23, 42, 0.15);
+            margin-bottom: 2rem;
+        }
+
+        .role-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            margin-bottom: 1rem;
+        }
+
+        .role-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .role-hero p {
+            font-size: 1.05rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            margin-top: 1.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .hero-actions a {
+            padding: 0.85rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hero-actions a.primary {
+            background: white;
+            color: #1a1f3b;
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.25);
+        }
+
+        .hero-actions a.secondary {
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            background: transparent;
+        }
+
+        .hero-actions a:hover {
+            transform: translateY(-2px);
+        }
+
+        .role-highlights {
+            margin-bottom: 2rem;
+        }
+
+        .highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .highlight-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.1);
+        }
+
+        .highlight-card h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .highlight-card ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            color: var(--color-text-secondary, #4b5563);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1.5rem 3rem;
+            color: var(--color-text-secondary, #4b5563);
+        }
+
+        @media (max-width: 768px) {
+            .role-hero {
+                padding: 2rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="/images/logo.svg" alt="OctoDoc Logo" class="logo-image" style="width:32px;height:32px;">
+                <span>OctoDoc</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/investor-dashboard.html">Dashboard</a></li>
+                <li><a href="/applications-list.html">Applications</a></li>
+                <li><a href="/demo-landing.html" class="active">Demo Mode</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="role-hero">
+            <span class="role-pill">Admin Role</span>
+            <h1>Admin Control Tower</h1>
+            <p>Adjust feature flags, observe analytics, and simulate resilience scenarios while keeping audit trails always visible.</p>
+            <div class="hero-actions">
+                <a href="/demo-analytics.html" class="primary">View Analytics</a>
+                <a href="/demo-landing.html" class="secondary">Return to Demo Hub</a>
+            </div>
+        </section>
+
+        <section class="role-highlights">
+            <h2>Administrator Tools</h2>
+            <div class="highlight-grid">
+                <article class="highlight-card">
+                    <h3>Feature Controls</h3>
+                    <ul>
+                        <li>Toggle live simulation in seconds</li>
+                        <li>Preview role-specific toggles</li>
+                        <li>Manage demo content versions</li>
+                    </ul>
+                </article>
+                <article class="highlight-card">
+                    <h3>Audit & Signals</h3>
+                    <ul>
+                        <li>View actions with timestamps</li>
+                        <li>Heatmap of high-activity workflows</li>
+                        <li>Alert feed for anomalies</li>
+                    </ul>
+                </article>
+                <article class="highlight-card">
+                    <h3>Simulation Controls</h3>
+                    <ul>
+                        <li>Launch scenario playback</li>
+                        <li>Activate resilience drills</li>
+                        <li>Mute or tune notifications</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 OctoDoc. Demonstration environment.</p>
+    </footer>
+
+    <script src="/js/mobile-nav.js"></script>
+    <script src="/js/demo/orchestrator.js"></script>
+    <script src="/js/demo/role-switcher.js" defer></script>
+    <script src="/js/demo/role-views.js" defer></script>
+    <script src="/js/demo/role-switcher-init.js" defer></script>
+</body>
+</html>

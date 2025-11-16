@@ -701,3 +701,103 @@ p {
     padding: var(--spacing-md);
   }
 }
+
+/* ============================================================================*/
+/* Live Demo Enhancements                                                    */
+/* ============================================================================*/
+
+.live-indicator-badge {
+  margin-left: var(--spacing-md);
+  padding: 0.25rem 0.85rem;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-success, #10b981);
+  border-radius: var(--radius-pill, 999px);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+
+.metric-card {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.metric-card.metric-updated {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px rgba(15, 23, 42, 0.25);
+}
+
+.metric-value {
+  transition: transform 0.4s ease;
+}
+
+.metric-card.metric-updated .metric-value {
+  transform: scale(1.05);
+}
+
+.status-badge {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-pill, 999px);
+}
+
+.status-badge.status-transition {
+  animation: statusGlow 0.9s ease;
+}
+
+.application-card.live-slide-in {
+  transform: translateY(-30px);
+  opacity: 0;
+}
+
+.application-card.live-slide-in.live-visible {
+  animation: applicationSlideIn 0.6s ease forwards;
+}
+
+@keyframes livePulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes statusGlow {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes applicationSlideIn {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

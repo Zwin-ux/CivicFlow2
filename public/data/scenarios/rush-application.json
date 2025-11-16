@@ -1,0 +1,64 @@
+{
+  "id": "rush-application",
+  "title": "Rush Application",
+  "description": "Urgent loan submission for rapid expansion with fast approvals.",
+  "duration": 240000,
+  "events": [
+    {
+      "timestamp": 0,
+      "title": "Application Submitted",
+      "details": "Applicant pushed a rush application through the portal.",
+      "type": "submission",
+      "actor": "Applicant"
+    },
+    {
+      "timestamp": 18000,
+      "title": "Document Package Received",
+      "details": "Tax returns, bank statements, and business plan arrive.",
+      "type": "document",
+      "actor": "System"
+    },
+    {
+      "timestamp": 36000,
+      "title": "Underwriting Assigned",
+      "details": "Senior underwriter picks up the case for review.",
+      "type": "assignment",
+      "actor": "Underwriter"
+    },
+    {
+      "timestamp": 60000,
+      "title": "AI Risk Score",
+      "details": "AI engine calculates risk = 32, confidence 88%.",
+      "type": "ai",
+      "actor": "AI Engine"
+    },
+    {
+      "timestamp": 90000,
+      "title": "Review Completed",
+      "details": "Financial & compliance reviews finished.",
+      "type": "review",
+      "actor": "Review Team"
+    },
+    {
+      "timestamp": 150000,
+      "title": "Approval Issued",
+      "details": "Approval granted for $325,000 with next-step funding.",
+      "type": "approval",
+      "actor": "Approval Committee"
+    }
+  ],
+  "narration": [
+    {
+      "timestamp": 0,
+      "text": "Rush application submitted, starting expedited workflow."
+    },
+    {
+      "timestamp": 90000,
+      "text": "Reviewers complete fast-track checks."
+    },
+    {
+      "timestamp": 150000,
+      "text": "Approval issued with funding scheduled in 4 days."
+    }
+  ]
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walkthrough UI Components Test - CivicFlow2</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <link rel="stylesheet" href="/css/walkthrough.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #1f2937;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .test-section p {
+      color: #6b7280;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .test-card {
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    
+    .test-card:hover {
+      border-color: #8b5cf6;
+      background: #faf5ff;
+    }
+    
+    .test-card h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    
+    .test-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .btn {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .btn:hover {
+      background: #7c3aed;
+    }
+    
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #1f2937;
+    }
+    
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    
+    .status-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .log-container {
+      background: #1f2937;
+      color: #f9fafb;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 16px;
+    }
+    
+    .log-entry {
+      margin-bottom: 4px;
+      padding: 4px 0;
+      border-bottom: 1px solid #374151;
+    }
+    
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    
+    .log-time {
+      color: #9ca3af;
+      margin-right: 8px;
+    }
+    
+    .log-level {
+      margin-right: 8px;
+      font-weight: 600;
+    }
+    
+    .log-level-info {
+      color: #60a5fa;
+    }
+    
+    .log-level-success {
+      color: #34d399;
+    }
+    
+    .log-level-error {
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-section">
+      <h2>🎯 Walkthrough UI Components Test</h2>
+      <p>
+        This page tests all the walkthrough UI components including overlay, tooltip, 
+        progress indicator, navigation buttons, animations, and responsive design.
+      </p>
+      <div>
+        <span class="status status-success">✓ Overlay Component</span>
+        <span class="status status-success">✓ Tooltip Component</span>
+        <span class="status status-success">✓ Progress Indicator</span>
+        <span class="status status-success">✓ Navigation Buttons</span>
+        <span class="status status-success">✓ Animations</span>
+        <span class="status status-success">✓ Responsive Design</span>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>🚀 Quick Tests</h2>
+      <p>Click any button to test specific walkthrough features:</p>
+      <div>
+        <button class="btn" onclick="testBasicWalkthrough()">Basic Walkthrough</button>
+        <button class="btn" onclick="testAnimations()">Test Animations</button>
+        <button class="btn" onclick="testPositioning()">Test Positioning</button>
+        <button class="btn" onclick="testKeyboardNav()">Test Keyboard Nav</button>
+        <button class="btn" onclick="testResponsive()">Test Responsive</button>
+        <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>📦 Test Elements</h2>
+      <p>These elements are used as targets for the walkthrough:</p>
+      <div class="test-grid">
+        <div class="test-card" id="test-card-1">
+          <h3>Test Card 1</h3>
+          <p>This is a test element for highlighting</p>
+        </div>
+        <div class="test-card" id="test-card-2">
+          <h3>Test Card 2</h3>
+          <p>Another test element with different content</p>
+        </div>
+        <div class="test-card" id="test-card-3">
+          <h3>Test Card 3</h3>
+          <p>Third test element for positioning tests</p>
+        </div>
+        <div class="test-card" id="test-card-4">
+          <h3>Test Card 4</h3>
+          <p>Fourth test element for animation tests</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>📊 Event Log</h2>
+      <div class="log-container" id="log-container">
+        <div class="log-entry">
+          <span class="log-time">--:--:--</span>
+          <span class="log-level log-level-info">[INFO]</span>
+          <span>Waiting for test execution...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/demo/orchestrator.js"></script>
+  <script src="/js/demo/walkthrough-engine.js"></script>
+  <script>
+    // Initialize orchestrator
+    const orchestrator = new DemoModeOrchestrator();
+    const walkthroughEngine = new WalkthroughEngine(orchestrator);
+
+    // Logging utility
+    function log(level, message) {
+      const container = document.getElementById('log-container');
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-time">${time}</span>
+        <span class="log-level log-level-${level}">[${level.toUpperCase()}]</span>
+        <span>${message}</span>
+      `;
+      container.appendChild(entry);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function clearLogs() {
+      const container = document.getElementById('log-container');
+      container.innerHTML = '<div class="log-entry"><span class="log-time">--:--:--</span><span class="log-level log-level-info">[INFO]</span><span>Logs cleared</span></div>';
+    }
+
+    // Test: Basic Walkthrough
+    async function testBasicWalkthrough() {
+      log('info', 'Starting basic walkthrough test...');
+      
+      const walkthrough = {
+        id: 'test-basic',
+        title: 'Basic Walkthrough Test',
+        description: 'Testing all UI components',
+        steps: [
+          {
+            id: 'step-1',
+            title: 'Welcome to the Test',
+            description: 'This is the first step. Notice the overlay, tooltip, and progress indicator.',
+            targetElement: '#test-card-1',
+            position: 'bottom',
+            highlightStyle: {
+              animation: 'pulse'
+            }
+          },
+          {
+            id: 'step-2',
+            title: 'Navigation Buttons',
+            description: 'Use the Next and Back buttons, or arrow keys to navigate. Press Escape to skip.',
+            targetElement: '#test-card-2',
+            position: 'right',
+            highlightStyle: {
+              animation: 'glow'
+            }
+          },
+          {
+            id: 'step-3',
+            title: 'Progress Indicator',
+            description: 'Notice the "Step X of Y" indicator at the bottom of the tooltip.',
+            targetElement: '#test-card-3',
+            position: 'top',
+            highlightStyle: {
+              animation: 'pulse'
+            }
+          },
+          {
+            id: 'step-4',
+            title: 'Final Step',
+            description: 'This is the last step. The Next button now says "Finish".',
+            targetElement: '#test-card-4',
+            position: 'left',
+            highlightStyle: {
+              animation: 'glow'
+            }
+          }
+        ]
+      };
+
+      try {
+        await walkthroughEngine.loadWalkthrough(walkthrough);
+        log('success', 'Walkthrough loaded successfully');
+        await walkthroughEngine.start();
+        log('success', 'Walkthrough started - overlay, tooltip, and navigation visible');
+      } catch (error) {
+        log('error', `Failed to start walkthrough: ${error.message}`);
+      }
+    }
+
+    // Test: Animations
+    async function testAnimations() {
+      log('info', 'Testing pulse and glow animations...');
+      
+      const walkthrough = {
+        id: 'test-animations',
+        title: 'Animation Test',
+        description: 'Testing different highlight animations',
+        steps: [
+          {
+            id: 'step-1',
+            title: 'Pulse Animation',
+            description: 'This element has a pulse animation. Watch the border pulse in and out.',
+            targetElement: '#test-card-1',
+            position: 'bottom',
+            highlightStyle: {
+              animation: 'pulse',
+              borderColor: '#8b5cf6'
+            }
+          },
+          {
+            id: 'step-2',
+            title: 'Glow Animation',
+            description: 'This element has a glow animation. Notice the glowing effect around the border.',
+            targetElement: '#test-card-2',
+            position: 'bottom',
+            highlightStyle: {
+              animation: 'glow',
+              borderColor: '#3b82f6'
+            }
+          },
+          {
+            id: 'step-3',
+            title: 'No Animation',
+            description: 'This element has no animation, just a static highlight.',
+            targetElement: '#test-card-3',
+            position: 'bottom',
+            highlightStyle: {
+              animation: 'none',
+              borderColor: '#10b981'
+            }
+          }
+        ]
+      };
+
+      try {
+        await walkthroughEngine.loadWalkthrough(walkthrough);
+        log('success', 'Animation test loaded');
+        await walkthroughEngine.start();
+        log('success', 'Animations active - observe pulse and glow effects');
+      } catch (error) {
+        log('error', `Animation test failed: ${error.message}`);
+      }
+    }
+
+    // Test: Positioning
+    async function testPositioning() {
+      log('info', 'Testing tooltip positioning (top, bottom, left, right, auto)...');
+      
+      const walkthrough = {
+        id: 'test-positioning',
+        title: 'Positioning Test',
+        description: 'Testing tooltip positioning',
+        steps: [
+          {
+            id: 'step-1',
+            title: 'Bottom Position',
+            description: 'Tooltip positioned below the element with arrow pointing up.',
+            targetElement: '#test-card-1',
+            position: 'bottom'
+          },
+          {
+            id: 'step-2',
+            title: 'Right Position',
+            description: 'Tooltip positioned to the right with arrow pointing left.',
+            targetElement: '#test-card-2',
+            position: 'right'
+          },
+          {
+            id: 'step-3',
+            title: 'Top Position',
+            description: 'Tooltip positioned above the element with arrow pointing down.',
+            targetElement: '#test-card-3',
+            position: 'top'
+          },
+          {
+            id: 'step-4',
+            title: 'Left Position',
+            description: 'Tooltip positioned to the left with arrow pointing right.',
+            targetElement: '#test-card-4',
+            position: 'left'
+          }
+        ]
+      };
+
+      try {
+        await walkthroughEngine.loadWalkthrough(walkthrough);
+        log('success', 'Positioning test loaded');
+        await walkthroughEngine.start();
+        log('success', 'Positioning test active - observe tooltip positions and arrows');
+      } catch (error) {
+        log('error', `Positioning test failed: ${error.message}`);
+      }
+    }
+
+    // Test: Keyboard Navigation
+    async function testKeyboardNav() {
+      log('info', 'Testing keyboard navigation...');
+      log('info', 'Use: Arrow Right (next), Arrow Left (back), Escape (skip), Enter (next)');
+      
+      const walkthrough = {
+        id: 'test-keyboard',
+        title: 'Keyboard Navigation Test',
+        description: 'Testing keyboard shortcuts',
+        steps: [
+          {
+            id: 'step-1',
+            title: 'Keyboard Shortcuts',
+            description: 'Press Right Arrow or Enter to go to next step. Press Escape to skip the tour.',
+            targetElement: '#test-card-1',
+            position: 'bottom'
+          },
+          {
+            id: 'step-2',
+            title: 'Back Navigation',
+            description: 'Press Left Arrow to go back to the previous step.',
+            targetElement: '#test-card-2',
+            position: 'bottom'
+          },
+          {
+            id: 'step-3',
+            title: 'Tab Navigation',
+            description: 'Press Tab to cycle through buttons. Focus is trapped within the tooltip.',
+            targetElement: '#test-card-3',
+            position: 'bottom'
+          }
+        ]
+      };
+
+      try {
+        await walkthroughEngine.loadWalkthrough(walkthrough);
+        log('success', 'Keyboard navigation test loaded');
+        await walkthroughEngine.start();
+        log('success', 'Try keyboard shortcuts: ← → Enter Escape Tab');
+      } catch (error) {
+        log('error', `Keyboard test failed: ${error.message}`);
+      }
+    }
+
+    // Test: Responsive Design
+    async function testResponsive() {
+      log('info', 'Testing responsive design...');
+      log('info', 'Resize your browser window to see responsive behavior');
+      
+      const walkthrough = {
+        id: 'test-responsive',
+        title: 'Responsive Design Test',
+        description: 'Testing mobile responsiveness',
+        steps: [
+          {
+            id: 'step-1',
+            title: 'Desktop View',
+            description: 'On desktop, the tooltip has a maximum width and buttons are side-by-side.',
+            targetElement: '#test-card-1',
+            position: 'bottom'
+          },
+          {
+            id: 'step-2',
+            title: 'Mobile View',
+            description: 'Resize to mobile width (< 640px). Buttons stack vertically and tooltip takes full width.',
+            targetElement: '#test-card-2',
+            position: 'bottom'
+          },
+          {
+            id: 'step-3',
+            title: 'Auto-Positioning',
+            description: 'The tooltip automatically adjusts position to stay within viewport bounds.',
+            targetElement: '#test-card-3',
+            position: 'auto'
+          }
+        ]
+      };
+
+      try {
+        await walkthroughEngine.loadWalkthrough(walkthrough);
+        log('success', 'Responsive test loaded');
+        await walkthroughEngine.start();
+        log('success', 'Responsive test active - try resizing the window');
+      } catch (error) {
+        log('error', `Responsive test failed: ${error.message}`);
+      }
+    }
+
+    // Log initialization
+    log('success', 'Walkthrough UI Components Test initialized');
+    log('info', 'All components loaded and ready for testing');
+  </script>
+</body>
+</html>

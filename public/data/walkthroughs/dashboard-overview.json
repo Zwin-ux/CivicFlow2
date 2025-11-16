@@ -1,0 +1,148 @@
+{
+  "id": "dashboard-overview",
+  "title": "Dashboard Overview",
+  "description": "Get familiar with the main dashboard and key metrics",
+  "estimatedDuration": 120,
+  "steps": [
+    {
+      "id": "welcome",
+      "title": "Welcome to CivicFlow2",
+      "description": "This interactive tour will guide you through the main features of the dashboard. You can navigate using the arrow keys or buttons below.",
+      "targetElement": ".dashboard-header, .page-header, h1",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "metrics-overview",
+      "title": "Key Performance Metrics",
+      "description": "These cards show real-time statistics about applications, approvals, and funding. Watch them update as new activity occurs in demo mode.",
+      "targetElement": ".metrics-grid, .stats-grid, .dashboard-metrics",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "total-applications",
+      "title": "Total Applications",
+      "description": "Track the total number of applications submitted. This metric updates in real-time as new applications are received.",
+      "targetElement": ".metric-card:first-child, .stat-card:first-child, [data-metric='total-applications']",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#3b82f6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "approval-rate",
+      "title": "Approval Rate",
+      "description": "Monitor your approval rate percentage. A healthy approval rate indicates efficient processing and quality applications.",
+      "targetElement": "[data-metric='approval-rate'], .metric-card:nth-child(2), .stat-card:nth-child(2)",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "recent-activity",
+      "title": "Recent Activity Feed",
+      "description": "Stay updated with the latest actions and events. This feed shows real-time updates including new applications, status changes, and approvals.",
+      "targetElement": ".activity-feed, .recent-activity, [data-section='activity']",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#f59e0b",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "applications-chart",
+      "title": "Applications Trend Chart",
+      "description": "Visualize application trends over time. This chart helps you identify patterns and peak submission periods.",
+      "targetElement": ".chart-container, .applications-chart, [data-chart='applications']",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#06b6d4",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "quick-actions",
+      "title": "Quick Actions",
+      "description": "Access frequently used actions quickly. Create new applications, run reports, or access settings from here.",
+      "targetElement": ".quick-actions, .action-buttons, [data-section='actions']",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "navigation-menu",
+      "title": "Main Navigation",
+      "description": "Use the navigation menu to access different sections: Applications, Documents, Reports, and Settings.",
+      "targetElement": ".main-nav, .sidebar-nav, nav.primary-nav",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#2563eb",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "demo-indicator",
+      "title": "Demo Mode Indicator",
+      "description": "This badge shows you're in demo mode. All data is simulated and safe to explore. You can toggle demo features in settings.",
+      "targetElement": ".demo-indicator, [data-component='demo-indicator']",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#f97316",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "tour-complete",
+      "title": "Dashboard Tour Complete!",
+      "description": "You've completed the dashboard overview. Explore other walkthroughs to learn about application review, AI features, and admin tools.",
+      "targetElement": ".dashboard-container, main, .page-content",
+      "position": "auto",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": false
+    }
+  ]
+}

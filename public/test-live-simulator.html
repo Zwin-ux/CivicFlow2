@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Simulator Test - CivicFlow2</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <link rel="stylesheet" href="/css/components/toast-notification.css">
+  <style>
+    body {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #2563eb;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    
+    .btn-secondary {
+      background: #64748b;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    
+    .status.running {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+    
+    .status.stopped {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    
+    .event-history {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px;
+    }
+    
+    .event-item {
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .event-item:last-child {
+      border-bottom: none;
+    }
+    
+    .event-type {
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 5px;
+    }
+    
+    .event-data {
+      font-size: 14px;
+      color: #64748b;
+    }
+    
+    .event-time {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .stat-card {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    
+    .intensity-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .intensity-selector label {
+      font-weight: 500;
+    }
+    
+    .intensity-selector select {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s ease-out;
+      z-index: 10000;
+      max-width: 400px;
+    }
+    
+    .toast-icon {
+      font-size: 24px;
+    }
+    
+    .toast-content {
+      flex: 1;
+    }
+    
+    .toast-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .toast-message {
+      font-size: 14px;
+      color: #64748b;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🔴 Live Simulator Test</h1>
+  
+  <div class="test-section">
+    <h2>Simulator Controls</h2>
+    
+    <div id="status" class="status stopped">
+      Status: Stopped
+    </div>
+    
+    <div class="controls">
+      <button id="startBtn" class="btn btn-primary">▶️ Start Simulation</button>
+      <button id="stopBtn" class="btn btn-danger" disabled>⏹️ Stop Simulation</button>
+      <button id="generateBtn" class="btn btn-secondary">⚡ Generate Event Now</button>
+      <button id="clearBtn" class="btn btn-secondary">🗑️ Clear History</button>
+    </div>
+    
+    <div class="intensity-selector">
+      <label for="intensitySelect">Intensity:</label>
+      <select id="intensitySelect">
+        <option value="low">Low (slower)</option>
+        <option value="medium" selected>Medium</option>
+        <option value="high">High (faster)</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Statistics</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Events</div>
+        <div class="stat-value" id="totalEvents">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">New Applications</div>
+        <div class="stat-value" id="newApplications">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Status Changes</div>
+        <div class="stat-value" id="statusChanges">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Approvals</div>
+        <div class="stat-value" id="approvals">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">AI Analyses</div>
+        <div class="stat-value" id="aiAnalyses">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Current Intensity</div>
+        <div class="stat-value" id="currentIntensity">medium</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Event History</h2>
+    <div id="eventHistory" class="event-history">
+      <p style="color: #94a3b8; text-align: center;">No events yet. Start the simulation to see events.</p>
+    </div>
+  </div>
+  
+  <script src="/js/demo/config.js"></script>
+  <script src="/js/demo/orchestrator.js"></script>
+  <script src="/js/demo/live-simulator.js"></script>
+  <script src="/js/components/toast-notification.js"></script>
+  
+  <script>
+    // Initialize
+    let simulator = null;
+    let eventCounts = {};
+    
+    // Initialize simulator
+    function initSimulator() {
+      simulator = new LiveSimulator(window.demoOrchestrator);
+      
+      // Listen for events
+      window.demoOrchestrator.on('simulated-event', (event) => {
+        addEventToHistory(event);
+        updateStatistics(event);
+      });
+      
+      console.log('Live Simulator initialized');
+    }
+    
+    // Add event to history display
+    function addEventToHistory(event) {
+      const history = document.getElementById('eventHistory');
+      
+      // Clear placeholder
+      if (history.querySelector('p')) {
+        history.innerHTML = '';
+      }
+      
+      const item = document.createElement('div');
+      item.className = 'event-item';
+      item.innerHTML = `
+        <div class="event-type">${event.notification.icon} ${event.notification.title}</div>
+        <div class="event-data">${formatEventData(event)}</div>
+        <div class="event-time">${event.timestamp.toLocaleTimeString()}</div>
+      `;
+      
+      history.insertBefore(item, history.firstChild);
+      
+      // Keep only last 20 events
+      const items = history.querySelectorAll('.event-item');
+      if (items.length > 20) {
+        items[items.length - 1].remove();
+      }
+    }
+    
+    // Format event data for display
+    function formatEventData(event) {
+      const data = event.data;
+      switch (event.type) {
+        case 'new_application':
+          return `${data.businessName} - $${data.loanAmount.toLocaleString()}`;
+        case 'status_change':
+          return `${data.businessName}: ${data.previousStatus} → ${data.newStatus}`;
+        case 'document_uploaded':
+          return `${data.businessName} - ${data.documentType}`;
+        case 'review_completed':
+          return `${data.businessName} reviewed by ${data.reviewer}`;
+        case 'approval_granted':
+          return `${data.businessName} - $${data.loanAmount.toLocaleString()} approved`;
+        case 'rejection_issued':
+          return `${data.businessName} - ${data.reason}`;
+        case 'comment_added':
+          return `${data.commenter} on ${data.businessName}`;
+        case 'ai_analysis_complete':
+          return `${data.businessName} - Risk: ${data.riskScore}, Confidence: ${data.confidence}%`;
+        default:
+          return JSON.stringify(data);
+      }
+    }
+    
+    // Update statistics
+    function updateStatistics(event) {
+      eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
+      
+      const stats = simulator.getStatistics();
+      
+      document.getElementById('totalEvents').textContent = stats.totalEvents;
+      document.getElementById('newApplications').textContent = eventCounts.new_application || 0;
+      document.getElementById('statusChanges').textContent = eventCounts.status_change || 0;
+      document.getElementById('approvals').textContent = eventCounts.approval_granted || 0;
+      document.getElementById('aiAnalyses').textContent = eventCounts.ai_analysis_complete || 0;
+      document.getElementById('currentIntensity').textContent = stats.config.intensity;
+    }
+    
+    // Update UI status
+    function updateStatus(isRunning) {
+      const status = document.getElementById('status');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      
+      if (isRunning) {
+        status.className = 'status running';
+        status.textContent = 'Status: Running';
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      } else {
+        status.className = 'status stopped';
+        status.textContent = 'Status: Stopped';
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+    }
+    
+    // Event handlers
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const intensity = document.getElementById('intensitySelect').value;
+      simulator.start({
+        interval: 10000, // 10 seconds for testing (faster than default)
+        intensity: intensity
+      });
+      updateStatus(true);
+      console.log('Simulation started');
+    });
+    
+    document.getElementById('stopBtn').addEventListener('click', () => {
+      simulator.stop();
+      updateStatus(false);
+      console.log('Simulation stopped');
+    });
+    
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const event = simulator.generateEvent();
+      console.log('Manual event generated:', event);
+    });
+    
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      simulator.clearHistory();
+      eventCounts = {};
+      document.getElementById('eventHistory').innerHTML = '<p style="color: #94a3b8; text-align: center;">History cleared.</p>';
+      document.getElementById('totalEvents').textContent = '0';
+      document.getElementById('newApplications').textContent = '0';
+      document.getElementById('statusChanges').textContent = '0';
+      document.getElementById('approvals').textContent = '0';
+      document.getElementById('aiAnalyses').textContent = '0';
+      console.log('History cleared');
+    });
+    
+    document.getElementById('intensitySelect').addEventListener('change', (e) => {
+      const intensity = e.target.value;
+      simulator.setIntensity(intensity);
+      console.log('Intensity changed to:', intensity);
+    });
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initSimulator();
+      updateStatus(false);
+    });
+  </script>
+</body>
+</html>

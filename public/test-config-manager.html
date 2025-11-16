@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Config Manager Test - CivicFlow2</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f8f9fa;
+    }
+    .test-section {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #1f2937; }
+    h2 { color: #374151; font-size: 1.25rem; }
+    button {
+      padding: 0.5rem 1rem;
+      margin: 0.25rem;
+      border: none;
+      border-radius: 6px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: #2563eb; }
+    .output {
+      background: #f3f4f6;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.875rem;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success { color: #10b981; font-weight: 600; }
+    .error { color: #ef4444; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Config Manager Test Suite</h1>
+
+  <div class="test-section">
+    <h2>1. Load Configuration</h2>
+    <button onclick="testLoadConfig()">Load Config</button>
+    <div id="loadOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>2. Save Configuration</h2>
+    <button onclick="testSaveConfig()">Save Config</button>
+    <div id="saveOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>3. Update Configuration</h2>
+    <button onclick="testUpdateConfig()">Update Config</button>
+    <div id="updateOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>4. Validate Configuration</h2>
+    <button onclick="testValidateValid()">Validate Valid Config</button>
+    <button onclick="testValidateInvalid()">Validate Invalid Config</button>
+    <div id="validateOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>5. Reset to Defaults</h2>
+    <button onclick="testResetDefaults()">Reset to Defaults</button>
+    <div id="resetOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>6. Export/Import Configuration</h2>
+    <button onclick="testExportConfig()">Export Config</button>
+    <button onclick="testImportConfig()">Import Config</button>
+    <div id="exportImportOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>7. Get Configuration Summary</h2>
+    <button onclick="testGetSummary()">Get Summary</button>
+    <div id="summaryOutput" class="output"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>8. Section Operations</h2>
+    <button onclick="testGetSection()">Get Section</button>
+    <button onclick="testUpdateSection()">Update Section</button>
+    <div id="sectionOutput" class="output"></div>
+  </div>
+
+  <script src="/js/demo/config.js"></script>
+  <script src="/js/demo/config-manager.js"></script>
+  <script src="/js/demo/orchestrator.js"></script>
+  
+  <script>
+    let configManager;
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      configManager = new DemoConfigManager(window.demoOrchestrator);
+      console.log('Config Manager initialized for testing');
+    });
+
+    function testLoadConfig() {
+      const output = document.getElementById('loadOutput');
+      try {
+        const config = configManager.loadConfig();
+        output.innerHTML = '<span class="success">✓ Config loaded successfully</span>\n\n' + 
+                          JSON.stringify(config, null, 2);
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testSaveConfig() {
+      const output = document.getElementById('saveOutput');
+      try {
+        const testConfig = configManager.getConfig();
+        testConfig.general.companyName = 'Test Company ' + Date.now();
+        const success = configManager.saveConfig(testConfig);
+        
+        if (success) {
+          output.innerHTML = '<span class="success">✓ Config saved successfully</span>\n\n' +
+                            'Company Name: ' + testConfig.general.companyName;
+        } else {
+          output.innerHTML = '<span class="error">✗ Failed to save config</span>';
+        }
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testUpdateConfig() {
+      const output = document.getElementById('updateOutput');
+      try {
+        const updates = {
+          simulation: {
+            interval: 60000,
+            intensity: 'high'
+          }
+        };
+        const success = configManager.updateConfig(updates);
+        
+        if (success) {
+          const config = configManager.getConfig();
+          output.innerHTML = '<span class="success">✓ Config updated successfully</span>\n\n' +
+                            'Simulation Interval: ' + config.simulation.interval + 'ms\n' +
+                            'Simulation Intensity: ' + config.simulation.intensity;
+        } else {
+          output.innerHTML = '<span class="error">✗ Failed to update config</span>';
+        }
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testValidateValid() {
+      const output = document.getElementById('validateOutput');
+      try {
+        const config = configManager.getDefaultConfiguration();
+        const validation = configManager.validateConfig(config);
+        
+        output.innerHTML = '<span class="success">✓ Validation test completed</span>\n\n' +
+                          'Valid: ' + validation.valid + '\n' +
+                          'Errors: ' + (validation.errors.length === 0 ? 'None' : validation.errors.join(', '));
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testValidateInvalid() {
+      const output = document.getElementById('validateOutput');
+      try {
+        const invalidConfig = {
+          simulation: {
+            interval: 500, // Too low
+            intensity: 'invalid'
+          },
+          data: {
+            approvalRate: 150 // Too high
+          },
+          roleSwitching: {
+            defaultRole: 'invalid_role'
+          }
+        };
+        const validation = configManager.validateConfig(invalidConfig);
+        
+        output.innerHTML = '<span class="success">✓ Validation test completed</span>\n\n' +
+                          'Valid: ' + validation.valid + '\n' +
+                          'Errors:\n' + validation.errors.map(e => '  - ' + e).join('\n');
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testResetDefaults() {
+      const output = document.getElementById('resetOutput');
+      try {
+        const defaults = configManager.resetToDefaults();
+        output.innerHTML = '<span class="success">✓ Config reset to defaults</span>\n\n' +
+                          'Company Name: ' + defaults.general.companyName + '\n' +
+                          'Simulation Interval: ' + defaults.simulation.interval + 'ms';
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testExportConfig() {
+      const output = document.getElementById('exportImportOutput');
+      try {
+        const exported = configManager.exportConfig();
+        output.innerHTML = '<span class="success">✓ Config exported</span>\n\n' +
+                          'Length: ' + exported.length + ' characters\n\n' +
+                          'Preview:\n' + exported.substring(0, 500) + '...';
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testImportConfig() {
+      const output = document.getElementById('exportImportOutput');
+      try {
+        const testConfig = configManager.getDefaultConfiguration();
+        testConfig.general.companyName = 'Imported Company';
+        const jsonString = JSON.stringify(testConfig);
+        
+        const success = configManager.importConfig(jsonString);
+        
+        if (success) {
+          const config = configManager.getConfig();
+          output.innerHTML = '<span class="success">✓ Config imported successfully</span>\n\n' +
+                            'Company Name: ' + config.general.companyName;
+        } else {
+          output.innerHTML = '<span class="error">✗ Failed to import config</span>';
+        }
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testGetSummary() {
+      const output = document.getElementById('summaryOutput');
+      try {
+        const summary = configManager.getSummary();
+        output.innerHTML = '<span class="success">✓ Summary retrieved</span>\n\n' +
+                          JSON.stringify(summary, null, 2);
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testGetSection() {
+      const output = document.getElementById('sectionOutput');
+      try {
+        const section = configManager.getSection('simulation');
+        output.innerHTML = '<span class="success">✓ Section retrieved</span>\n\n' +
+                          'Simulation Section:\n' + JSON.stringify(section, null, 2);
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+
+    function testUpdateSection() {
+      const output = document.getElementById('sectionOutput');
+      try {
+        const updates = {
+          enabled: true,
+          interval: 30000
+        };
+        const success = configManager.updateSection('simulation', updates);
+        
+        if (success) {
+          const section = configManager.getSection('simulation');
+          output.innerHTML = '<span class="success">✓ Section updated</span>\n\n' +
+                            'Updated Simulation Section:\n' + JSON.stringify(section, null, 2);
+        } else {
+          output.innerHTML = '<span class="error">✗ Failed to update section</span>';
+        }
+      } catch (error) {
+        output.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+      }
+    }
+  </script>
+</body>
+</html>

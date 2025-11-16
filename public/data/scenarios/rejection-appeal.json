@@ -1,0 +1,60 @@
+{
+  "id": "rejection-appeal",
+  "title": "Rejection & Appeal",
+  "description": "Handles a rejection followed by an appeal and reevaluation.",
+  "duration": 260000,
+  "events": [
+    {
+      "timestamp": 0,
+      "title": "Application Submitted",
+      "details": "Applicant applies for a sensitive industry loan.",
+      "type": "submission",
+      "actor": "Applicant"
+    },
+    {
+      "timestamp": 25000,
+      "title": "Review Flags Risk",
+      "details": "Review team cites industry risk and documentation gaps.",
+      "type": "review",
+      "actor": "Senior Reviewer"
+    },
+    {
+      "timestamp": 70000,
+      "title": "Rejection Issued",
+      "details": "Application rejected with appeal rights and timeline.",
+      "type": "rejection",
+      "actor": "Decision Committee"
+    },
+    {
+      "timestamp": 110000,
+      "title": "Appeal Submitted",
+      "details": "Applicant responds with clarifications and evidence.",
+      "type": "appeal",
+      "actor": "Applicant"
+    },
+    {
+      "timestamp": 170000,
+      "title": "Appeal Review",
+      "details": "Appeals committee reviews the fresh documentation.",
+      "type": "review",
+      "actor": "Appeals Committee"
+    },
+    {
+      "timestamp": 230000,
+      "title": "Reversal & Approval",
+      "details": "Rejection reversed; approval issued with watchlist.",
+      "type": "approval",
+      "actor": "Appeals Committee"
+    }
+  ],
+  "narration": [
+    {
+      "timestamp": 70000,
+      "text": "System explains rejection reasons and next steps."
+    },
+    {
+      "timestamp": 230000,
+      "text": "Appeal success triggers funding readiness."
+    }
+  ]
+}

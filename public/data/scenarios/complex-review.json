@@ -1,0 +1,64 @@
+{
+  "id": "complex-review",
+  "title": "Complex Review",
+  "description": "Multi-reviewer workflow for high-dollar, high-risk opportunity.",
+  "duration": 320000,
+  "events": [
+    {
+      "timestamp": 0,
+      "title": "Application Intake",
+      "details": "Enterprise request received for $1.2M capital.",
+      "type": "submission",
+      "actor": "Applicant"
+    },
+    {
+      "timestamp": 20000,
+      "title": "Initial Review",
+      "details": "Credit analyst validates financial statements.",
+      "type": "review",
+      "actor": "Credit Analyst"
+    },
+    {
+      "timestamp": 60000,
+      "title": "Document QA",
+      "details": "Document issues flagged for compliance sign-off.",
+      "type": "document",
+      "actor": "Compliance"
+    },
+    {
+      "timestamp": 120000,
+      "title": "Secondary Review",
+      "details": "Operations reviewer assesses supply chain risk.",
+      "type": "review",
+      "actor": "Operations Reviewer"
+    },
+    {
+      "timestamp": 210000,
+      "title": "Senior Committee Review",
+      "details": "Committee meets to debate approval with conditions.",
+      "type": "committee",
+      "actor": "Senior Committee"
+    },
+    {
+      "timestamp": 280000,
+      "title": "Approval with Conditions",
+      "details": "Approved with collateral and reporting requirements.",
+      "type": "approval",
+      "actor": "Committee"
+    }
+  ],
+  "narration": [
+    {
+      "timestamp": 0,
+      "text": "Dashboard highlights the larger review scope."
+    },
+    {
+      "timestamp": 210000,
+      "text": "Senior committee weighs risk vs. reward."
+    },
+    {
+      "timestamp": 280000,
+      "text": "Approval granted with enhanced monitoring."
+    }
+  ]
+}

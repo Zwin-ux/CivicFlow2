@@ -1,0 +1,135 @@
+.role-view-panel {
+  max-width: 1100px;
+  margin: 2.5rem auto;
+  padding: 1.75rem;
+  background: var(--color-bg-secondary, #f9fafb);
+  border-radius: 20px;
+  box-shadow: 0 25px 45px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.role-view-card {
+  background: var(--color-bg-primary, #ffffff);
+  border-radius: 14px;
+  padding: 1.25rem;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.role-view-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: none;
+  box-shadow: none;
+}
+
+.role-view-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.role-view-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.role-view-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.role-view-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.role-view-focus {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #4b5563);
+}
+
+.role-view-description {
+  color: var(--color-text-secondary, #4b5563);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.role-view-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.role-view-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.role-view-features li {
+  padding-left: 1rem;
+  position: relative;
+  font-size: 0.9rem;
+  color: var(--color-text-primary, #111827);
+}
+
+.role-view-features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary, #667eea);
+}
+
+.role-view-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.role-view-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: var(--color-primary, #667eea);
+  color: white;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 18px rgba(102, 126, 234, 0.3);
+}
+
+.role-view-action:hover,
+.role-view-action:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.35);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-view-action {
+    transition: none;
+  }
+}

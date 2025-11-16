@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Mode Settings - CivicFlow2</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <link rel="stylesheet" href="/css/demo-settings.css">
+</head>
+<body>
+  <div class="settings-container">
+    <!-- Header -->
+    <header class="settings-header">
+      <div class="header-content">
+        <h1>
+          <span class="demo-badge">DEMO</span>
+          Demo Mode Settings
+        </h1>
+        <p class="subtitle">Customize your demo experience</p>
+      </div>
+      <div class="header-actions">
+        <button id="exportConfigBtn" class="btn btn-secondary">
+          <span class="icon">📥</span>
+          Export Config
+        </button>
+        <button id="importConfigBtn" class="btn btn-secondary">
+          <span class="icon">📤</span>
+          Import Config
+        </button>
+        <button id="resetConfigBtn" class="btn btn-warning">
+          <span class="icon">🔄</span>
+          Reset to Defaults
+        </button>
+        <button id="saveConfigBtn" class="btn btn-primary">
+          <span class="icon">💾</span>
+          Save Changes
+        </button>
+      </div>
+    </header>
+
+    <!-- Settings Content -->
+    <div class="settings-content">
+      <!-- General Settings -->
+      <section class="settings-section">
+        <h2>General Settings</h2>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label for="companyName">Company Name</label>
+            <input type="text" id="companyName" placeholder="CivicFlow2">
+          </div>
+          <div class="setting-item">
+            <label for="industry">Industry</label>
+            <input type="text" id="industry" placeholder="Government Lending">
+          </div>
+          <div class="setting-item">
+            <label for="theme">Theme</label>
+            <select id="theme">
+              <option value="auto">Auto</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="language">Language</label>
+            <select id="language">
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Simulation Settings -->
+      <section class="settings-section">
+        <h2>Live Simulation</h2>
+        <div class="settings-grid">
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="simulationEnabled">
+              <span>Enable Live Simulation</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="simulationInterval">Event Interval (seconds)</label>
+            <input type="number" id="simulationInterval" min="10" max="300" step="5">
+            <small>Time between simulated events</small>
+          </div>
+          <div class="setting-item">
+            <label for="simulationIntensity">Intensity</label>
+            <select id="simulationIntensity">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Walkthrough Settings -->
+      <section class="settings-section">
+        <h2>Interactive Walkthrough</h2>
+        <div class="settings-grid">
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="walkthroughEnabled">
+              <span>Enable Walkthrough</span>
+            </label>
+          </div>
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="walkthroughAutoStart">
+              <span>Auto-start on first visit</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="highlightAnimation">Highlight Animation</label>
+            <select id="highlightAnimation">
+              <option value="pulse">Pulse</option>
+              <option value="glow">Glow</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="tooltipPosition">Tooltip Position</label>
+            <select id="tooltipPosition">
+              <option value="auto">Auto</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scenario Settings -->
+      <section class="settings-section">
+        <h2>Scenario Playback</h2>
+        <div class="settings-grid">
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="scenariosEnabled">
+              <span>Enable Scenarios</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="scenarioSpeed">Default Speed</label>
+            <select id="scenarioSpeed">
+              <option value="0.5">0.5x</option>
+              <option value="1.0">1.0x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2.0">2.0x</option>
+            </select>
+          </div>
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="showNarration">
+              <span>Show Narration</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Role Switching Settings -->
+      <section class="settings-section">
+        <h2>Role Switching</h2>
+        <div class="settings-grid">
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="roleSwitchingEnabled">
+              <span>Enable Role Switching</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="defaultRole">Default Role</label>
+            <select id="defaultRole">
+              <option value="applicant">Applicant</option>
+              <option value="reviewer">Reviewer</option>
+              <option value="approver">Approver</option>
+              <option value="admin">Admin</option>
+              <option value="investor">Investor</option>
+            </select>
+          </div>
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="enableKeyboardShortcuts">
+              <span>Enable Keyboard Shortcuts</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Customization -->
+      <section class="settings-section">
+        <h2>Data Customization</h2>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label for="applicationCount">Application Count</label>
+            <input type="number" id="applicationCount" min="0" max="1000">
+          </div>
+          <div class="setting-item">
+            <label for="approvalRate">Approval Rate (%)</label>
+            <input type="number" id="approvalRate" min="0" max="100" step="0.1">
+          </div>
+          <div class="setting-item">
+            <label for="averageLoanAmount">Average Loan Amount ($)</label>
+            <input type="number" id="averageLoanAmount" min="0" step="1000">
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Settings -->
+      <section class="settings-section">
+        <h2>Analytics</h2>
+        <div class="settings-grid">
+          <div class="setting-item full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="analyticsEnabled">
+              <span>Enable Analytics Tracking</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="analyticsStorage">Storage</label>
+            <select id="analyticsStorage">
+              <option value="local">Local (Browser)</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature Flags -->
+      <section class="settings-section">
+        <h2>Feature Flags</h2>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featureLiveSimulation">
+              <span>Live Simulation</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featureWalkthrough">
+              <span>Interactive Walkthrough</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featureScenarios">
+              <span>Scenario Playback</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featureAIShowcase">
+              <span>AI Showcase</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featureRoleSwitching">
+              <span>Role Switching</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featureResilienceDemo">
+              <span>Resilience Demo</span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Status Messages -->
+    <div id="statusMessage" class="status-message hidden"></div>
+  </div>
+
+  <!-- Hidden file input for import -->
+  <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+  <!-- Scripts -->
+  <script src="/js/demo/config.js"></script>
+  <script src="/js/demo/config-manager.js"></script>
+  <script src="/js/demo/orchestrator.js"></script>
+  <script src="/js/demo-settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walkthrough Engine Test</title>
+  <link rel="stylesheet" href="/css/walkthrough.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f3f4f6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card h3 {
+      margin-top: 0;
+      color: #1f2937;
+    }
+    
+    .card p {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    
+    .controls {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    button {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    button:hover {
+      background: #7c3aed;
+    }
+    
+    button.secondary {
+      background: #6b7280;
+    }
+    
+    button.secondary:hover {
+      background: #4b5563;
+    }
+    
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: monospace;
+    }
+    
+    .edge-cases {
+      margin-top: 20px;
+      position: relative;
+      min-height: 400px;
+    }
+    
+    .edge-element {
+      position: absolute;
+      background: #8b5cf6;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .edge-element.top-left {
+      top: 10px;
+      left: 10px;
+    }
+    
+    .edge-element.top-right {
+      top: 10px;
+      right: 10px;
+    }
+    
+    .edge-element.bottom-left {
+      bottom: 10px;
+      left: 10px;
+    }
+    
+    .edge-element.bottom-right {
+      bottom: 10px;
+      right: 10px;
+    }
+    
+    .edge-element.center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header" id="header">
+      <h1>Walkthrough Engine Test</h1>
+      <p>Test the interactive walkthrough functionality</p>
+    </div>
+    
+    <div class="content">
+      <div class="card" id="card-1">
+        <h3>Feature 1</h3>
+        <p>This is the first feature card that will be highlighted in the walkthrough.</p>
+      </div>
+      
+      <div class="card" id="card-2">
+        <h3>Feature 2</h3>
+        <p>This is the second feature card with more information about capabilities.</p>
+      </div>
+      
+      <div class="card" id="card-3">
+        <h3>Feature 3</h3>
+        <p>This is the third feature card demonstrating the walkthrough system.</p>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <h3>Controls</h3>
+      <button onclick="startWalkthrough()">Start Walkthrough</button>
+      <button onclick="startEdgeCaseWalkthrough()">Test Edge Cases</button>
+      <button onclick="stopWalkthrough()" class="secondary">Stop Walkthrough</button>
+      <button onclick="getProgress()" class="secondary">Get Progress</button>
+      <button onclick="getCurrentStep()" class="secondary">Get Current Step</button>
+      
+      <div class="status" id="status">
+        Status: Ready
+      </div>
+    </div>
+    
+    <div class="controls edge-cases">
+      <h3>Edge Case Testing</h3>
+      <p>These elements test tooltip positioning at viewport edges:</p>
+      <div class="edge-element top-left" id="edge-top-left">Top Left</div>
+      <div class="edge-element top-right" id="edge-top-right">Top Right</div>
+      <div class="edge-element bottom-left" id="edge-bottom-left">Bottom Left</div>
+      <div class="edge-element bottom-right" id="edge-bottom-right">Bottom Right</div>
+      <div class="edge-element center" id="edge-center">Center</div>
+    </div>
+  </div>
+  
+  <script src="/js/demo/config.js"></script>
+  <script src="/js/demo/orchestrator.js"></script>
+  <script src="/js/demo/walkthrough-engine.js"></script>
+  
+  <script>
+    // Initialize walkthrough engine
+    const walkthroughEngine = new WalkthroughEngine(window.demoOrchestrator);
+    
+    // Register with orchestrator
+    if (window.demoOrchestrator) {
+      window.demoOrchestrator.registerComponent('walkthroughEngine', walkthroughEngine);
+    }
+    
+    // Define test walkthrough
+    const testWalkthrough = {
+      id: 'test-walkthrough',
+      title: 'Test Walkthrough',
+      description: 'A simple test walkthrough',
+      estimatedDuration: 60,
+      steps: [
+        {
+          id: 'step-1',
+          title: 'Welcome',
+          description: 'Welcome to the walkthrough test! This will guide you through the key features.',
+          targetElement: '#header',
+          position: 'bottom',
+          highlightStyle: {
+            animation: 'pulse'
+          }
+        },
+        {
+          id: 'step-2',
+          title: 'First Feature',
+          description: 'This is the first feature card. Notice how it\'s highlighted with a purple border.',
+          targetElement: '#card-1',
+          position: 'auto',
+          highlightStyle: {
+            animation: 'pulse'
+          }
+        },
+        {
+          id: 'step-3',
+          title: 'Second Feature',
+          description: 'Here\'s the second feature. The tooltip automatically positions itself to be visible.',
+          targetElement: '#card-2',
+          position: 'auto',
+          highlightStyle: {
+            animation: 'glow'
+          }
+        },
+        {
+          id: 'step-4',
+          title: 'Third Feature',
+          description: 'And finally, the third feature. You can navigate using arrow keys or the buttons.',
+          targetElement: '#card-3',
+          position: 'auto',
+          highlightStyle: {
+            animation: 'pulse'
+          }
+        },
+        {
+          id: 'step-5',
+          title: 'Controls',
+          description: 'These controls let you test the walkthrough functionality. Try them out!',
+          targetElement: '.controls',
+          position: 'top',
+          highlightStyle: {
+            animation: 'glow'
+          }
+        }
+      ]
+    };
+    
+    // Edge case walkthrough
+    const edgeCaseWalkthrough = {
+      id: 'edge-case-walkthrough',
+      title: 'Edge Case Positioning Test',
+      description: 'Tests tooltip positioning at viewport edges',
+      estimatedDuration: 60,
+      steps: [
+        {
+          id: 'edge-1',
+          title: 'Top Left Corner',
+          description: 'Testing tooltip positioning when element is in top-left corner. The tooltip should automatically position itself to be fully visible.',
+          targetElement: '#edge-top-left',
+          position: 'auto',
+          highlightStyle: { animation: 'pulse' }
+        },
+        {
+          id: 'edge-2',
+          title: 'Top Right Corner',
+          description: 'Testing tooltip positioning when element is in top-right corner. Notice how the tooltip adjusts to stay within viewport.',
+          targetElement: '#edge-top-right',
+          position: 'auto',
+          highlightStyle: { animation: 'pulse' }
+        },
+        {
+          id: 'edge-3',
+          title: 'Bottom Left Corner',
+          description: 'Testing tooltip positioning when element is in bottom-left corner. The arrow should point correctly to the element.',
+          targetElement: '#edge-bottom-left',
+          position: 'auto',
+          highlightStyle: { animation: 'glow' }
+        },
+        {
+          id: 'edge-4',
+          title: 'Bottom Right Corner',
+          description: 'Testing tooltip positioning when element is in bottom-right corner. All positioning logic is working correctly.',
+          targetElement: '#edge-bottom-right',
+          position: 'auto',
+          highlightStyle: { animation: 'glow' }
+        },
+        {
+          id: 'edge-5',
+          title: 'Center Element',
+          description: 'Testing tooltip positioning for centered element. The tooltip has maximum flexibility here.',
+          targetElement: '#edge-center',
+          position: 'auto',
+          highlightStyle: { animation: 'pulse' }
+        }
+      ]
+    };
+    
+    // Functions for testing
+    async function startWalkthrough() {
+      try {
+        await walkthroughEngine.loadWalkthrough(testWalkthrough);
+        await walkthroughEngine.start();
+        updateStatus('Walkthrough started');
+      } catch (error) {
+        updateStatus('Error: ' + error.message);
+      }
+    }
+    
+    async function startEdgeCaseWalkthrough() {
+      try {
+        await walkthroughEngine.loadWalkthrough(edgeCaseWalkthrough);
+        await walkthroughEngine.start();
+        updateStatus('Edge case walkthrough started');
+      } catch (error) {
+        updateStatus('Error: ' + error.message);
+      }
+    }
+    
+    function stopWalkthrough() {
+      walkthroughEngine.stop();
+      updateStatus('Walkthrough stopped');
+    }
+    
+    function getProgress() {
+      const progress = walkthroughEngine.getProgress();
+      updateStatus(`Progress: ${progress.current}/${progress.total} (${progress.percentage}%)`);
+    }
+    
+    function getCurrentStep() {
+      const step = walkthroughEngine.getCurrentStep();
+      if (step) {
+        updateStatus(`Current step: ${step.title} (${step.id})`);
+      } else {
+        updateStatus('No active step');
+      }
+    }
+    
+    function updateStatus(message) {
+      document.getElementById('status').textContent = 'Status: ' + message;
+      console.log('[Test]', message);
+    }
+    
+    // Listen to orchestrator events
+    if (window.demoOrchestrator) {
+      window.demoOrchestrator.on('walkthrough-started', (data) => {
+        updateStatus('Walkthrough started: ' + data.walkthroughId);
+      });
+      
+      window.demoOrchestrator.on('walkthrough-stopped', (data) => {
+        updateStatus('Walkthrough stopped: ' + data.walkthroughId);
+      });
+      
+      window.demoOrchestrator.on('walkthrough-completed', (data) => {
+        updateStatus('Walkthrough completed: ' + data.walkthroughId);
+      });
+    }
+    
+    console.log('[Test] Walkthrough engine initialized');
+    console.log('[Test] Use the controls to test the walkthrough');
+  </script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+/**
+ * Walkthrough CSS
+ * Styles for interactive walkthrough feature
+ */
+
+/* Overlay */
+.walkthrough-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  display: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+/* Highlight */
+.walkthrough-highlight {
+  position: absolute;
+  border: 3px solid #8b5cf6;
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+  transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1), 
+              opacity 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* Pulse animation */
+.walkthrough-highlight.pulse-animation {
+  animation: walkthrough-pulse 2s infinite;
+}
+
+@keyframes walkthrough-pulse {
+  0%, 100% {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 0 0 rgba(139, 92, 246, 0.7);
+  }
+  50% {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 20px 10px rgba(139, 92, 246, 0.4);
+  }
+}
+
+/* Glow animation */
+.walkthrough-highlight.glow-animation {
+  animation: walkthrough-glow 1.5s infinite;
+}
+
+@keyframes walkthrough-glow {
+  0%, 100% {
+    border-color: #8b5cf6;
+    filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.5));
+  }
+  50% {
+    border-color: #a78bfa;
+    filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.8));
+  }
+}
+
+/* Tooltip */
+.walkthrough-tooltip {
+  position: absolute;
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  min-width: 300px;
+  z-index: 10000;
+  display: none;
+  opacity: 0;
+  transition: opacity 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              left 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              top 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform-origin: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Tooltip arrow indicator */
+.walkthrough-tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 10001;
+  pointer-events: none;
+  transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Arrow positioning based on tooltip position */
+.walkthrough-tooltip-arrow[data-position="top"] {
+  bottom: -12px;
+  border-width: 12px 12px 0 12px;
+  border-color: white transparent transparent transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.walkthrough-tooltip-arrow[data-position="bottom"] {
+  top: -12px;
+  border-width: 0 12px 12px 12px;
+  border-color: transparent transparent white transparent;
+  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.walkthrough-tooltip-arrow[data-position="left"] {
+  right: -12px;
+  border-width: 12px 0 12px 12px;
+  border-color: transparent transparent transparent white;
+  filter: drop-shadow(2px 0 4px rgba(0, 0, 0, 0.1));
+}
+
+.walkthrough-tooltip-arrow[data-position="right"] {
+  left: -12px;
+  border-width: 12px 12px 12px 0;
+  border-color: transparent white transparent transparent;
+  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Tooltip header */
+.walkthrough-tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 20px 0 20px;
+  gap: 12px;
+}
+
+.walkthrough-tooltip-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.walkthrough-tooltip-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+
+.walkthrough-tooltip-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.walkthrough-tooltip-close:active {
+  background: #e5e7eb;
+}
+
+/* Tooltip content */
+.walkthrough-tooltip-content {
+  padding: 12px 20px 20px 20px;
+}
+
+.walkthrough-tooltip-description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* Tooltip footer */
+.walkthrough-tooltip-footer {
+  padding: 16px 20px 20px 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.walkthrough-tooltip-progress {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8b5cf6;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.walkthrough-tooltip-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Buttons */
+.walkthrough-tooltip-skip {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 150ms ease;
+}
+
+.walkthrough-tooltip-skip:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.walkthrough-tooltip-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.walkthrough-tooltip-prev,
+.walkthrough-tooltip-next {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  border: none;
+}
+
+.walkthrough-tooltip-prev {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.walkthrough-tooltip-prev:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.walkthrough-tooltip-prev:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.walkthrough-tooltip-next {
+  background: #8b5cf6;
+  color: white;
+}
+
+.walkthrough-tooltip-next:hover {
+  background: #7c3aed;
+}
+
+.walkthrough-tooltip-next:active {
+  background: #6d28d9;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .walkthrough-tooltip {
+    max-width: calc(100vw - 40px);
+    min-width: calc(100vw - 40px);
+  }
+  
+  .walkthrough-tooltip-header {
+    padding: 16px 16px 0 16px;
+  }
+  
+  .walkthrough-tooltip-content {
+    padding: 12px 16px 16px 16px;
+  }
+  
+  .walkthrough-tooltip-footer {
+    padding: 12px 16px 16px 16px;
+  }
+  
+  .walkthrough-tooltip-title {
+    font-size: 16px;
+  }
+  
+  .walkthrough-tooltip-description {
+    font-size: 13px;
+  }
+  
+  .walkthrough-tooltip-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .walkthrough-tooltip-skip {
+    order: 2;
+    text-align: center;
+  }
+  
+  .walkthrough-tooltip-nav {
+    order: 1;
+    width: 100%;
+  }
+  
+  .walkthrough-tooltip-prev,
+  .walkthrough-tooltip-next {
+    flex: 1;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .walkthrough-tooltip {
+    background: #1f2937;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  }
+  
+  .walkthrough-tooltip-title {
+    color: #f9fafb;
+  }
+  
+  .walkthrough-tooltip-description {
+    color: #d1d5db;
+  }
+  
+  .walkthrough-tooltip-close {
+    color: #9ca3af;
+  }
+  
+  .walkthrough-tooltip-close:hover {
+    background: #374151;
+    color: #f9fafb;
+  }
+  
+  .walkthrough-tooltip-close:active {
+    background: #4b5563;
+  }
+  
+  .walkthrough-tooltip-footer {
+    border-top-color: #374151;
+  }
+  
+  .walkthrough-tooltip-skip {
+    color: #9ca3af;
+  }
+  
+  .walkthrough-tooltip-skip:hover {
+    background: #374151;
+    color: #f9fafb;
+  }
+  
+  .walkthrough-tooltip-prev {
+    background: #374151;
+    color: #f9fafb;
+  }
+  
+  .walkthrough-tooltip-prev:hover:not(:disabled) {
+    background: #4b5563;
+  }
+  
+  /* Dark mode arrow colors */
+  .walkthrough-tooltip-arrow[data-position="top"] {
+    border-color: #1f2937 transparent transparent transparent;
+  }
+  
+  .walkthrough-tooltip-arrow[data-position="bottom"] {
+    border-color: transparent transparent #1f2937 transparent;
+  }
+  
+  .walkthrough-tooltip-arrow[data-position="left"] {
+    border-color: transparent transparent transparent #1f2937;
+  }
+  
+  .walkthrough-tooltip-arrow[data-position="right"] {
+    border-color: transparent #1f2937 transparent transparent;
+  }
+}
+
+/* Accessibility */
+.walkthrough-tooltip:focus-within {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+.walkthrough-tooltip-prev:focus,
+.walkthrough-tooltip-next:focus,
+.walkthrough-tooltip-skip:focus,
+.walkthrough-tooltip-close:focus {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+/* Keyboard shortcut hints */
+.walkthrough-tooltip-prev:focus::after,
+.walkthrough-tooltip-next:focus::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  margin-bottom: 8px;
+  pointer-events: none;
+  opacity: 0;
+  animation: walkthrough-fade-in 200ms ease forwards;
+  z-index: 10001;
+}
+
+/* Focus visible for keyboard navigation */
+.walkthrough-tooltip-prev:focus-visible,
+.walkthrough-tooltip-next:focus-visible,
+.walkthrough-tooltip-skip:focus-visible,
+.walkthrough-tooltip-close:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+/* Print styles */
+@media print {
+  .walkthrough-overlay,
+  .walkthrough-highlight,
+  .walkthrough-tooltip {
+    display: none !important;
+  }
+}
+
+/* Smooth entrance animation */
+@keyframes walkthrough-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes walkthrough-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Smooth exit animation */
+@keyframes walkthrough-slide-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .walkthrough-overlay,
+  .walkthrough-highlight,
+  .walkthrough-tooltip,
+  .walkthrough-tooltip-arrow {
+    transition: none;
+    animation: none !important;
+  }
+  
+  .walkthrough-highlight.pulse-animation,
+  .walkthrough-highlight.glow-animation {
+    animation: none;
+  }
+}

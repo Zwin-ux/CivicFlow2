@@ -1,0 +1,176 @@
+{
+  "id": "application-review",
+  "title": "Application Review Process",
+  "description": "Learn how to review and process loan applications efficiently",
+  "estimatedDuration": 180,
+  "steps": [
+    {
+      "id": "applications-list",
+      "title": "Applications List",
+      "description": "This is your main workspace for reviewing applications. Each card shows key information at a glance including business name, loan amount, and current status.",
+      "targetElement": ".applications-list, .application-cards, [data-section='applications']",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "filter-controls",
+      "title": "Filter and Search",
+      "description": "Use filters to narrow down applications by status, date range, or loan amount. The search bar helps you find specific businesses quickly.",
+      "targetElement": ".filter-controls, .search-filters, [data-section='filters']",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#3b82f6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "status-badges",
+      "title": "Application Status",
+      "description": "Status badges provide quick visual indicators: Draft (gray), Submitted (blue), Under Review (yellow), Approved (green), or Rejected (red).",
+      "targetElement": ".status-badge, .application-status, [data-status]",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "application-card",
+      "title": "Application Card",
+      "description": "Each card displays essential information: business name, loan amount, submission date, and current status. Click any card to view full details.",
+      "targetElement": ".application-card:first-child, .app-card:first-child",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "application-details",
+      "title": "Application Details View",
+      "description": "The detail view shows comprehensive information about the application including business details, financial information, and supporting documents.",
+      "targetElement": ".application-details, .detail-view, [data-view='details']",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#06b6d4",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "business-information",
+      "title": "Business Information",
+      "description": "Review key business details including name, industry, years in operation, and contact information. Verify this information matches supporting documents.",
+      "targetElement": ".business-info, [data-section='business'], .info-section:first-child",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#2563eb",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "financial-details",
+      "title": "Financial Information",
+      "description": "Examine the requested loan amount, purpose, and financial projections. This section is crucial for assessing the application's viability.",
+      "targetElement": ".financial-info, [data-section='financial'], .loan-details",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "documents-section",
+      "title": "Supporting Documents",
+      "description": "Review all uploaded documents including tax returns, bank statements, and business licenses. Click any document to view or download it.",
+      "targetElement": ".documents-section, [data-section='documents'], .document-list",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#f59e0b",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "ai-insights",
+      "title": "AI-Powered Insights",
+      "description": "View AI-generated risk scores, document analysis, and recommendations. These insights help you make informed decisions faster.",
+      "targetElement": ".ai-insights, [data-section='ai'], .ai-panel",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#06b6d4",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "review-timeline",
+      "title": "Review Timeline",
+      "description": "Track the application's journey through the review process. See who reviewed it, when actions were taken, and any comments added.",
+      "targetElement": ".timeline, .review-history, [data-section='timeline']",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "action-buttons",
+      "title": "Review Actions",
+      "description": "Use these buttons to approve, reject, or request more information. You can also add comments or assign the application to another reviewer.",
+      "targetElement": ".action-buttons, .review-actions, [data-section='actions']",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "review-complete",
+      "title": "Review Process Complete!",
+      "description": "You now know how to efficiently review applications. Try the AI Features walkthrough to learn about intelligent document analysis and risk assessment.",
+      "targetElement": ".application-container, main, .page-content",
+      "position": "auto",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": false
+    }
+  ]
+}

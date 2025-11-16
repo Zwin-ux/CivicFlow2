@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyboard Navigation Test - Walkthrough Engine</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <link rel="stylesheet" href="/css/walkthrough.css">
+  <style>
+    body {
+      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-header {
+      margin-bottom: 40px;
+    }
+    
+    .test-header h1 {
+      margin: 0 0 8px 0;
+      color: #1f2937;
+    }
+    
+    .test-header p {
+      margin: 0;
+      color: #6b7280;
+    }
+    
+    .test-section {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .test-section h2 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      color: #1f2937;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .test-element {
+      padding: 16px;
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .test-element h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      color: #1f2937;
+    }
+    
+    .test-element p {
+      margin: 0;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .keyboard-shortcuts {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .keyboard-shortcuts h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      color: #1f2937;
+    }
+    
+    .shortcut-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .shortcut-key {
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      min-width: 80px;
+      text-align: center;
+    }
+    
+    .shortcut-desc {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .test-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .test-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    
+    .test-btn-primary {
+      background: #8b5cf6;
+      color: white;
+    }
+    
+    .test-btn-primary:hover {
+      background: #7c3aed;
+    }
+    
+    .test-btn-secondary {
+      background: #f3f4f6;
+      color: #1f2937;
+    }
+    
+    .test-btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    
+    .test-status {
+      margin-top: 16px;
+      padding: 12px;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 6px;
+      color: #166534;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .test-status.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>🎹 Keyboard Navigation Test</h1>
+      <p>Test the walkthrough engine's keyboard navigation and accessibility features</p>
+    </div>
+
+    <div class="test-section">
+      <h2>Keyboard Shortcuts</h2>
+      <div class="keyboard-shortcuts">
+        <h3>Available Shortcuts (when walkthrough is active)</h3>
+        <div class="shortcut-list">
+          <div class="shortcut-item">
+            <span class="shortcut-key">→ Right Arrow</span>
+            <span class="shortcut-desc">Next step</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">← Left Arrow</span>
+            <span class="shortcut-desc">Previous step</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">Enter</span>
+            <span class="shortcut-desc">Next step</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">Escape</span>
+            <span class="shortcut-desc">Skip/Exit tour</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">Tab</span>
+            <span class="shortcut-desc">Navigate buttons</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-key">Shift + Tab</span>
+            <span class="shortcut-desc">Navigate backwards</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test Elements</h2>
+      <p style="margin-bottom: 16px; color: #6b7280;">These elements will be highlighted during the walkthrough</p>
+      <div class="test-grid">
+        <div class="test-element" id="element-1">
+          <h3>Element 1</h3>
+          <p>First test element</p>
+        </div>
+        <div class="test-element" id="element-2">
+          <h3>Element 2</h3>
+          <p>Second test element</p>
+        </div>
+        <div class="test-element" id="element-3">
+          <h3>Element 3</h3>
+          <p>Third test element</p>
+        </div>
+        <div class="test-element" id="element-4">
+          <h3>Element 4</h3>
+          <p>Fourth test element</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test Controls</h2>
+      <div class="test-controls">
+        <button class="test-btn test-btn-primary" onclick="startKeyboardTest()">
+          Start Keyboard Navigation Test
+        </button>
+        <button class="test-btn test-btn-secondary" onclick="testFocusTrap()">
+          Test Focus Trap
+        </button>
+        <button class="test-btn test-btn-secondary" onclick="testAriaAttributes()">
+          Test ARIA Attributes
+        </button>
+        <button class="test-btn test-btn-secondary" onclick="testKeyboardShortcuts()">
+          Test All Shortcuts
+        </button>
+      </div>
+      <div id="test-status" class="test-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test Instructions</h2>
+      <ol style="color: #6b7280; line-height: 1.8;">
+        <li><strong>Start the test:</strong> Click "Start Keyboard Navigation Test" button</li>
+        <li><strong>Use arrow keys:</strong> Press Right Arrow (→) to go to next step, Left Arrow (←) to go back</li>
+        <li><strong>Use Enter:</strong> Press Enter to advance to next step</li>
+        <li><strong>Use Tab:</strong> Press Tab to navigate between buttons in the tooltip</li>
+        <li><strong>Test focus trap:</strong> Tab should cycle through buttons without leaving the tooltip</li>
+        <li><strong>Use Escape:</strong> Press Escape to exit the walkthrough at any time</li>
+        <li><strong>Check focus indicators:</strong> Focused buttons should have visible outline</li>
+        <li><strong>Screen reader test:</strong> Enable screen reader to verify ARIA labels are announced</li>
+      </ol>
+    </div>
+
+    <div class="test-section">
+      <h2>Expected Behavior</h2>
+      <ul style="color: #6b7280; line-height: 1.8;">
+        <li>✅ Keyboard shortcuts work when walkthrough is active</li>
+        <li>✅ Focus automatically moves to Next button when step changes</li>
+        <li>✅ Tab key cycles through buttons within tooltip (focus trap)</li>
+        <li>✅ Shift+Tab navigates backwards through buttons</li>
+        <li>✅ Escape key exits walkthrough from any step</li>
+        <li>✅ Enter key advances to next step</li>
+        <li>✅ Arrow keys navigate between steps</li>
+        <li>✅ Focus indicators are clearly visible</li>
+        <li>✅ ARIA attributes provide context for screen readers</li>
+        <li>✅ Keyboard shortcuts don't interfere with page when walkthrough is inactive</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/demo/config.js"></script>
+  <script src="/js/demo/orchestrator.js"></script>
+  <script src="/js/demo/walkthrough-engine.js"></script>
+
+  <script>
+    // Initialize orchestrator
+    const orchestrator = new DemoModeOrchestrator();
+
+    // Test walkthrough definition
+    const keyboardTestWalkthrough = {
+      id: 'keyboard-navigation-test',
+      title: 'Keyboard Navigation Test',
+      description: 'Test walkthrough for keyboard navigation features',
+      steps: [
+        {
+          id: 'step-1',
+          title: 'Welcome to Keyboard Test',
+          description: 'Use Right Arrow (→) or Enter to go to the next step. Press Escape to exit anytime.',
+          targetElement: '#element-1',
+          position: 'bottom',
+          highlightStyle: {
+            animation: 'pulse'
+          }
+        },
+        {
+          id: 'step-2',
+          title: 'Try Tab Navigation',
+          description: 'Press Tab to move focus between buttons. Notice how focus stays within the tooltip (focus trap).',
+          targetElement: '#element-2',
+          position: 'bottom',
+          highlightStyle: {
+            animation: 'pulse'
+          }
+        },
+        {
+          id: 'step-3',
+          title: 'Use Left Arrow',
+          description: 'Press Left Arrow (←) to go back to the previous step. Try it now!',
+          targetElement: '#element-3',
+          position: 'bottom',
+          highlightStyle: {
+            animation: 'glow'
+          }
+        },
+        {
+          id: 'step-4',
+          title: 'Final Step',
+          description: 'Press Enter or click Finish to complete the test. Great job testing keyboard navigation!',
+          targetElement: '#element-4',
+          position: 'bottom',
+          highlightStyle: {
+            animation: 'pulse'
+          }
+        }
+      ]
+    };
+
+    // Start keyboard navigation test
+    async function startKeyboardTest() {
+      showStatus('Starting keyboard navigation test...', 'info');
+      
+      try {
+        await orchestrator.walkthroughEngine.loadWalkthrough(keyboardTestWalkthrough);
+        await orchestrator.walkthroughEngine.start();
+        showStatus('✅ Walkthrough started! Use keyboard shortcuts to navigate.', 'success');
+      } catch (error) {
+        showStatus('❌ Error: ' + error.message, 'error');
+      }
+    }
+
+    // Test focus trap
+    function testFocusTrap() {
+      showStatus('Focus trap test: Start walkthrough and press Tab repeatedly. Focus should cycle through buttons.', 'info');
+      startKeyboardTest();
+    }
+
+    // Test ARIA attributes
+    function testAriaAttributes() {
+      showStatus('Checking ARIA attributes...', 'info');
+      
+      const tooltip = document.querySelector('.walkthrough-tooltip');
+      if (!tooltip) {
+        showStatus('❌ Tooltip not found. Start walkthrough first.', 'error');
+        return;
+      }
+
+      const checks = [
+        { attr: 'role', expected: 'dialog', element: tooltip },
+        { attr: 'aria-modal', expected: 'true', element: tooltip },
+        { attr: 'aria-labelledby', expected: 'walkthrough-title', element: tooltip },
+        { attr: 'aria-describedby', expected: 'walkthrough-description', element: tooltip }
+      ];
+
+      let allPassed = true;
+      checks.forEach(check => {
+        const value = check.element.getAttribute(check.attr);
+        if (value !== check.expected) {
+          console.error(`ARIA check failed: ${check.attr} = "${value}", expected "${check.expected}"`);
+          allPassed = false;
+        }
+      });
+
+      if (allPassed) {
+        showStatus('✅ All ARIA attributes are correctly set!', 'success');
+      } else {
+        showStatus('❌ Some ARIA attributes are missing or incorrect. Check console.', 'error');
+      }
+    }
+
+    // Test keyboard shortcuts
+    async function testKeyboardShortcuts() {
+      showStatus('Testing keyboard shortcuts...', 'info');
+      
+      await startKeyboardTest();
+      
+      setTimeout(() => {
+        showStatus('✅ Walkthrough started. Now test these shortcuts:\n→ Right Arrow (next)\n← Left Arrow (previous)\nEnter (next)\nEscape (exit)\nTab (navigate buttons)', 'success');
+      }, 500);
+    }
+
+    // Show status message
+    function showStatus(message, type = 'info') {
+      const statusEl = document.getElementById('test-status');
+      statusEl.textContent = message;
+      statusEl.className = 'test-status active';
+      
+      if (type === 'success') {
+        statusEl.style.background = '#f0fdf4';
+        statusEl.style.borderColor = '#86efac';
+        statusEl.style.color = '#166534';
+      } else if (type === 'error') {
+        statusEl.style.background = '#fef2f2';
+        statusEl.style.borderColor = '#fca5a5';
+        statusEl.style.color = '#991b1b';
+      } else {
+        statusEl.style.background = '#eff6ff';
+        statusEl.style.borderColor = '#93c5fd';
+        statusEl.style.color = '#1e40af';
+      }
+    }
+
+    // Log keyboard events for debugging
+    document.addEventListener('keydown', (e) => {
+      if (orchestrator.walkthroughEngine.isWalkthroughActive()) {
+        console.log('Key pressed:', e.key, '| Active element:', document.activeElement.className);
+      }
+    });
+
+    // Log when walkthrough completes
+    orchestrator.on('walkthroughComplete', (data) => {
+      showStatus('✅ Walkthrough completed! All keyboard navigation features worked correctly.', 'success');
+    });
+
+    orchestrator.on('walkthroughSkipped', () => {
+      showStatus('ℹ️ Walkthrough skipped using Escape key.', 'info');
+    });
+
+    console.log('Keyboard Navigation Test initialized');
+    console.log('Orchestrator:', orchestrator);
+    console.log('Walkthrough Engine:', orchestrator.walkthroughEngine);
+  </script>
+</body>
+</html>

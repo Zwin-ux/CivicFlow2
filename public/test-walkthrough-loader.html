@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walkthrough Loader Test - CivicFlow2</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <style>
+    body {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #2563eb;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+    
+    button {
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background: #1d4ed8;
+    }
+    
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    
+    .output {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .output pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    
+    .success {
+      color: #10b981;
+    }
+    
+    .error {
+      color: #ef4444;
+    }
+    
+    .info {
+      color: #3b82f6;
+    }
+    
+    .metadata-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    
+    .metadata-card h3 {
+      margin: 0 0 10px 0;
+      color: #1e293b;
+    }
+    
+    .metadata-card p {
+      margin: 5px 0;
+      color: #64748b;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: #e0e7ff;
+      color: #3730a3;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Walkthrough Loader Test</h1>
+  <p>Test the walkthrough loader utility and view walkthrough definitions.</p>
+
+  <!-- Load Single Walkthrough -->
+  <div class="test-section">
+    <h2>Load Single Walkthrough</h2>
+    <p>Load and display a specific walkthrough definition.</p>
+    <div class="button-group">
+      <button onclick="loadWalkthrough('dashboard-overview')">Dashboard Overview</button>
+      <button onclick="loadWalkthrough('application-review')">Application Review</button>
+      <button onclick="loadWalkthrough('ai-features')">AI Features</button>
+      <button onclick="loadWalkthrough('admin-tools')">Admin Tools</button>
+    </div>
+    <div id="single-output" class="output"></div>
+  </div>
+
+  <!-- Load Multiple Walkthroughs -->
+  <div class="test-section">
+    <h2>Load Multiple Walkthroughs</h2>
+    <p>Load multiple walkthroughs at once.</p>
+    <div class="button-group">
+      <button onclick="loadMultiple()">Load All Walkthroughs</button>
+      <button onclick="loadMultiple(['dashboard-overview', 'ai-features'])">Load Dashboard + AI</button>
+    </div>
+    <div id="multiple-output" class="output"></div>
+  </div>
+
+  <!-- Get Metadata -->
+  <div class="test-section">
+    <h2>Walkthrough Metadata</h2>
+    <p>View metadata for all available walkthroughs.</p>
+    <div class="button-group">
+      <button onclick="getMetadata()">Get All Metadata</button>
+    </div>
+    <div id="metadata-output" class="output"></div>
+  </div>
+
+  <!-- Search Walkthroughs -->
+  <div class="test-section">
+    <h2>Search Walkthroughs</h2>
+    <p>Search walkthroughs by keyword.</p>
+    <div class="button-group">
+      <input type="text" id="search-input" placeholder="Enter search keyword..." style="padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; width: 300px;">
+      <button onclick="searchWalkthroughs()">Search</button>
+    </div>
+    <div id="search-output" class="output"></div>
+  </div>
+
+  <!-- Get by Category -->
+  <div class="test-section">
+    <h2>Get by Category</h2>
+    <p>Load walkthroughs by category.</p>
+    <div class="button-group">
+      <button onclick="getByCategory('getting-started')">Getting Started</button>
+      <button onclick="getByCategory('review')">Review</button>
+      <button onclick="getByCategory('ai')">AI</button>
+      <button onclick="getByCategory('admin')">Admin</button>
+    </div>
+    <div id="category-output" class="output"></div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="test-section">
+    <h2>Recommended Next Walkthrough</h2>
+    <p>Get recommendation based on completed walkthroughs.</p>
+    <div class="button-group">
+      <button onclick="getRecommendation([])">No Completed</button>
+      <button onclick="getRecommendation(['dashboard-overview'])">Completed Dashboard</button>
+      <button onclick="getRecommendation(['dashboard-overview', 'application-review'])">Completed Dashboard + Review</button>
+      <button onclick="getRecommendation(['dashboard-overview', 'application-review', 'ai-features', 'admin-tools'])">All Completed</button>
+    </div>
+    <div id="recommendation-output" class="output"></div>
+  </div>
+
+  <!-- Validation Test -->
+  <div class="test-section">
+    <h2>Validation Test</h2>
+    <p>Test walkthrough validation with valid and invalid data.</p>
+    <div class="button-group">
+      <button onclick="testValidation()">Run Validation Tests</button>
+    </div>
+    <div id="validation-output" class="output"></div>
+  </div>
+
+  <script src="/js/demo/walkthrough-loader.js"></script>
+  <script>
+    // Initialize loader
+    const loader = new WalkthroughLoader();
+    
+    // Helper function to display output
+    function displayOutput(elementId, content, type = 'info') {
+      const output = document.getElementById(elementId);
+      const timestamp = new Date().toLocaleTimeString();
+      const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+      output.innerHTML = `<div class="${className}">[${timestamp}] ${content}</div>`;
+    }
+    
+    // Load single walkthrough
+    async function loadWalkthrough(id) {
+      try {
+        displayOutput('single-output', `Loading walkthrough: ${id}...`);
+        const walkthrough = await loader.load(id);
+        const output = `
+          <div class="success">✓ Successfully loaded: ${walkthrough.title}</div>
+          <pre>${JSON.stringify(walkthrough, null, 2)}</pre>
+        `;
+        displayOutput('single-output', output, 'success');
+      } catch (error) {
+        displayOutput('single-output', `✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    // Load multiple walkthroughs
+    async function loadMultiple(ids = null) {
+      try {
+        const idsToLoad = ids || loader.getAvailableIds();
+        displayOutput('multiple-output', `Loading ${idsToLoad.length} walkthroughs...`);
+        const walkthroughs = await loader.loadMultiple(idsToLoad);
+        const output = `
+          <div class="success">✓ Successfully loaded ${walkthroughs.length} walkthroughs</div>
+          <ul>
+            ${walkthroughs.map(w => `<li>${w.title} (${w.steps.length} steps)</li>`).join('')}
+          </ul>
+        `;
+        displayOutput('multiple-output', output, 'success');
+      } catch (error) {
+        displayOutput('multiple-output', `✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    // Get metadata
+    async function getMetadata() {
+      try {
+        displayOutput('metadata-output', 'Loading metadata...');
+        const metadata = await loader.getMetadata();
+        const cards = metadata.map(m => `
+          <div class="metadata-card">
+            <h3>${m.title}</h3>
+            <p>${m.description}</p>
+            <p>
+              <span class="badge">${m.stepCount} steps</span>
+              <span class="badge">${m.estimatedDuration}s duration</span>
+              <span class="badge">ID: ${m.id}</span>
+            </p>
+          </div>
+        `).join('');
+        displayOutput('metadata-output', `<div class="success">✓ Loaded metadata for ${metadata.length} walkthroughs</div>${cards}`, 'success');
+      } catch (error) {
+        displayOutput('metadata-output', `✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    // Search walkthroughs
+    async function searchWalkthroughs() {
+      try {
+        const keyword = document.getElementById('search-input').value;
+        if (!keyword) {
+          displayOutput('search-output', 'Please enter a search keyword', 'error');
+          return;
+        }
+        displayOutput('search-output', `Searching for: "${keyword}"...`);
+        const results = await loader.search(keyword);
+        if (results.length === 0) {
+          displayOutput('search-output', `No results found for "${keyword}"`, 'info');
+        } else {
+          const output = `
+            <div class="success">✓ Found ${results.length} result(s)</div>
+            <ul>
+              ${results.map(w => `<li><strong>${w.title}</strong>: ${w.description}</li>`).join('')}
+            </ul>
+          `;
+          displayOutput('search-output', output, 'success');
+        }
+      } catch (error) {
+        displayOutput('search-output', `✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    // Get by category
+    async function getByCategory(category) {
+      try {
+        displayOutput('category-output', `Loading category: ${category}...`);
+        const walkthroughs = await loader.getByCategory(category);
+        if (walkthroughs.length === 0) {
+          displayOutput('category-output', `No walkthroughs found in category: ${category}`, 'info');
+        } else {
+          const output = `
+            <div class="success">✓ Found ${walkthroughs.length} walkthrough(s) in "${category}"</div>
+            <ul>
+              ${walkthroughs.map(w => `<li>${w.title}</li>`).join('')}
+            </ul>
+          `;
+          displayOutput('category-output', output, 'success');
+        }
+      } catch (error) {
+        displayOutput('category-output', `✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    // Get recommendation
+    function getRecommendation(completed) {
+      try {
+        const nextId = loader.getRecommendedNext(completed);
+        if (nextId) {
+          displayOutput('recommendation-output', `
+            <div class="success">✓ Recommended next walkthrough: <strong>${nextId}</strong></div>
+            <p>Completed: ${completed.length > 0 ? completed.join(', ') : 'None'}</p>
+          `, 'success');
+        } else {
+          displayOutput('recommendation-output', `
+            <div class="info">All walkthroughs completed!</div>
+            <p>Completed: ${completed.join(', ')}</p>
+          `, 'info');
+        }
+      } catch (error) {
+        displayOutput('recommendation-output', `✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    // Test validation
+    function testValidation() {
+      const tests = [
+        {
+          name: 'Valid walkthrough',
+          data: {
+            id: 'test',
+            title: 'Test',
+            description: 'Test walkthrough',
+            steps: [
+              {
+                id: 'step1',
+                title: 'Step 1',
+                description: 'First step',
+                targetElement: '.test'
+              }
+            ]
+          },
+          expected: true
+        },
+        {
+          name: 'Missing id',
+          data: {
+            title: 'Test',
+            steps: []
+          },
+          expected: false
+        },
+        {
+          name: 'Empty steps',
+          data: {
+            id: 'test',
+            title: 'Test',
+            steps: []
+          },
+          expected: false
+        },
+        {
+          name: 'Invalid step',
+          data: {
+            id: 'test',
+            title: 'Test',
+            steps: [
+              {
+                id: 'step1'
+                // Missing required fields
+              }
+            ]
+          },
+          expected: false
+        }
+      ];
+      
+      const results = tests.map(test => {
+        const result = loader.validate(test.data);
+        const passed = result === test.expected;
+        return `
+          <div class="${passed ? 'success' : 'error'}">
+            ${passed ? '✓' : '✗'} ${test.name}: ${result ? 'Valid' : 'Invalid'} (expected: ${test.expected})
+          </div>
+        `;
+      }).join('');
+      
+      displayOutput('validation-output', results);
+    }
+    
+    // Preload walkthroughs on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      console.log('Preloading walkthroughs...');
+      try {
+        await loader.preload();
+        console.log('Walkthroughs preloaded successfully');
+      } catch (error) {
+        console.error('Failed to preload walkthroughs:', error);
+      }
+    });
+  </script>
+</body>
+</html>

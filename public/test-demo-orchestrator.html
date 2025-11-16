@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Orchestrator Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    h2 {
+      color: #666;
+      border-bottom: 2px solid #8b5cf6;
+      padding-bottom: 10px;
+    }
+    .button {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    .button:hover {
+      background: #7c3aed;
+    }
+    .button.secondary {
+      background: #6b7280;
+    }
+    .button.secondary:hover {
+      background: #4b5563;
+    }
+    .status {
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 10px 0;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .log {
+      background: #1f2937;
+      color: #10b981;
+      padding: 15px;
+      border-radius: 6px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .log-entry {
+      margin: 2px 0;
+    }
+    .success {
+      color: #10b981;
+    }
+    .error {
+      color: #ef4444;
+    }
+    .info {
+      color: #3b82f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎭 Demo Mode Orchestrator Test</h1>
+    <p>Test the DemoModeOrchestrator functionality</p>
+  </div>
+
+  <div class="container">
+    <h2>Current State</h2>
+    <div id="state" class="status">Loading...</div>
+  </div>
+
+  <div class="container">
+    <h2>Controls</h2>
+    
+    <div style="margin-bottom: 20px;">
+      <h3>Simulation</h3>
+      <button class="button" onclick="startSimulation()">Start Simulation</button>
+      <button class="button secondary" onclick="stopSimulation()">Stop Simulation</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Walkthrough</h3>
+      <button class="button" onclick="startWalkthrough('dashboard-overview')">Start Dashboard Walkthrough</button>
+      <button class="button secondary" onclick="stopWalkthrough()">Stop Walkthrough</button>
+      <button class="button" onclick="completeWalkthrough('dashboard-overview')">Complete Walkthrough</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Scenario</h3>
+      <button class="button" onclick="playScenario('rush-application')">Play Rush Application</button>
+      <button class="button secondary" onclick="stopScenario()">Stop Scenario</button>
+      <button class="button" onclick="completeScenario('rush-application')">Complete Scenario</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Role Switching</h3>
+      <button class="button" onclick="switchRole('applicant')">Applicant</button>
+      <button class="button" onclick="switchRole('reviewer')">Reviewer</button>
+      <button class="button" onclick="switchRole('approver')">Approver</button>
+      <button class="button" onclick="switchRole('admin')">Admin</button>
+      <button class="button" onclick="switchRole('investor')">Investor</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Configuration</h3>
+      <button class="button" onclick="updateConfig()">Update Config</button>
+      <button class="button secondary" onclick="resetConfig()">Reset Config</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Analytics</h3>
+      <button class="button" onclick="showAnalytics()">Show Analytics</button>
+      <button class="button secondary" onclick="resetAnalytics()">Reset Analytics</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Event Log</h2>
+    <div id="log" class="log"></div>
+  </div>
+
+  <script src="/js/demo/config.js"></script>
+  <script src="/js/demo/orchestrator.js"></script>
+  <script>
+    // Initialize
+    const orchestrator = window.demoOrchestrator;
+    const logEl = document.getElementById('log');
+    const stateEl = document.getElementById('state');
+
+    // Set up event listeners
+    const events = [
+      'demo-mode-detected',
+      'config-updated',
+      'simulation-started',
+      'simulation-stopped',
+      'walkthrough-started',
+      'walkthrough-stopped',
+      'walkthrough-completed',
+      'scenario-started',
+      'scenario-stopped',
+      'scenario-completed',
+      'role-switched',
+      'feature-viewed',
+      'component-registered',
+      'demo-mode-enabled',
+      'demo-mode-disabled',
+      'page-hidden',
+      'page-visible',
+      'cleanup'
+    ];
+
+    events.forEach(event => {
+      orchestrator.on(event, (data) => {
+        log(`[${event}]`, data, 'info');
+      });
+    });
+
+    // Log function
+    function log(message, data = null, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+      if (data) {
+        entry.textContent += ' ' + JSON.stringify(data);
+      }
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // Update state display
+    function updateState() {
+      const state = orchestrator.getState();
+      const config = orchestrator.getConfiguration();
+      stateEl.innerHTML = `
+        <strong>Demo Mode:</strong> ${state.isActive ? '✅ Active' : '❌ Inactive'}<br>
+        <strong>Current Role:</strong> ${state.currentRole}<br>
+        <strong>Simulation Running:</strong> ${state.simulationRunning ? '✅ Yes' : '❌ No'}<br>
+        <strong>Walkthrough Active:</strong> ${state.walkthroughActive ? '✅ Yes' : '❌ No'}<br>
+        <strong>Current Walkthrough:</strong> ${state.currentWalkthrough || 'None'}<br>
+        <strong>Scenario Playing:</strong> ${state.scenarioPlaying ? '✅ Yes' : '❌ No'}<br>
+        <strong>Current Scenario:</strong> ${state.currentScenario || 'None'}<br>
+        <strong>Session ID:</strong> ${state.analytics.sessionId}<br>
+        <strong>Features Viewed:</strong> ${state.analytics.featuresViewed.length}<br>
+        <strong>Walkthroughs Completed:</strong> ${state.analytics.walkthroughsCompleted.length}<br>
+        <strong>Scenarios Completed:</strong> ${state.analytics.scenariosCompleted.length}
+      `;
+    }
+
+    // Control functions
+    function startSimulation() {
+      orchestrator.startSimulation();
+      updateState();
+    }
+
+    function stopSimulation() {
+      orchestrator.stopSimulation();
+      updateState();
+    }
+
+    function startWalkthrough(id) {
+      orchestrator.startWalkthrough(id);
+      updateState();
+    }
+
+    function stopWalkthrough() {
+      orchestrator.stopWalkthrough();
+      updateState();
+    }
+
+    function completeWalkthrough(id) {
+      orchestrator.completeWalkthrough(id);
+      updateState();
+    }
+
+    function playScenario(id) {
+      orchestrator.playScenario(id);
+      updateState();
+    }
+
+    function stopScenario() {
+      orchestrator.stopScenario();
+      updateState();
+    }
+
+    function completeScenario(id) {
+      orchestrator.completeScenario(id);
+      updateState();
+    }
+
+    function switchRole(role) {
+      orchestrator.switchRole(role);
+      updateState();
+    }
+
+    function updateConfig() {
+      orchestrator.updateConfiguration({
+        simulationInterval: 30000,
+        enableLiveSimulation: true
+      });
+      log('Configuration updated', null, 'success');
+      updateState();
+    }
+
+    function resetConfig() {
+      const defaultConfig = window.resetConfig();
+      orchestrator.updateConfiguration(defaultConfig);
+      log('Configuration reset to defaults', null, 'success');
+      updateState();
+    }
+
+    function showAnalytics() {
+      const analytics = orchestrator.getAnalytics();
+      log('Analytics:', analytics, 'info');
+      alert(JSON.stringify(analytics, null, 2));
+    }
+
+    function resetAnalytics() {
+      orchestrator.resetAnalytics();
+      log('Analytics reset', null, 'success');
+      updateState();
+    }
+
+    // Initial state update
+    updateState();
+    setInterval(updateState, 1000);
+
+    log('Demo Orchestrator Test initialized', null, 'success');
+    log('Orchestrator is active: ' + orchestrator.isActive(), null, 'info');
+  </script>
+</body>
+</html>

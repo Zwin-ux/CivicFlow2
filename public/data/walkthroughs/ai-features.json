@@ -1,0 +1,120 @@
+{
+  "id": "ai-features",
+  "title": "AI-Powered Features",
+  "description": "Discover how AI enhances decision-making and automates document processing",
+  "estimatedDuration": 90,
+  "steps": [
+    {
+      "id": "ai-overview",
+      "title": "AI-Powered Intelligence",
+      "description": "CivicFlow2 uses advanced AI to analyze documents, assess risk, and provide intelligent recommendations. Let's explore these powerful features.",
+      "targetElement": ".ai-dashboard, .ai-insights-panel, [data-section='ai']",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#06b6d4",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "risk-score",
+      "title": "AI Risk Assessment",
+      "description": "The AI analyzes multiple factors to generate a risk score from 0-100. Lower scores indicate lower risk. The score updates automatically as new information is added.",
+      "targetElement": ".risk-score, .ai-risk-card, [data-metric='risk-score']",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#f59e0b",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "risk-factors",
+      "title": "Risk Factor Breakdown",
+      "description": "See detailed factors contributing to the risk score. Each factor shows its impact (positive or negative) and explanation. This transparency helps you understand the AI's reasoning.",
+      "targetElement": ".risk-factors, .factor-list, [data-section='risk-factors']",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#ef4444",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "document-analysis",
+      "title": "Intelligent Document Processing",
+      "description": "AI automatically extracts key information from uploaded documents including tax returns, bank statements, and licenses. This saves hours of manual data entry.",
+      "targetElement": ".document-analysis, .ai-extraction, [data-section='document-ai']",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "extracted-fields",
+      "title": "Extracted Data Fields",
+      "description": "View all data extracted from documents with confidence scores. High confidence (>90%) means the AI is very certain about the extracted value. You can verify or correct any field.",
+      "targetElement": ".extracted-fields, .field-list, [data-section='extracted-data']",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "ai-recommendations",
+      "title": "Smart Recommendations",
+      "description": "The AI provides actionable recommendations based on its analysis. These suggestions help you make faster, more informed decisions while maintaining full control.",
+      "targetElement": ".ai-recommendations, .recommendation-cards, [data-section='recommendations']",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#3b82f6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "confidence-scores",
+      "title": "Confidence Indicators",
+      "description": "Every AI insight includes a confidence score showing how certain the AI is about its analysis. Use these scores to prioritize which insights to review first.",
+      "targetElement": ".confidence-meter, .confidence-badge, [data-metric='confidence']",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#06b6d4",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "ai-complete",
+      "title": "AI Features Tour Complete!",
+      "description": "You've learned how AI accelerates your workflow while maintaining accuracy and transparency. Explore the Admin Tools walkthrough to learn about system configuration.",
+      "targetElement": ".ai-container, main, .page-content",
+      "position": "auto",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": false
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "eventTypes": {
+    "new_application": {
+      "title": "New Application Submitted",
+      "icon": "📄",
+      "color": "#2563eb",
+      "priority": "normal",
+      "description": "A new applicant has started the process.",
+      "notificationTemplate": "{businessName} submitted {loanPurpose} for {loanAmount}.",
+      "activityTemplate": "New {industry} application from {businessName} ({location}).",
+      "animationType": "slide-in",
+      "displayDuration": 5200,
+      "soundEffect": "notification.mp3"
+    },
+    "status_change": {
+      "title": "Application Status Updated",
+      "icon": "🔄",
+      "color": "#8b5cf6",
+      "priority": "normal",
+      "description": "Workflow progression was detected.",
+      "notificationTemplate": "{businessName} moved from {previousStatusDisplay} to {newStatusDisplay}. Reason: {reason}.",
+      "activityTemplate": "Status update for {businessName}: {newStatusDisplay}.",
+      "animationType": "fade-in",
+      "displayDuration": 4800,
+      "soundEffect": "status-change.mp3"
+    },
+    "document_uploaded": {
+      "title": "Document Uploaded",
+      "icon": "📎",
+      "color": "#06b6d4",
+      "priority": "low",
+      "description": "Supporting documentation is now available.",
+      "notificationTemplate": "{businessName} uploaded {documentType} ({fileSizeFormatted}).",
+      "activityTemplate": "Document upload: {documentType} for {businessName}.",
+      "animationType": "slide-in",
+      "displayDuration": 4000,
+      "soundEffect": "upload.mp3"
+    },
+    "review_completed": {
+      "title": "Review Completed",
+      "icon": "✅",
+      "color": "#10b981",
+      "priority": "normal",
+      "description": "A reviewer finished their assessment.",
+      "notificationTemplate": "{reviewer} completed {reviewType} for {businessName}. Recommendation: {recommendation}.",
+      "activityTemplate": "Review by {reviewer}: {recommendation} (Risk {riskScore}).",
+      "animationType": "bounce-in",
+      "displayDuration": 5400,
+      "soundEffect": "success.mp3"
+    },
+    "approval_granted": {
+      "title": "Application Approved",
+      "icon": "🎉",
+      "color": "#10b981",
+      "priority": "high",
+      "description": "Approval ready for disbursement.",
+      "notificationTemplate": "{businessName} approved for {approvedAmount} at {interestRate}% over {termMonths} months.",
+      "activityTemplate": "Approval: {businessName} ({approvalType}). Funding on {fundingDate}.",
+      "animationType": "bounce-in",
+      "displayDuration": 7000,
+      "soundEffect": "celebration.mp3"
+    },
+    "rejection_issued": {
+      "title": "Application Rejected",
+      "icon": "⛔",
+      "color": "#ef4444",
+      "priority": "high",
+      "description": "A decision to decline was recorded.",
+      "notificationTemplate": "{businessName} rejected: {primaryReason}.",
+      "activityTemplate": "Rejection for {businessName}: {rejectionType}.",
+      "animationType": "shake",
+      "displayDuration": 6200,
+      "soundEffect": "alert.mp3"
+    },
+    "comment_added": {
+      "title": "New Comment Added",
+      "icon": "💬",
+      "color": "#f59e0b",
+      "priority": "low",
+      "description": "An internal note was appended.",
+      "notificationTemplate": "{commenter} commented: {commentText}",
+      "activityTemplate": "Comment by {commenter} on {businessName}.",
+      "animationType": "slide-in",
+      "displayDuration": 4200,
+      "soundEffect": "message.mp3"
+    },
+    "ai_analysis_complete": {
+      "title": "AI Analysis Complete",
+      "icon": "🤖",
+      "color": "#06b6d4",
+      "priority": "normal",
+      "description": "AI generated risk insights for the case.",
+      "notificationTemplate": "AI analysis for {businessName}: Risk {riskScore}/100, Confidence {confidence}%.",
+      "activityTemplate": "AI reviewed {businessName} (Risk {riskScore}).",
+      "animationType": "pulse",
+      "displayDuration": 5400,
+      "soundEffect": "ai-complete.mp3"
+    }
+  },
+  "adjectives": [
+    "Premier", "Elite", "Prime", "Superior", "Trusted", "Modern", "Strategic", "Innovative"
+  ],
+  "nouns": [
+    "Solutions", "Consulting", "Group", "Services", "Partners", "Ventures", "Enterprises", "Holdings"
+  ],
+  "suffixes": [
+    "LLC", "Inc", "Co", "Group", "Partners", "Associates"
+  ]
+}

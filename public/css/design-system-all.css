@@ -23,6 +23,7 @@
 @import url('components/form.css');
 @import url('components/modal.css');
 @import url('components/toast.css');
+@import url('components/toast-notification.css');
 @import url('components/badge.css');
 @import url('components/progress.css');
 @import url('components/theme-toggle.css');

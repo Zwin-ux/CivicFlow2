@@ -1,0 +1,162 @@
+{
+  "id": "admin-tools",
+  "title": "Admin Tools & Configuration",
+  "description": "Learn how to configure and manage the CivicFlow2 system",
+  "estimatedDuration": 150,
+  "steps": [
+    {
+      "id": "admin-dashboard",
+      "title": "Admin Dashboard",
+      "description": "Welcome to the admin dashboard. This is your control center for managing users, configuring settings, and monitoring system health.",
+      "targetElement": ".admin-dashboard, .admin-header, [data-view='admin']",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "system-health",
+      "title": "System Health Monitoring",
+      "description": "Monitor the health of all system components including database, cache, AI services, and integrations. Green indicators mean everything is running smoothly.",
+      "targetElement": ".system-health, .health-indicators, [data-section='health']",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "user-management",
+      "title": "User Management",
+      "description": "Create, edit, and manage user accounts. Assign roles (Applicant, Reviewer, Approver, Admin) and control access permissions for each user.",
+      "targetElement": ".user-management, [data-section='users'], .users-table",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#3b82f6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "role-permissions",
+      "title": "Role-Based Access Control",
+      "description": "Configure what each role can access and modify. This ensures users only see features relevant to their responsibilities while maintaining security.",
+      "targetElement": ".role-permissions, [data-section='permissions'], .permissions-matrix",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#f59e0b",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "integration-settings",
+      "title": "Integration Configuration",
+      "description": "Configure external integrations including Microsoft Teams, email notifications, and AI services. Test connections and view integration health status.",
+      "targetElement": ".integration-settings, [data-section='integrations'], .integrations-panel",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#06b6d4",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "teams-config",
+      "title": "Microsoft Teams Integration",
+      "description": "Set up Teams notifications for application events. Configure which channels receive notifications and customize adaptive card templates.",
+      "targetElement": ".teams-config, [data-integration='teams'], .teams-settings",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#5b5fc7",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "demo-mode-settings",
+      "title": "Demo Mode Configuration",
+      "description": "Customize demo mode settings including simulation speed, data generation, and feature toggles. Perfect for tailoring demos to specific audiences.",
+      "targetElement": ".demo-settings, [data-section='demo'], .demo-config",
+      "position": "top",
+      "highlightStyle": {
+        "borderColor": "#f97316",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "audit-logs",
+      "title": "Audit Trail & Compliance",
+      "description": "View comprehensive audit logs showing all system actions. Filter by user, action type, or date range. Export logs for compliance reporting.",
+      "targetElement": ".audit-logs, [data-section='audit'], .logs-table",
+      "position": "left",
+      "highlightStyle": {
+        "borderColor": "#64748b",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "analytics-dashboard",
+      "title": "Analytics & Reporting",
+      "description": "Access detailed analytics about system usage, application trends, and performance metrics. Generate custom reports and schedule automated exports.",
+      "targetElement": ".analytics-dashboard, [data-section='analytics'], .analytics-panel",
+      "position": "right",
+      "highlightStyle": {
+        "borderColor": "#8b5cf6",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "pulse"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "backup-restore",
+      "title": "Backup & Recovery",
+      "description": "Configure automated backups and test recovery procedures. View backup history and restore points to ensure data protection.",
+      "targetElement": ".backup-settings, [data-section='backup'], .backup-panel",
+      "position": "bottom",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": true
+    },
+    {
+      "id": "admin-complete",
+      "title": "Admin Tools Tour Complete!",
+      "description": "You now have a comprehensive understanding of CivicFlow2's admin capabilities. You're ready to configure and manage the system effectively.",
+      "targetElement": ".admin-container, main, .page-content",
+      "position": "auto",
+      "highlightStyle": {
+        "borderColor": "#10b981",
+        "borderWidth": 3,
+        "borderRadius": 8,
+        "animation": "glow"
+      },
+      "waitForElement": false
+    }
+  ]
+}

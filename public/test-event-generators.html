@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Generators Test - CivicFlow2</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #64748b;
+      font-size: 14px;
+    }
+    
+    .controls {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #10b981;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .results {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .event-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .event-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    
+    .event-id {
+      font-size: 12px;
+      color: #64748b;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .event-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .detail-label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .detail-value {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 500;
+    }
+    
+    .detail-value.currency {
+      color: #10b981;
+      font-weight: 600;
+    }
+    
+    .detail-value.priority {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .detail-value.priority.true {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .detail-value.priority.false {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+    
+    .metadata {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .metadata-title {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧪 Event Generators Test</h1>
+      <p class="subtitle">Testing event generators (new_application, status_change, document_uploaded) with realistic data</p>
+    </div>
+    
+    <div class="controls">
+      <div class="button-group">
+        <button class="btn-primary" onclick="generateSingleEvent()">
+          Generate Single Application
+        </button>
+        <button class="btn-secondary" onclick="generateMultipleEvents()">
+          Generate 10 Applications
+        </button>
+        <button class="btn-primary" onclick="generateStatusChange()">
+          Generate Status Change
+        </button>
+        <button class="btn-secondary" onclick="generateMultipleStatusChanges()">
+          Generate 10 Status Changes
+        </button>
+      </div>
+      <div class="button-group">
+        <button class="btn-primary" onclick="generateDocumentUpload()">
+          Generate Document Upload
+        </button>
+        <button class="btn-secondary" onclick="generateMultipleDocumentUploads()">
+          Generate 10 Document Uploads
+        </button>
+        <button class="btn-danger" onclick="clearEvents()">
+          Clear All
+        </button>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-label">Total Generated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgLoanAmount">$0</div>
+          <div class="stat-label">Avg Loan Amount</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="priorityCount">0</div>
+          <div class="stat-label">Priority Applications</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="results">
+      <h2 style="margin-bottom: 20px; color: #1e293b;">Generated Events</h2>
+      <div id="eventsList">
+        <div class="empty-state">
+          <div class="empty-state-icon">📝</div>
+          <p>No events generated yet. Click "Generate Single Application" to start.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/js/demo/event-generators.js"></script>
+  <script>
+    // Initialize event generator
+    const eventGenerators = new EventGenerators();
+    const generatedEvents = [];
+    
+    function generateSingleEvent() {
+      const eventData = eventGenerators.generateNewApplication();
+      eventData.eventType = 'new_application';
+      generatedEvents.push(eventData);
+      displayEvent(eventData);
+      updateStats();
+    }
+    
+    function generateMultipleEvents() {
+      for (let i = 0; i < 10; i++) {
+        const eventData = eventGenerators.generateNewApplication();
+        eventData.eventType = 'new_application';
+        generatedEvents.push(eventData);
+      }
+      refreshDisplay();
+      updateStats();
+    }
+    
+    function generateStatusChange() {
+      const eventData = eventGenerators.generateStatusChange();
+      if (eventData) {
+        eventData.eventType = 'status_change';
+        generatedEvents.push(eventData);
+        displayStatusChangeEvent(eventData);
+        updateStats();
+      } else {
+        alert('Could not generate status change (no valid transitions available)');
+      }
+    }
+    
+    function generateMultipleStatusChanges() {
+      for (let i = 0; i < 10; i++) {
+        const eventData = eventGenerators.generateStatusChange();
+        if (eventData) {
+          eventData.eventType = 'status_change';
+          generatedEvents.push(eventData);
+        }
+      }
+      refreshDisplay();
+      updateStats();
+    }
+    
+    function generateDocumentUpload() {
+      const eventData = eventGenerators.generateDocumentUploaded();
+      eventData.eventType = 'document_uploaded';
+      generatedEvents.push(eventData);
+      displayDocumentUploadEvent(eventData);
+      updateStats();
+    }
+    
+    function generateMultipleDocumentUploads() {
+      for (let i = 0; i < 10; i++) {
+        const eventData = eventGenerators.generateDocumentUploaded();
+        eventData.eventType = 'document_uploaded';
+        generatedEvents.push(eventData);
+      }
+      refreshDisplay();
+      updateStats();
+    }
+    
+    function clearEvents() {
+      generatedEvents.length = 0;
+      document.getElementById('eventsList').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">📝</div>
+          <p>No events generated yet. Click "Generate Single Application" to start.</p>
+        </div>
+      `;
+      updateStats();
+    }
+    
+    function displayEvent(eventData) {
+      const eventsList = document.getElementById('eventsList');
+      
+      // Remove empty state if present
+      const emptyState = eventsList.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      const eventCard = document.createElement('div');
+      eventCard.className = 'event-card';
+      eventCard.innerHTML = `
+        <div class="event-header">
+          <div class="event-title">${eventData.businessName}</div>
+          <div class="event-id">${eventData.applicationId}</div>
+        </div>
+        
+        <div class="event-details">
+          <div class="detail-item">
+            <div class="detail-label">Applicant</div>
+            <div class="detail-value">${eventData.applicantName}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Email</div>
+            <div class="detail-value">${eventData.applicantEmail}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Loan Amount</div>
+            <div class="detail-value currency">${formatCurrency(eventData.loanAmount)}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Industry</div>
+            <div class="detail-value">${eventData.industry}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Location</div>
+            <div class="detail-value">${eventData.location}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">EIN</div>
+            <div class="detail-value">${eventData.ein}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Business Age</div>
+            <div class="detail-value">${eventData.businessAge} years</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Employees</div>
+            <div class="detail-value">${eventData.employeeCount}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Annual Revenue</div>
+            <div class="detail-value currency">${formatCurrency(eventData.annualRevenue)}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Priority</div>
+            <div class="detail-value priority ${eventData.isPriority}">${eventData.isPriority ? 'Yes' : 'No'}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Submitted By</div>
+            <div class="detail-value">${eventData.submittedBy}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Submitted At</div>
+            <div class="detail-value">${formatTime(eventData.submittedAt)}</div>
+          </div>
+        </div>
+        
+        <div class="metadata">
+          <div class="metadata-title">Loan Purpose</div>
+          <div style="color: #1e293b; margin-bottom: 10px;">${eventData.loanPurpose}</div>
+          
+          <div class="metadata-title">Metadata</div>
+          <div class="metadata-grid">
+            <div class="detail-item">
+              <div class="detail-label">Business Plan</div>
+              <div class="detail-value">${eventData.metadata.hasBusinessPlan ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Financial Statements</div>
+              <div class="detail-value">${eventData.metadata.hasFinancialStatements ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Tax Returns</div>
+              <div class="detail-value">${eventData.metadata.hasTaxReturns ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Documents</div>
+              <div class="detail-value">${eventData.metadata.documentCount}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Completion</div>
+              <div class="detail-value">${eventData.metadata.completionPercentage}%</div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Add to top of list
+      eventsList.insertBefore(eventCard, eventsList.firstChild);
+    }
+    
+    function displayStatusChangeEvent(eventData) {
+      const eventsList = document.getElementById('eventsList');
+      
+      // Remove empty state if present
+      const emptyState = eventsList.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      const eventCard = document.createElement('div');
+      eventCard.className = 'event-card';
+      eventCard.style.borderLeft = '4px solid #8b5cf6';
+      eventCard.innerHTML = `
+        <div class="event-header">
+          <div class="event-title">🔄 ${eventData.businessName}</div>
+          <div class="event-id">${eventData.applicationId}</div>
+        </div>
+        
+        <div class="event-details">
+          <div class="detail-item">
+            <div class="detail-label">Previous Status</div>
+            <div class="detail-value">${eventData.previousStatusDisplay}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">New Status</div>
+            <div class="detail-value" style="color: ${eventData.isSignificant ? '#10b981' : '#2563eb'}; font-weight: 700;">
+              ${eventData.newStatusDisplay}
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Changed By</div>
+            <div class="detail-value">${eventData.changedBy}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Loan Amount</div>
+            <div class="detail-value currency">${formatCurrency(eventData.loanAmount)}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Location</div>
+            <div class="detail-value">${eventData.location}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Changed At</div>
+            <div class="detail-value">${formatTime(eventData.changedAt)}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Significant Change</div>
+            <div class="detail-value priority ${eventData.isSignificant}">${eventData.isSignificant ? 'Yes' : 'No'}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Days in Previous Status</div>
+            <div class="detail-value">${eventData.metadata.daysInPreviousStatus} days</div>
+          </div>
+        </div>
+        
+        <div class="metadata">
+          <div class="metadata-title">Reason</div>
+          <div style="color: #1e293b; margin-bottom: 10px;">${eventData.reason}</div>
+          
+          <div class="metadata-title">Metadata</div>
+          <div class="metadata-grid">
+            <div class="detail-item">
+              <div class="detail-label">Transition Type</div>
+              <div class="detail-value">${eventData.metadata.transitionType}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Requires Notification</div>
+              <div class="detail-value">${eventData.metadata.requiresNotification ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Requires Action</div>
+              <div class="detail-value">${eventData.metadata.requiresAction ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            ${eventData.metadata.interestRate ? `
+            <div class="detail-item">
+              <div class="detail-label">Interest Rate</div>
+              <div class="detail-value">${eventData.metadata.interestRate}%</div>
+            </div>
+            ` : ''}
+            ${eventData.metadata.termMonths ? `
+            <div class="detail-item">
+              <div class="detail-label">Term</div>
+              <div class="detail-value">${eventData.metadata.termMonths} months</div>
+            </div>
+            ` : ''}
+            ${eventData.metadata.documentsNeeded ? `
+            <div class="detail-item">
+              <div class="detail-label">Documents Needed</div>
+              <div class="detail-value">${eventData.metadata.documentsNeeded}</div>
+            </div>
+            ` : ''}
+            ${eventData.metadata.appealable !== undefined ? `
+            <div class="detail-item">
+              <div class="detail-label">Appealable</div>
+              <div class="detail-value">${eventData.metadata.appealable ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      // Add to top of list
+      eventsList.insertBefore(eventCard, eventsList.firstChild);
+    }
+    
+    function displayDocumentUploadEvent(eventData) {
+      const eventsList = document.getElementById('eventsList');
+      
+      // Remove empty state if present
+      const emptyState = eventsList.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      const eventCard = document.createElement('div');
+      eventCard.className = 'event-card';
+      eventCard.style.borderLeft = '4px solid #06b6d4';
+      eventCard.innerHTML = `
+        <div class="event-header">
+          <div class="event-title">📄 ${eventData.businessName}</div>
+          <div class="event-id">${eventData.documentId}</div>
+        </div>
+        
+        <div class="event-details">
+          <div class="detail-item">
+            <div class="detail-label">Document Type</div>
+            <div class="detail-value" style="font-weight: 700;">${eventData.documentType}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">File Name</div>
+            <div class="detail-value">${eventData.fileName}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">File Size</div>
+            <div class="detail-value">${eventData.fileSizeFormatted}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Pages</div>
+            <div class="detail-value">${eventData.pageCount}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Uploaded By</div>
+            <div class="detail-value">${eventData.uploadedBy}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Uploader Type</div>
+            <div class="detail-value">${eventData.uploaderType}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Category</div>
+            <div class="detail-value">${eventData.category}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Required</div>
+            <div class="detail-value priority ${eventData.isRequired}">${eventData.isRequired ? 'Yes' : 'No'}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Status</div>
+            <div class="detail-value" style="color: ${eventData.documentStatus === 'verified' ? '#10b981' : eventData.documentStatus === 'needs_attention' ? '#ef4444' : '#f59e0b'};">
+              ${eventData.documentStatus.replace('_', ' ').toUpperCase()}
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Quality Score</div>
+            <div class="detail-value">${eventData.qualityScore}/100</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Uploaded At</div>
+            <div class="detail-value">${formatTime(eventData.uploadedAt)}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="detail-label">Application ID</div>
+            <div class="detail-value">${eventData.applicationId}</div>
+          </div>
+        </div>
+        
+        ${eventData.verificationDetails ? `
+        <div class="metadata">
+          <div class="metadata-title">Verification Details</div>
+          <div class="metadata-grid">
+            <div class="detail-item">
+              <div class="detail-label">Verified By</div>
+              <div class="detail-value">${eventData.verificationDetails.verifiedBy}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Verified At</div>
+              <div class="detail-value">${formatTime(eventData.verificationDetails.verifiedAt)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Method</div>
+              <div class="detail-value">${eventData.verificationDetails.verificationMethod}</div>
+            </div>
+          </div>
+        </div>
+        ` : ''}
+        
+        <div class="metadata">
+          <div class="metadata-title">AI Analysis</div>
+          <div class="metadata-grid">
+            <div class="detail-item">
+              <div class="detail-label">Confidence</div>
+              <div class="detail-value">${eventData.aiAnalysis.confidence}%</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Detected Type</div>
+              <div class="detail-value">${eventData.aiAnalysis.detectedType}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Readability</div>
+              <div class="detail-value">${eventData.aiAnalysis.qualityAssessment.readability}/100</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Completeness</div>
+              <div class="detail-value">${eventData.aiAnalysis.qualityAssessment.completeness}/100</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Authenticity</div>
+              <div class="detail-value">${eventData.aiAnalysis.qualityAssessment.authenticity}/100</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Processing Time</div>
+              <div class="detail-value">${eventData.aiAnalysis.processingTime}ms</div>
+            </div>
+          </div>
+          
+          ${eventData.aiAnalysis.extractedFields.length > 0 ? `
+          <div class="metadata-title" style="margin-top: 15px;">Extracted Fields</div>
+          <div class="metadata-grid">
+            ${eventData.aiAnalysis.extractedFields.map(field => `
+              <div class="detail-item">
+                <div class="detail-label">${field.name}</div>
+                <div class="detail-value">${field.value} (${Math.round(field.confidence * 100)}%)</div>
+              </div>
+            `).join('')}
+          </div>
+          ` : ''}
+        </div>
+        
+        ${eventData.hasIssues ? `
+        <div class="metadata">
+          <div class="metadata-title">Issues Detected</div>
+          <ul style="margin-left: 20px; color: #ef4444;">
+            ${eventData.issues.map(issue => `<li>${issue}</li>`).join('')}
+          </ul>
+        </div>
+        ` : ''}
+        
+        <div class="metadata">
+          <div class="metadata-title">Technical Metadata</div>
+          <div class="metadata-grid">
+            <div class="detail-item">
+              <div class="detail-label">MIME Type</div>
+              <div class="detail-value" style="font-size: 11px;">${eventData.metadata.mimeType}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Upload Source</div>
+              <div class="detail-value">${eventData.metadata.uploadSource}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Scan Status</div>
+              <div class="detail-value">${eventData.metadata.scanStatus}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">OCR Processed</div>
+              <div class="detail-value">${eventData.metadata.ocrProcessed ? '✅ Yes' : '❌ No'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Thumbnail</div>
+              <div class="detail-value">${eventData.metadata.thumbnailGenerated ? '✅ Yes' : '❌ No'}</div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Add to top of list
+      eventsList.insertBefore(eventCard, eventsList.firstChild);
+    }
+    
+    function refreshDisplay() {
+      const eventsList = document.getElementById('eventsList');
+      eventsList.innerHTML = '';
+      
+      if (generatedEvents.length === 0) {
+        eventsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <p>No events generated yet. Click a generate button to start.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Display in reverse order (newest first)
+      for (let i = generatedEvents.length - 1; i >= 0; i--) {
+        const event = generatedEvents[i];
+        if (event.eventType === 'status_change') {
+          displayStatusChangeEvent(event);
+        } else if (event.eventType === 'document_uploaded') {
+          displayDocumentUploadEvent(event);
+        } else {
+          displayEvent(event);
+        }
+      }
+    }
+    
+    function updateStats() {
+      const totalCount = generatedEvents.length;
+      const priorityCount = generatedEvents.filter(e => e.isPriority).length;
+      const avgLoanAmount = totalCount > 0
+        ? generatedEvents.reduce((sum, e) => sum + e.loanAmount, 0) / totalCount
+        : 0;
+      
+      document.getElementById('totalCount').textContent = totalCount;
+      document.getElementById('avgLoanAmount').textContent = formatCurrency(avgLoanAmount);
+      document.getElementById('priorityCount').textContent = priorityCount;
+    }
+    
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(amount);
+    }
+    
+    function formatTime(date) {
+      return new Intl.DateTimeFormat('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(date);
+    }
+    
+    // Log to console for debugging
+    console.log('[Event Generators Test] Ready');
+    console.log('[Event Generators Test] EventGenerators instance:', eventGenerators);
+  </script>
+</body>
+</html>

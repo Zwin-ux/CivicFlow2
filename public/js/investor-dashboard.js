@@ -10,6 +10,11 @@
     let loadingTimeout = null;
     let metricsData = null;
     let isDemo = false;
+    let liveDashboardListenerAttached = false;
+    let liveDashboardAttachAttempts = 0;
+    let liveIndicatorEl = null;
+    const MAX_LIVE_ATTACH_ATTEMPTS = 6;
+    const LIVE_ATTACH_DELAY = 800;
 
     /**
      * Initialize dashboard
@@ -25,6 +30,7 @@
 
         // Try to load real data
         await loadDashboardData();
+        initLiveDashboardUpdates();
     }
 
     /**
@@ -119,24 +125,28 @@
 
         const metrics = [
             {
+                key: 'totalApplications',
                 label: 'Total Applications',
                 value: data.totalApplications || 0,
                 change: '+12% from last month',
                 changeType: 'positive'
             },
             {
+                key: 'approvalRate',
                 label: 'Approval Rate',
                 value: `${approvalRate}%`,
                 change: '+5% from last month',
                 changeType: 'positive'
             },
             {
+                key: 'totalLoanAmount',
                 label: 'Total Loan Amount',
                 value: formatCurrency(data.totalLoanAmount || 0),
                 change: '+$250K from last month',
                 changeType: 'positive'
             },
             {
+                key: 'pendingReview',
                 label: 'Pending Review',
                 value: data.statusBreakdown?.pending || 0,
                 change: 'Requires attention',
@@ -175,6 +185,9 @@
     function createMetricCard(metric, isDemoData) {
         const card = document.createElement('div');
         card.className = 'metric-card';
+        if (metric.key) {
+            card.dataset.metricKey = metric.key;
+        }
 
         const label = document.createElement('div');
         label.className = 'metric-label';
@@ -191,6 +204,9 @@
         const value = document.createElement('div');
         value.className = 'metric-value';
         value.textContent = metric.value;
+        if (metric.key) {
+            value.dataset.metricKey = metric.key;
+        }
 
         const change = document.createElement('div');
         change.className = `metric-change ${metric.changeType}`;
@@ -336,6 +352,172 @@
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         }).format(amount);
+    }
+
+    /**
+     * Initialize live dashboard listeners
+     */
+    function initLiveDashboardUpdates() {
+        if (liveDashboardListenerAttached) {
+            return;
+        }
+
+        const orchestrator = window.demoOrchestrator;
+
+        if (!orchestrator) {
+            liveDashboardAttachAttempts++;
+            if (liveDashboardAttachAttempts <= MAX_LIVE_ATTACH_ATTEMPTS) {
+                setTimeout(initLiveDashboardUpdates, LIVE_ATTACH_DELAY);
+            }
+            return;
+        }
+
+        orchestrator.on('simulated-event', handleDashboardLiveEvent);
+        liveDashboardListenerAttached = true;
+        showLiveIndicator();
+    }
+
+    /**
+     * Handle live simulation events
+     */
+    function handleDashboardLiveEvent(event) {
+        if (!metricsData) {
+            metricsData = {
+                totalApplications: 0,
+                totalLoanAmount: 0,
+                statusBreakdown: {
+                    pending: 0,
+                    underReview: 0,
+                    approved: 0,
+                    rejected: 0
+                }
+            };
+        }
+
+        const breakdown = metricsData.statusBreakdown || {};
+        const data = event.data || {};
+
+        switch (event.type) {
+            case 'new_application':
+                metricsData.totalApplications = (metricsData.totalApplications || 0) + 1;
+                adjustStatusCount('pending', 1, breakdown);
+                highlightMetricCard('totalApplications');
+                break;
+            case 'approval_granted':
+                adjustStatusCount(data.previousStatus || 'pending', -1, breakdown);
+                adjustStatusCount('approved', 1, breakdown);
+                metricsData.totalLoanAmount = (metricsData.totalLoanAmount || 0) + (data.loanAmount || 0);
+                highlightMetricCard('totalLoanAmount');
+                break;
+            case 'rejection_issued':
+                adjustStatusCount(data.previousStatus || 'pending', -1, breakdown);
+                adjustStatusCount('rejected', 1, breakdown);
+                highlightMetricCard('pendingReview');
+                break;
+            case 'status_change':
+                adjustStatusCount(data.previousStatus, -1, breakdown);
+                adjustStatusCount(data.newStatus, 1, breakdown);
+                highlightMetricCard('pendingReview');
+                break;
+            case 'review_completed':
+                adjustStatusCount(data.previousStatus, -1, breakdown);
+                adjustStatusCount(data.newStatus || 'under_review', 1, breakdown);
+                highlightMetricCard('pendingReview');
+                break;
+            default:
+                break;
+        }
+
+        metricsData.statusBreakdown = breakdown;
+        metricsData.approvalRate = calculateApprovalRate(metricsData);
+        renderMetrics(metricsData, true);
+        renderStatusBreakdown(metricsData, true);
+    }
+
+    /**
+     * Adjust a status count safely
+     */
+    function adjustStatusCount(status, delta, breakdown) {
+        const key = mapStatusToBreakdownKey(status);
+        if (!key) {
+            return;
+        }
+        breakdown[key] = Math.max((breakdown[key] || 0) + delta, 0);
+    }
+
+    /**
+     * Map status strings to breakdown keys
+     */
+    function mapStatusToBreakdownKey(status) {
+        if (!status) {
+            return null;
+        }
+
+        const normalized = status.toLowerCase().replace(/[\s\-_]/g, '');
+
+        if (normalized.includes('underreview')) {
+            return 'underReview';
+        }
+        if (normalized.includes('pending')) {
+            return 'pending';
+        }
+        if (normalized.includes('approved')) {
+            return 'approved';
+        }
+        if (normalized.includes('rejected')) {
+            return 'rejected';
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate approval rate based on metrics
+     */
+    function calculateApprovalRate(data) {
+        const total = data.totalApplications || 0;
+        const approved = data.statusBreakdown?.approved || 0;
+        if (!total) {
+            return 0;
+        }
+        return ((approved / total) * 100).toFixed(1);
+    }
+
+    /**
+     * Highlight a metric card
+     */
+    function highlightMetricCard(key) {
+        if (!key) {
+            return;
+        }
+        const card = document.querySelector(`.metric-card[data-metric-key="${key}"]`);
+        if (!card) {
+            return;
+        }
+
+        card.classList.add('metric-updated');
+        setTimeout(() => {
+            card.classList.remove('metric-updated');
+        }, 1200);
+    }
+
+    /**
+     * Show live indicator badge in header
+     */
+    function showLiveIndicator() {
+        if (liveIndicatorEl) {
+            return;
+        }
+
+        const header = document.querySelector('.dashboard-header');
+        if (!header) {
+            return;
+        }
+
+        liveIndicatorEl = document.createElement('span');
+        liveIndicatorEl.className = 'live-indicator-badge';
+        liveIndicatorEl.textContent = 'Live';
+        header.appendChild(liveIndicatorEl);
     }
 
     // Initialize dashboard when DOM is ready

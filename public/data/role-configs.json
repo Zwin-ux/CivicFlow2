@@ -1,0 +1,124 @@
+{
+  "roles": [
+    {
+      "id": "applicant",
+      "label": "Applicant",
+      "description": "Submit and track applications with guided prompts, document checklists, and live status updates.",
+      "shortcut": "Alt+1",
+      "avatar": "AP",
+      "color": "#10b981",
+      "focus": "Guided application onboarding + document validation",
+      "features": [
+        "Application submission form",
+        "Status notifications",
+        "Document checklist"
+      ],
+      "quickActions": [
+        {
+          "label": "Open application portal",
+          "href": "/demo-role-applicant.html"
+        },
+        {
+          "label": "Review required documents",
+          "href": "/applications-list.html"
+        }
+      ]
+    },
+    {
+      "id": "reviewer",
+      "label": "Reviewer",
+      "description": "Manage the review queue with risk overlays, AI-assisted comments, and escalation triage.",
+      "shortcut": "Alt+2",
+      "avatar": "RV",
+      "color": "#f59e0b",
+      "focus": "Assess risk & orchestrate triage with confidence",
+      "features": [
+        "Risk factors",
+        "Actionable comments",
+        "AI assistant prompts"
+      ],
+      "quickActions": [
+        {
+          "label": "Open review board",
+          "href": "/demo-role-reviewer.html"
+        },
+        {
+          "label": "View flagged applications",
+          "href": "/applications-list.html"
+        }
+      ]
+    },
+    {
+      "id": "approver",
+      "label": "Approver",
+      "description": "Decision-ready dashboard focused on conditions, compliance, and funding scheduling.",
+      "shortcut": "Alt+3",
+      "avatar": "APV",
+      "color": "#3b82f6",
+      "focus": "Approve high-value applications with compliance guardrails",
+      "features": [
+        "Condition tracking",
+        "High-value approvals",
+        "Funding scheduler"
+      ],
+      "quickActions": [
+        {
+          "label": "Preview approvals",
+          "href": "/demo-role-approver.html"
+        },
+        {
+          "label": "Review compliance story",
+          "href": "/demo-role-admin.html"
+        }
+      ]
+    },
+    {
+      "id": "admin",
+      "label": "Admin",
+      "description": "Control tower for orchestrator settings, analytics, and simulation toggles.",
+      "shortcut": "Alt+4",
+      "avatar": "AD",
+      "color": "#8b5cf6",
+      "focus": "Manage permissions, audit trails, and live experiments",
+      "features": [
+        "Feature toggles",
+        "Audit trail",
+        "Simulation controls"
+      ],
+      "quickActions": [
+        {
+          "label": "Open control panel",
+          "href": "/demo-controls.html"
+        },
+        {
+          "label": "Review analytics",
+          "href": "/demo-analytics.html"
+        }
+      ]
+    },
+    {
+      "id": "investor",
+      "label": "Investor",
+      "description": "Watchlist with portfolio insights, live KPIs, and scenario-ready overviews.",
+      "shortcut": "Alt+5",
+      "avatar": "IN",
+      "color": "#667eea",
+      "focus": "Monitor portfolio health and runway with live metrics",
+      "features": [
+        "Portfolio insights",
+        "Live KPIs",
+        "Scenario overviews"
+      ],
+      "quickActions": [
+        {
+          "label": "View investor dashboard",
+          "href": "/investor-dashboard.html"
+        },
+        {
+          "label": "Launch scenario player",
+          "href": "/demo-scenarios.html"
+        }
+      ]
+    }
+  ]
+}
