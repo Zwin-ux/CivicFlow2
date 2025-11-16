@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resilience Demo - OctoDoc</title>
+    <link rel="stylesheet" href="/css/professional-theme.css">
+    <link rel="stylesheet" href="/css/resilience-demo.css">
+    <link rel="stylesheet" href="/css/components/role-switcher.css">
+    <link rel="stylesheet" href="/css/components/role-views.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        body {
+            margin: 0;
+            background: var(--color-bg-secondary, #f4f6fb);
+        }
+        .navbar {
+            background: white;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            color: var(--color-primary, #667eea);
+            text-decoration: none;
+        }
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            padding: 0;
+            margin: 0;
+        }
+        .navbar .nav-links a {
+            color: var(--color-text-secondary, #4b5563);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .navbar .nav-links a.active {
+            color: var(--color-primary, #667eea);
+        }
+        main.resilience-layout {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="/images/logo.svg" alt="OctoDoc Logo" width="32" height="32">
+                <span>OctoDoc Resilience Lab</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/investor-dashboard.html">Dashboard</a></li>
+                <li><a href="/applications-list.html">Applications</a></li>
+                <li><a href="/demo-landing.html">Demo Hub</a></li>
+                <li><a href="/demo-resilience.html" class="active">Resilience</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="resilience-layout">
+        <section class="resilience-panel">
+            <h2>Service Failure Simulator</h2>
+            <p class="panel-description">Trigger failures across the system, watch circuit breaker heuristics, and recover services with one click.</p>
+            <div class="service-grid" id="service-grid"></div>
+            <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <button id="simulate-random" class="simulate-btn">Simulate random failure</button>
+                <button id="recover-all" class="recover-btn">Force recover all</button>
+            </div>
+        </section>
+
+        <section class="resilience-panel">
+            <h2>Event Timeline</h2>
+            <p class="panel-description">Every failure, recovery, and circuit change is logged for auditing and debug.</p>
+            <div class="resilience-log" id="resilience-log"></div>
+        </section>
+
+        <section class="resilience-panel">
+            <h2>Circuit Breaker Watch</h2>
+            <div class="circuit-visual">
+                <div class="circuit-status healthy" id="circuit-status">Healthy</div>
+                <div class="circuit-indicator" id="circuit-indicator">Ready</div>
+                <div class="progress-track">
+                    <span id="circuit-progress"></span>
+                </div>
+                <small class="panel-description">The more concurrent failures you trigger, the closer the system gets to a full trip.</small>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/demo/resilience-controller.js"></script>
+    <script src="/js/demo/orchestrator.js"></script>
+    <script src="/js/demo/role-switcher.js" defer></script>
+    <script src="/js/demo/role-views.js" defer></script>
+    <script src="/js/demo/role-switcher-init.js" defer></script>
+    <script>
+        (function () {
+            const controller = new ResilienceController();
+
+            if (window.demoOrchestrator?.registerComponent) {
+                window.demoOrchestrator.registerComponent('resilienceController', controller);
+            }
+
+            const grid = document.getElementById('service-grid');
+            const logNode = document.getElementById('resilience-log');
+            const circuitStatus = document.getElementById('circuit-status');
+            const circuitIndicator = document.getElementById('circuit-indicator');
+            const circuitProgress = document.getElementById('circuit-progress');
+
+            function createStatus(service) {
+                const status = controller.getStatus(service.id);
+                const statusText = status?.status || 'healthy';
+                return `<span class="status status-${statusText}">${statusText}</span>`;
+            }
+
+            function renderServices() {
+                grid.innerHTML = '';
+                controller.services.forEach((service) => {
+                    const card = document.createElement('article');
+                    card.className = 'service-card';
+                    card.dataset.service = service.id;
+                    const status = controller.getStatus(service.id);
+                    card.innerHTML = `
+                        <h3>
+                            ${service.label}
+                            ${createStatus(service)}
+                        </h3>
+                        <small>${service.description}</small>
+                        <button class="simulate-btn">Simulate failure</button>
+                        <button class="recover-btn">Recover service</button>
+                    `;
+
+                    const simulate = card.querySelector('.simulate-btn');
+                    const recover = card.querySelector('.recover-btn');
+
+                    simulate.addEventListener('click', () => {
+                        controller.simulateFailure(service.id, {
+                            duration: 6000 + Math.random() * 5000,
+                            severity: 'medium'
+                        });
+                    });
+
+                    recover.addEventListener('click', () => {
+                        controller.manualRecover(service.id);
+                    });
+
+                    grid.appendChild(card);
+                });
+            }
+
+            function refreshCard(id) {
+                const card = grid.querySelector(`[data-service="${id}"]`);
+                if (!card) {
+                    return;
+                }
+                const status = controller.getStatus(id);
+                const label = card.querySelector('h3');
+                label.innerHTML = `${controller.getService(id).label} <span class="status status-${status.status}">${status.status}</span>`;
+            }
+
+            function renderLog(history) {
+                logNode.innerHTML = '';
+                history.forEach((entry) => {
+                    const row = document.createElement('div');
+                    row.className = 'log-entry';
+                    row.innerHTML = `
+                        <strong>${entry.type.replace('-', ' ')}</strong>
+                        <span>${entry.label || 'System'} &middot; ${new Date(entry.timestamp).toLocaleTimeString()}</span>
+                        <small>${entry.serviceId ? `Service: ${entry.serviceId}` : 'Circuit control'}</small>
+                    `;
+                    logNode.appendChild(row);
+                });
+            }
+
+            function updateCircuit(state) {
+                circuitStatus.textContent = state;
+                circuitStatus.className = `circuit-status ${state}`;
+                circuitIndicator.textContent = state === 'tripped' ? 'Blocked' : state === 'degraded' ? 'Caution' : 'Ready';
+                const width = state === 'tripped' ? 100 : state === 'degraded' ? 60 : 20;
+                circuitProgress.style.width = `${width}%`;
+            }
+
+            document.getElementById('simulate-random').addEventListener('click', () => {
+                const service = controller.services[Math.floor(Math.random() * controller.services.length)];
+                controller.simulateFailure(service.id, {
+                    duration: 5000 + Math.random() * 6000,
+                    severity: 'high'
+                });
+            });
+
+            document.getElementById('recover-all').addEventListener('click', () => {
+                controller.services.forEach((service) => controller.manualRecover(service.id));
+            });
+
+            controller.on('service-updated', (payload) => {
+                refreshCard(payload.id);
+            });
+
+            controller.on('history-updated', (history) => {
+                renderLog(history);
+            });
+
+            controller.on('circuit-state-changed', updateCircuit);
+
+            renderServices();
+            renderLog(controller.getHistory());
+            updateCircuit(controller.getCircuitState());
+        })();
+    </script>
+</body>
+</html>
