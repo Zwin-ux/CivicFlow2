@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Showcase - OctoDoc Demo</title>
+  <link rel="stylesheet" href="/css/professional-theme.css">
+  <link rel="stylesheet" href="/css/ai-showcase.css">
+  <link rel="stylesheet" href="/css/components/role-switcher.css">
+  <link rel="stylesheet" href="/css/components/role-views.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <style>
+    .hero-actions {
+      margin-top: 1.25rem;
+      display: inline-flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-actions a {
+      padding: 0.9rem 1.6rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-actions a.primary {
+      background: #1f2937;
+      color: white;
+    }
+
+    .hero-actions a.secondary {
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: white;
+      background: transparent;
+    }
+  </style>
+</head>
+<body class="ai-showcase-page">
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <img src="/images/logo.svg" alt="OctoDoc Logo" width="32" height="32">
+        <span>OctoDoc</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/demo-landing.html">Demo Hub</a></li>
+        <li><a href="/demo-scenarios.html">Scenarios</a></li>
+        <li><a href="/demo-resilience.html">Resilience</a></li>
+        <li><a href="/demo-ai-showcase.html" class="active">AI Showcase</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="ai-showcase-hero">
+    <h1>AI-powered insight studio</h1>
+    <p>Watch OctoDoc’s AI engine synthesize risk, document intelligence, and recommendations in real time. Everything is simulated, but the impact feels live.</p>
+    <div class="hero-actions">
+      <a href="/demo-resilience.html" class="primary">View Resilience Lab</a>
+      <a href="/demo-scenarios.html" class="secondary">Launch Scenarios</a>
+    </div>
+  </section>
+
+  <main class="ai-showcase-grid">
+    <article class="ai-risk-card">
+      <div class="ai-section-title">AI Risk Score</div>
+      <div class="ai-risk-score">
+        <div>
+          <p class="ai-score-value" id="risk-value">--</p>
+        </div>
+        <div class="ai-score-meta">
+          <span id="risk-label">Awaiting insight</span>
+          <span class="ai-thinking" id="thinking-indicator">AI is thinking</span>
+        </div>
+      </div>
+      <div class="ai-score-track">
+        <span id="risk-progress" style="width:0%;"></span>
+      </div>
+      <div class="ai-highlight" id="risk-components"></div>
+    </article>
+
+    <article class="ai-document-card">
+      <div class="ai-section-title">Document Intelligence</div>
+      <p class="panel-description">
+        Confidence metrics, highlighted fields, and AI-sourced notes show how documents are interpreted before a reviewer touches them.
+      </p>
+      <p><strong>Confidence:</strong> <span id="doc-confidence">--%</span></p>
+      <div class="ai-highlight">
+        <span>Highlighted fields:</span>
+        <ul id="doc-highlights"></ul>
+      </div>
+      <div>
+        <div class="ai-section-title" style="font-size:1rem;">Potential issues</div>
+        <ul class="ai-document-issues" id="doc-issues"></ul>
+      </div>
+      <div style="margin-top:1rem;">
+        <strong>Notes</strong>
+        <p id="doc-notes" class="panel-description">Waiting for AI signal.</p>
+      </div>
+    </article>
+
+    <article class="ai-recommendations-card">
+      <div class="ai-section-title">Recommendations</div>
+      <div class="ai-recommendations-list" id="recommendations-list"></div>
+      <button id="manual-insight" class="simulate-btn" style="cursor:pointer;">Generate insight now</button>
+    </article>
+  </main>
+
+  <script src="/js/demo/orchestrator.js"></script>
+  <script src="/js/demo/ai-showcase-engine.js"></script>
+  <script src="/js/demo/role-switcher.js" defer></script>
+  <script src="/js/demo/role-views.js" defer></script>
+  <script src="/js/demo/role-switcher-init.js" defer></script>
+  <script>
+    const riskValue = document.getElementById('risk-value');
+    const riskLabel = document.getElementById('risk-label');
+    const riskProgress = document.getElementById('risk-progress');
+    const riskComponents = document.getElementById('risk-components');
+    const docConfidence = document.getElementById('doc-confidence');
+    const docHighlights = document.getElementById('doc-highlights');
+    const docIssues = document.getElementById('doc-issues');
+    const docNotes = document.getElementById('doc-notes');
+    const recommendationsList = document.getElementById('recommendations-list');
+    const thinkingIndicator = document.getElementById('thinking-indicator');
+
+    function renderInsight(payload) {
+      if (!payload) {
+        return;
+      }
+
+      const { risk, document, recommendations } = payload;
+
+      riskValue.textContent = risk.score;
+      riskLabel.textContent = `${risk.label} risk`;
+      riskProgress.style.width = `${risk.score}%`;
+
+      riskComponents.innerHTML = '';
+      risk.components.forEach((component) => {
+        const span = document.createElement('span');
+        span.innerHTML = `<strong>${component.label}</strong><span>${component.value.toFixed(1)}%</span>`;
+        riskComponents.appendChild(span);
+      });
+
+      docConfidence.textContent = `${document.confidence}%`;
+
+      docHighlights.innerHTML = '';
+      document.highlighted.forEach((field) => {
+        const li = document.createElement('li');
+        li.textContent = field;
+        docHighlights.appendChild(li);
+      });
+
+      docIssues.innerHTML = '';
+      document.issues.forEach((issue) => {
+        const li = document.createElement('li');
+        li.textContent = issue;
+        docIssues.appendChild(li);
+      });
+
+      docNotes.textContent = document.notes;
+
+      recommendationsList.innerHTML = '';
+      recommendations.forEach((recommendation) => {
+        const rec = document.createElement('div');
+        rec.className = 'ai-recommendation';
+        rec.innerHTML = `
+          <span>${recommendation.title}</span>
+          <span>${recommendation.confidence}% confidence</span>
+        `;
+        recommendationsList.appendChild(rec);
+      });
+    }
+
+    function toggleThinking(isThinking) {
+      thinkingIndicator.style.opacity = isThinking ? '1' : '0';
+    }
+
+    document.getElementById('manual-insight').addEventListener('click', () => {
+      window.aiShowcase?.triggerInsight();
+    });
+
+    window.aiShowcase?.on('insight', renderInsight);
+    window.aiShowcase?.on('thinking', toggleThinking);
+    window.aiShowcase?.start();
+  </script>
+</body>
+</html>
