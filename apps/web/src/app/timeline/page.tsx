@@ -21,7 +21,7 @@ export default function TimelinePage() {
             Back to intake
           </Link>
           <Link href="/underwriting" className="text-sm font-semibold" style={{ color: 'var(--cc-accent-dark)' }}>
-            Jump to underwriting snapshot ->
+            Jump to underwriting snapshot →
           </Link>
         </div>
       </header>

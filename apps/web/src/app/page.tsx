@@ -108,7 +108,7 @@ export default function Home() {
             className="text-sm font-semibold"
             style={{ color: 'var(--cc-accent-dark)' }}
           >
-            View walkthrough ->
+            View walkthrough →
           </Link>
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-4">

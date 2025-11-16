@@ -21,7 +21,7 @@ export default function UnderwritingPage() {
             Review collaboration log
           </Link>
           <Link href="/intake" className="text-sm font-semibold" style={{ color: 'var(--cc-accent-dark)' }}>
-            Restart demo ->
+            Restart demo →
           </Link>
         </div>
       </header>

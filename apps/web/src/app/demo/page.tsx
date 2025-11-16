@@ -162,7 +162,7 @@ export default function DemoLanding() {
             </p>
           </div>
           <Link href="/intake" className="text-sm font-semibold" style={{ color: 'var(--cc-accent-dark)' }}>
-            See badges in context ->
+            See badges in context →
           </Link>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
