@@ -12,14 +12,15 @@ COPY package*.json ./
 # Skip Chromium download during install to keep builder fast; visual tests can
 # install Chromium locally when needed. This is safe because Chromium is not
 # required for the production image.
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm install && \
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm ci --prefer-offline && \
     npm cache clean --force
 
 # Copy source code
+# Copy remaining source code
 COPY . .
 
 # Install frontend dependencies (Next.js) so `next` is available under apps/web
-RUN npm ci --prefix apps/web
+RUN npm ci --prefer-offline --prefix apps/web
 
 # Build TypeScript
 RUN npm run build
