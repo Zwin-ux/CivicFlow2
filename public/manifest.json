@@ -1,0 +1,32 @@
+{
+  "name": "CivicFlow2",
+  "short_name": "CivicFlow2",
+  "description": "Government lending CRM with modern, app-like experience",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f9fafb",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "1920x1080",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ]
+}

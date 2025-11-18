@@ -3,449 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Detail - OctoDoc</title>
+    <title>Application Detail · CivicFlow2</title>
+    <link rel="stylesheet" href="/css/app/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/app/navigation.css">
+    <link rel="stylesheet" href="/css/app/application-detail.css">
     <link rel="stylesheet" href="/css/professional-theme.css">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/components/demo-indicator.css">
     <link rel="stylesheet" href="/css/components/skeleton-loader.css">
     <link rel="stylesheet" href="/css/responsive.css">
     <link rel="stylesheet" href="/css/touch-enhancements.css">
-    <style>
-        /* Application Detail Styles */
-        :root {
-            --primary-color: #667eea;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-            --demo-color: #8b5cf6;
-            --surface: #ffffff;
-            --background: #f5f7fa;
-            --border-color: #e5e7eb;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-            background-color: var(--background);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .navbar .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-image {
-            width: 40px;
-            height: 40px;
-            display: block;
-        }
-
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
-
-        .logo-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-
-        .logo-tagline {
-            font-size: 0.625rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary-color);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            transition: gap 0.2s;
-        }
-
-        .back-link:hover {
-            gap: 0.75rem;
-        }
-
-        .detail-header {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .detail-header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-
-        .detail-title h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .detail-subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
-        .detail-badges {
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-badge.submitted,
-        .status-badge.pending_review {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-badge.under_review {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-badge.approved {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-badge.rejected {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .detail-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .detail-value {
-            font-size: 1.125rem;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .detail-value.large {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        /* Sections */
-        .detail-section {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        /* Documents */
-        .documents-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .document-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background: var(--background);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            transition: background 0.2s;
-        }
-
-        .document-item:hover {
-            background: #f9fafb;
-        }
-
-        .document-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-
-        .document-icon {
-            font-size: 2rem;
-        }
-
-        .document-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .document-name {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .document-meta {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .document-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .document-status.verified {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .document-status.pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0.5rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border-color);
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 1.5rem;
-        }
-
-        .timeline-item:last-child {
-            padding-bottom: 0;
-        }
-
-        .timeline-marker {
-            position: absolute;
-            left: -1.5rem;
-            top: 0.25rem;
-            width: 1rem;
-            height: 1rem;
-            border-radius: 50%;
-            background: var(--primary-color);
-            border: 2px solid var(--surface);
-        }
-
-        .timeline-content {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .timeline-event {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .timeline-meta {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .detail-header-top {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .detail-badges {
-                align-self: flex-start;
-            }
-
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .document-info {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        footer {
-            background: var(--surface);
-            border-top: 1px solid var(--border-color);
-            padding: 2rem 0;
-            margin-top: 4rem;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-    </style>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="logo">
-                <img src="/images/logo.svg" alt="OctoDoc Logo" class="logo-image">
-                <div class="logo-text">
-                    <span class="logo-name">OctoDoc</span>
-                    <span class="logo-tagline">Document Intelligence Platform</span>
-                </div>
-            </a>
-            <ul class="nav-links">
-                <li><a href="/investor-dashboard.html">Dashboard</a></li>
-                <li><a href="/applications-list.html" class="active">Applications</a></li>
-                <li><a href="/demo-landing.html">Demo Mode</a></li>
-            </ul>
+<body class="app-shell">
+    <header class="app-top-bar">
+        <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle navigation">☰</button>
+        <a class="logo" href="/">
+            <img src="/images/logo.svg" alt="CivicFlow2" class="logo-image" width="40" height="40">
+            <div>
+                <strong class="logo-name">CivicFlow2</strong>
+                <small class="logo-tagline">Application detail</small>
+            </div>
+        </a>
+        <nav>
+            <a href="/investor-dashboard.html">Dashboard</a>
+            <a href="/applications-list.html" class="active">Applications</a>
+            <a href="/demo-landing.html">Demo Mode</a>
+        </nav>
+        <div class="top-actions">
+            <button type="button" data-command-trigger>⌘K</button>
+            <button type="button" data-theme-toggle>Toggle Theme</button>
+            <span data-ws-status>Connecting...</span>
         </div>
+    </header>
+
+    <div class="app-main">
+        <aside class="app-sidebar" data-sidebar>
+            <div class="sidebar-section">
+                <h3>Main</h3>
+                <a class="sidebar-link" data-target="/investor-dashboard.html">Dashboard</a>
+                <a class="sidebar-link active" data-target="/applications-list.html">Applications</a>
+            </div>
+            <div class="sidebar-section">
+                <h3>Tools</h3>
+                <a class="sidebar-link" data-target="/demo-investor.html">AI Insights</a>
+                <a class="sidebar-link" data-target="/demo-settings.html">Settings</a>
+            </div>
+            <div class="sidebar-section">
+                <h3>Quick Actions</h3>
+                <button type="button" class="quick-action" onclick="window.location.href='/applications-list.html'">New Application</button>
+                <button type="button" class="quick-action" onclick="window.location.href='/demo-landing.html'">Request Info</button>
+            </div>
+        </aside>
+
+        <main class="app-layout">
+            <a class="back-link" href="/applications-list.html">← Back to Applications</a>
+            <div id="detail-content"></div>
+        </main>
+    </div>
+
+    <nav class="mobile-bottom-nav" data-mobile-nav>
+        <button type="button" data-target="/investor-dashboard.html">
+            <span>🏠</span>
+            <small>Home</small>
+        </button>
+        <button type="button" data-target="/applications-list.html">
+            <span>📋</span>
+            <small>Apps</small>
+        </button>
+        <button type="button" data-target="/demo-landing.html">
+            <span>🗂️</span>
+            <small>Documents</small>
+        </button>
+        <button type="button" data-target="/demo-settings.html">
+            <span>⚙️</span>
+            <small>Settings</small>
+        </button>
     </nav>
 
-    <main class="container">
-        <a href="/applications-list.html" class="back-link">← Back to Applications</a>
-
-        <div id="detail-content">
-            <!-- Content will be populated by JavaScript -->
+    <div class="command-palette" data-command-palette>
+        <div class="command-card">
+            <p class="text-muted">Quick switch</p>
+            <input type="search" placeholder="Search applications or actions" aria-label="Command palette search">
+            <ul data-command-list></ul>
         </div>
-    </main>
+    </div>
 
     <footer>
-        <div class="container">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="/images/logo.svg" alt="OctoDoc Logo" style="width: 24px; height: 24px;">
-                    <span style="font-weight: 600; color: var(--primary-color);">OctoDoc</span>
-                </div>
-                <p>&copy; 2025 OctoDoc. All rights reserved. | Document Intelligence Platform Platform</p>
-            </div>
+        <div class="app-layout" style="padding-bottom: 0;">
+            <p>&copy; 2025 CivicFlow2. Built for government lending teams.</p>
         </div>
     </footer>
 
+    <script src="/js/state/app-state.js"></script>
+    <script src="/js/theme/theme-manager.js"></script>
+    <script src="/js/realtime/websocket-manager.js"></script>
+    <script src="/js/cache/cache-manager.js"></script>
+    <script src="/js/navigation/layout.js"></script>
     <script src="/js/mobile-nav.js"></script>
     <script src="/js/components/demo-indicator.js"></script>
     <script src="/js/components/skeleton-loader.js"></script>
     <script src="/js/api-client.js"></script>
     <script src="/js/application-detail.js"></script>
+  <script src="/js/navigation/app-shell-init.js"></script>
 </body>
 </html>

@@ -3,348 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo Mode - OctoDoc</title>
-  <link rel="stylesheet" href="/css/responsive.css">
+  <title>Demo Mode · CivicFlow2</title>
+  <link rel="stylesheet" href="/css/app/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/app/navigation.css">
+  <link rel="stylesheet" href="/css/app/demo.css">
+  <link rel="stylesheet" href="/css/professional-theme.css">
   <link rel="stylesheet" href="/css/components/toast-notification.css">
   <link rel="stylesheet" href="/css/components/role-switcher.css">
   <link rel="stylesheet" href="/css/components/role-views.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-      color: white;
-    }
-
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 20;
-      background: rgba(15, 23, 42, 0.4);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      display: flex;
-      justify-content: center;
-    }
-
-    .navbar .nav-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0.75rem 1.5rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      text-decoration: none;
-      color: white;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 1.25rem;
-      margin: 0;
-      padding: 0;
-    }
-
-    .nav-links a {
-      color: rgba(255, 255, 255, 0.85);
-      text-decoration: none;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    .nav-links a.active,
-    .nav-links a:hover {
-      color: white;
-    }
-
-    .container {
-      max-width: 700px;
-      width: 100%;
-      background: white;
-      border-radius: 16px;
-      padding: 3rem;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      color: #333;
-      margin: 8rem auto 2rem;
-      position: relative;
-      z-index: 5;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-
-    .logo {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 1rem;
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: #1f2937;
-    }
-
-    .subtitle {
-      font-size: 1rem;
-      color: #6b7280;
-      line-height: 1.6;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .feature {
-      background: #f9fafb;
-      padding: 1.25rem;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .feature h3 {
-      font-size: 0.875rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #1f2937;
-    }
-
-    .feature p {
-      font-size: 0.8125rem;
-      color: #6b7280;
-      line-height: 1.5;
-    }
-
-    .section-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: #1f2937;
-      text-align: center;
-    }
-
-    .roles {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .role-button {
-      padding: 1rem;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      background: white;
-      color: #1f2937;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .role-button:hover:not(:disabled) {
-      border-color: #667eea;
-      background: #f9fafb;
-      transform: translateY(-2px);
-    }
-
-    .role-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .disclaimer {
-      font-size: 0.8125rem;
-      color: #6b7280;
-      text-align: center;
-      padding: 1rem;
-      background: #f9fafb;
-      border-radius: 8px;
-      line-height: 1.5;
-    }
-
-    .disclaimer strong {
-      color: #1f2937;
-    }
-
-    .toast {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      font-size: 0.875rem;
-      font-weight: 500;
-      z-index: 1000;
-      animation: slideIn 0.3s ease;
-    }
-
-    .toast.success {
-      border-left: 4px solid #10b981;
-      color: #065f46;
-    }
-
-    .toast.error {
-      border-left: 4px solid #ef4444;
-      color: #991b1b;
-    }
-
-    .toast.info {
-      border-left: 4px solid #3b82f6;
-      color: #1e40af;
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        padding: 2rem;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      .features,
-      .roles {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-  </head>
-<body>
-  <nav class="navbar">
-    <div class="nav-content">
-      <a href="/" class="logo">
-        <img src="/images/logo.svg" alt="OctoDoc Logo" width="34" height="34">
-        <span>OctoDoc</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="/investor-dashboard.html">Dashboard</a></li>
-        <li><a href="/applications-list.html">Applications</a></li>
-        <li><a href="/demo-landing.html" class="active">Demo Mode</a></li>
-      </ul>
-    </div>
-  </nav>
-  <div class="container">
-    <div class="header">
-      <img src="/images/logo.svg" alt="OctoDoc Logo" class="logo">
-      <h1>Welcome to Demo Mode</h1>
-      <p class="subtitle">
-        Experience the full power of OctoDoc with realistic sample data.
-        Choose a role below to start exploring.
-      </p>
-    </div>
-
-    <div class="features">
-      <div class="feature">
-        <h3>Relationship Workbench</h3>
-        <p>Blend borrower history, outreach, and documents into one CRM-style experience.</p>
+</head>
+<body class="app-shell" style="background: linear-gradient(135deg, #5865ff 0%, #764ba2 100%);">
+  <header class="app-top-bar">
+    <a class="logo" href="/">
+      <img src="/images/logo.svg" alt="CivicFlow2" class="logo-image" width="40" height="40">
+      <div>
+        <strong class="logo-name">CivicFlow2</strong>
+        <small class="logo-tagline">Demo Mode Showcase</small>
       </div>
-
-      <div class="feature">
-        <h3>Pipeline Intelligence</h3>
-        <p>See where every deal sits, who owns it, and which SLAs are at risk in real time.</p>
-      </div>
-
-      <div class="feature">
-        <h3>AI Document Copilot</h3>
-        <p>Automatic validation, missing item detection, and instant status memos for credit teams.</p>
-      </div>
-
-      <div class="feature">
-        <h3>Omnichannel Follow-ups</h3>
-        <p>One-click SMS, email, or Teams reminders using templates tuned for SBA lending.</p>
-      </div>
+    </a>
+    <nav>
+      <a href="/investor-dashboard.html">Dashboard</a>
+      <a href="/applications-list.html">Applications</a>
+      <a href="/demo-landing.html" class="active">Demo Mode</a>
+    </nav>
+    <div class="top-actions">
+      <button type="button" data-command-trigger aria-label="Open command palette">⌘K</button>
+      <button type="button" data-theme-toggle aria-label="Toggle theme">Toggle Theme</button>
+      <span data-ws-status>Connecting...</span>
     </div>
+  </header>
 
-    <h2 class="section-title">Select Your Role</h2>
-    
-    <div class="roles" id="role-buttons">
-      <button class="role-button" data-role="APPLICANT">
-        <span class="role-label">Applicant Portal</span>
-        <small>Guided checklists + instant AI feedback</small>
-      </button>
-      <button class="role-button" data-role="REVIEWER">
-        <span class="role-label">Staff Workspace</span>
-        <small>Pipeline + borrower timeline for call prep</small>
-      </button>
-      <button class="role-button" data-role="APPROVER">
-        <span class="role-label">Approver Dashboard</span>
-        <small>Decision-ready narratives and alerts</small>
-      </button>
-      <button class="role-button" data-role="ADMIN">
-        <span class="role-label">Program Command</span>
-        <small>Live SLA, intake mix, and audit health</small>
-      </button>
-    </div>
-
-    <div class="role-preview" id="role-preview">
-      <p class="preview-eyebrow">Role Spotlight</p>
-      <h3 id="preview-title">Select a role to see the CRM storyline</h3>
-      <p id="preview-description">Modernize lending operations with a guided workspace for every persona.</p>
-      <div class="preview-metrics">
-        <div>
-          <span class="preview-headline" id="preview-headline">Pipeline + AI coaching in one tab</span>
-          <span class="preview-stat" id="preview-heroStat">Live SLA visibility</span>
+  <main class="app-layout">
+    <section class="section-card hero-layout">
+      <div class="hero-layout">
+        <div class="title">Welcome to Demo Mode</div>
+        <p class="subtitle">
+          Experience CivicFlow2 with curated personas, AI guidance, and optimistic updates that feel like a polished app.
+        </p>
+        <div class="hero-points">
+          <div class="hero-point">
+            <strong>Relationship workbench</strong>
+            <p>Blend borrower context, documents, and real-time status in one view.</p>
+          </div>
+          <div class="hero-point">
+            <strong>Pipeline intelligence</strong>
+            <p>Live SLA dashboards, proactive nudges, and audit-ready timelines.</p>
+          </div>
+          <div class="hero-point">
+            <strong>AI Copilot</strong>
+            <p>Document validation, missing item detection, and clear next steps.</p>
+          </div>
+          <div class="hero-point">
+            <strong>Omnichannel follow-ups</strong>
+            <p>Send SMS, email, or Teams reminders with one click.</p>
+          </div>
         </div>
-        <ul id="preview-highlights">
-          <li>AI document guardrails + CRM context</li>
-          <li>Omnichannel reminders from one panel</li>
-          <li>Role-based walkthroughs & demo data</li>
-        </ul>
       </div>
-    </div>
+    </section>
 
-    <p class="disclaimer">
-      <strong>Note:</strong> This is a demonstration environment with sample data.
-      No real data will be stored or processed. Sessions automatically expire after 30 minutes of inactivity.
-    </p>
+    <section class="section-card">
+      <h2 class="section-title">Select Your Role</h2>
+      <div class="roles" id="role-buttons">
+        <button class="role-button" data-role="APPLICANT">
+          <span class="role-label">Applicant Portal</span>
+          <small>Guided checklists + instant AI feedback</small>
+        </button>
+        <button class="role-button" data-role="REVIEWER">
+          <span class="role-label">Staff Workspace</span>
+          <small>Pipeline + borrower timeline for call prep</small>
+        </button>
+        <button class="role-button" data-role="APPROVER">
+          <span class="role-label">Approver Dashboard</span>
+          <small>Decision-ready narratives and alerts</small>
+        </button>
+        <button class="role-button" data-role="ADMIN">
+          <span class="role-label">Program Command</span>
+          <small>Live SLA, intake mix, and audit health</small>
+        </button>
+      </div>
+      <div class="role-preview" id="role-preview">
+        <p class="preview-eyebrow">Role Spotlight</p>
+        <h3 id="preview-title">Select a role to see the CRM storyline</h3>
+        <p id="preview-description">Modernize lending operations with a guided workspace for every persona.</p>
+        <div class="preview-metrics">
+          <div>
+            <span class="preview-headline" id="preview-headline">Pipeline + AI coaching in one tab</span>
+            <span class="preview-stat" id="preview-heroStat">Live SLA visibility</span>
+          </div>
+          <ul id="preview-highlights">
+            <li>AI document guardrails + CRM context</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="mobile-bottom-nav" data-mobile-nav>
+    <button type="button" data-target="/investor-dashboard.html">
+      <span>🏠</span>
+      <small>Home</small>
+    </button>
+    <button type="button" data-target="/applications-list.html">
+      <span>📋</span>
+      <small>Apps</small>
+    </button>
+    <button type="button" data-target="/demo-landing.html">
+      <span>🎯</span>
+      <small>Demo</small>
+    </button>
+    <button type="button" data-target="/demo-settings.html">
+      <span>⚙️</span>
+      <small>Settings</small>
+    </button>
+  </nav>
+
+  <div class="command-palette" data-command-palette>
+    <div class="command-card">
+      <p class="text-muted">Command palette</p>
+      <input type="search" placeholder="Search pages..." aria-label="Command palette search">
+      <ul data-command-list></ul>
+    </div>
   </div>
 
-  <div id="toast-container"></div>
+  <div id="toast-container" class="toast-root"></div>
+
+  <script src="/js/state/app-state.js"></script>
+  <script src="/js/theme/theme-manager.js"></script>
+  <script src="/js/realtime/websocket-manager.js"></script>
+  <script src="/js/cache/cache-manager.js"></script>
+  <script src="/js/navigation/layout.js"></script>
   <script src="/js/demo/orchestrator.js"></script>
   <script src="/js/demo/role-switcher.js" defer></script>
   <script src="/js/demo/role-views.js" defer></script>
   <script src="/js/demo/role-switcher-init.js" defer></script>
-  <script src="/js/components/toast-notification.js"></script>
-
   <script>
     const roleCatalog = {};
     let activeRole = null;
@@ -399,16 +191,13 @@
       const role = roleCatalog[roleKey];
       if (!role) return;
       activeRole = roleKey;
-
       document.querySelectorAll('.role-button').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.role === roleKey);
       });
-
       document.getElementById('preview-title').textContent = role.title;
       document.getElementById('preview-description').textContent = role.description;
       document.getElementById('preview-headline').textContent = role.headline;
       document.getElementById('preview-heroStat').textContent = role.heroStat;
-
       const highlights = document.getElementById('preview-highlights');
       highlights.innerHTML = role.highlights.map(item => `<li>${item}</li>`).join('');
     }
@@ -470,7 +259,6 @@
       }
     }
 
-    // Existing active session redirect
     if (sessionStorage.getItem('demo_session')) {
       const role = sessionStorage.getItem('demo_role');
       showToast('You already have an active demo session', 'info');
@@ -494,5 +282,6 @@
 
     loadRoleCatalog();
   </script>
+  <script src="/js/navigation/app-shell-init.js"></script>
 </body>
 </html>

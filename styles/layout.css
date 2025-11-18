@@ -1,0 +1,76 @@
+:root {
+  --layout-max-width: 1200px;
+}
+
+.app-grid {
+  display: grid;
+  grid-gap: var(--grid-gap);
+  width: 100%;
+}
+
+.app-grid.columns-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-grid.columns-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.stack.inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.gap {
+  gap: var(--grid-gap);
+}
+
+.section {
+  padding: var(--page-padding);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.elevation-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.elevation-md {
+  box-shadow: var(--shadow-md);
+}
+
+.elevation-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.surface {
+  background: var(--color-surface);
+}
+
+.surface-alt {
+  background: var(--color-neutral-100);
+}
+
+.app-layout {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-padding);
+  width: 100%;
+}
+
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-overlay);
+}

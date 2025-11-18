@@ -1,0 +1,75 @@
+.hero p {
+  font-size: var(--text-lg);
+  color: var(--color-neutral-600);
+  line-height: 1.6;
+}
+
+.hero {
+  color: var(--color-neutral-900);
+}
+
+.hero-features {
+  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.hero-card {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.hero-card h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+}
+
+.cta-buttons {
+  margin-top: var(--space-4);
+}
+
+.cta-buttons .btn {
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-6);
+  font-weight: var(--font-semibold);
+  border: none;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.cta-primary {
+  background: var(--color-primary-500);
+  color: white;
+}
+
+.cta-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.feature-grid .hero-card {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .app-top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cta-buttons {
+    justify-content: center;
+  }
+}
