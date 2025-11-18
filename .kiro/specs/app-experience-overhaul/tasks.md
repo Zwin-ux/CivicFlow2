@@ -143,6 +143,22 @@
 
 ---
 
+### Task 3.4: Analytics & Workspace Widgets
+**Priority:** High | **Estimated Time:** 6 hours
+
+- [ ] Build AppState-driven analytics widgets (charts, KPIs, event summaries) that listen to the shared real-time stream and render with canvas/SVG for smooth animations.
+- [ ] Create document/workspace tables with inline editors, quick filters, and undo capability that persist edits via AppState optimistic updates before confirming via WebSocket calls.
+- [ ] Surface command-palette shortcuts tied to these widgets (jump to charts, trigger inline editor, open document preview) and connect their state to dashboards/detail flows.
+
+**Files to Create/Update:**
+- `public/js/components/analytics-chart.js`
+- `public/js/components/document-table.js`
+- `public/css/app/analytics.css`
+
+**Dependencies:** Task 3.1, Task 3.2
+
+---
+
 ## Phase 4: Interactions, Real-Time & Polish
 
 ### Task 4.1: Component Micro-Interactions

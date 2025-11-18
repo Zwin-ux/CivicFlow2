@@ -11,6 +11,30 @@
     let applicationData = null;
     let isDemo = false;
     let applicationId = null;
+    let realtimeHooked = false;
+    const TIMELINE_LIMIT = 8;
+    const DETAIL_TOAST_CONFIG = {
+        status_change: {
+            title: 'Status Update',
+            color: '#f59e0b',
+            message: (payload) => `${payload.businessName || 'Application'} moved to ${payload.newStatus || 'an update'}`
+        },
+        comment_added: {
+            title: 'New Comment',
+            color: '#3b82f6',
+            message: (payload) => `${payload.commenter || 'Collaborator'} mentioned ${payload.mention || 'someone'}`
+        },
+        document_uploaded: {
+            title: 'Document Uploaded',
+            color: '#06b6d4',
+            message: (payload) => `${payload.documentName || 'Document'} uploaded`
+        },
+        review_completed: {
+            title: 'Review Complete',
+            color: '#10b981',
+            message: (payload) => `${payload.reviewer || 'Reviewer'} completed the review`
+        }
+    };
 
     /**
      * Initialize application detail
@@ -38,6 +62,7 @@
 
         // Try to load real data
         await loadApplicationDetail();
+        initRealtimeDetail();
     }
 
     /**
@@ -208,6 +233,7 @@
             // Render application detail with smooth transition
             setTimeout(() => {
                 renderApplicationDetail(applicationData, isDemo);
+                updateApplicationState();
 
                 // Show demo banner if in demo mode
                 if (isDemo) {
@@ -227,6 +253,7 @@
             
             setTimeout(() => {
                 renderApplicationDetail(applicationData, isDemo);
+                updateApplicationState();
                 showDemoBanner();
             }, 200);
         }
@@ -962,6 +989,65 @@
         if (banner) {
             main.insertBefore(banner, main.firstChild);
         }
+    }
+
+    function initRealtimeDetail() {
+        if (realtimeHooked || !window.WebSocketManager) {
+            return;
+        }
+        const ws = window.WebSocketManager;
+        ws.on('application:update', handleApplicationRealtime);
+        ws.on('application:comment', handleApplicationRealtime);
+        realtimeHooked = true;
+    }
+
+    function handleApplicationRealtime(event) {
+        const payload = event.payload || event.data || {};
+        if (!payload.applicationId || payload.applicationId !== applicationId) {
+            return;
+        }
+        if (!applicationData) {
+            return;
+        }
+        if (payload.status) {
+            applicationData.status = payload.status;
+        }
+        addTimelineEntry({
+            event: payload.event || formatStatus(payload.status || payload.type),
+            timestamp: payload.timestamp || new Date().toISOString(),
+            user: payload.user || payload.reviewer || payload.commenter,
+            description: payload.description || payload.note || payload.comment
+        });
+        renderApplicationDetail(applicationData, isDemo);
+        updateApplicationState();
+        showDetailToast(payload.type || event.type, payload);
+    }
+
+    function addTimelineEntry(entry) {
+        applicationData.timeline = applicationData.timeline || [];
+        applicationData.timeline = [entry, ...applicationData.timeline].slice(0, TIMELINE_LIMIT);
+    }
+
+    function updateApplicationState() {
+        if (!window.AppState) {
+            return;
+        }
+        window.AppState.setState('data.currentApplication', applicationData);
+    }
+
+    function showDetailToast(type, payload) {
+        if (!window.showToastNotification) {
+            return;
+        }
+        const config = DETAIL_TOAST_CONFIG[type];
+        if (!config) {
+            return;
+        }
+        window.showToastNotification({
+            title: config.title,
+            message: config.message(payload),
+            color: config.color
+        });
     }
 
     /**

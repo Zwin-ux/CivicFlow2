@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/app/navigation.css">
     <link rel="stylesheet" href="/css/app/dashboard.css">
+    <link rel="stylesheet" href="/css/app/analytics.css">
     <link rel="stylesheet" href="/css/professional-theme.css">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/components/demo-indicator.css">
@@ -79,18 +80,50 @@
                 <div class="metrics-grid" id="metrics-grid"></div>
             </section>
 
+            <section class="section-card trend-chart-card">
+                <h2>Growth trend (last 12 points)</h2>
+                <canvas id="trend-chart" class="trend-chart" width="600" height="220"></canvas>
+            </section>
+
+            <section class="section-card">
+                <h2>Top applications</h2>
+                <div class="top-applications" id="top-applications"></div>
+            </section>
+
             <section class="section-card status-section">
                 <h2>Application status breakdown</h2>
                 <div class="status-grid" id="status-grid"></div>
             </section>
 
             <section class="section-card">
+                <h2>Document previews</h2>
+                <div class="document-preview" id="document-preview"></div>
+            </section>
+
+            <section class="section-card">
                 <h2>Live activity</h2>
                 <p>Real-time feed powered by the WebSocket layer ensures you never miss an update.</p>
-                <div class="app-grid">
-                    <div class="section-card">
-                        <p>Activity feed and notifications integrate with the toast system, ensuring optimistic UI.</p>
-                    </div>
+                <div class="activity-feed" id="activity-feed">
+                    <div class="activity-empty">Waiting for live events…</div>
+                </div>
+                <div class="activity-footer">
+                    <button id="refresh-activity" type="button" class="quick-action">Refresh data</button>
+                    <span class="live-status" id="live-status">Connecting…</span>
+                </div>
+            </section>
+
+            <section class="section-card analytics-shell">
+                <div class="analytics-card">
+                    <h3>Analytics Trend</h3>
+                    <canvas id="analytics-trend" width="480" height="200"></canvas>
+                </div>
+                <div class="analytics-card">
+                    <h3>Document Status Table</h3>
+                    <div id="document-table"></div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Workspace Note</h3>
+                    <div id="inline-editor"></div>
                 </div>
             </section>
         </div>
@@ -137,6 +170,9 @@
     <script src="/js/demo/role-views.js" defer></script>
     <script src="/js/demo/role-switcher-init.js" defer></script>
     <script src="/js/components/toast-notification.js"></script>
+    <script src="/js/components/analytics-chart.js"></script>
+    <script src="/js/components/document-table.js"></script>
+    <script src="/js/components/inline-editor.js"></script>
     <script src="/js/investor-dashboard.js"></script>
   <script src="/js/navigation/app-shell-init.js"></script>
 </body>
