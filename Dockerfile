@@ -16,7 +16,7 @@ COPY apps/web/package*.json ./apps/web/
 
 # Install dependencies
 # We need to install dependencies for both root and apps/web
-RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm \
+RUN --mount=type=cache,target=/root/.npm \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm ci --prefer-offline && \
     npm cache clean --force
 
@@ -48,7 +48,7 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/apps/web/package*.json ./apps/web/
 
 # Install production dependencies
-RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm npm ci --omit=dev && \
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy built Express API
