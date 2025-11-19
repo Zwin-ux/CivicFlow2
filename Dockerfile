@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.5
 
-# Multi-stage build for Node.js API server
+# Multi-stage build for Node.js API server and Next.js Web app
 FROM node:20-alpine AS builder
 
 # Set working directory
@@ -11,25 +11,23 @@ ENV NPM_CONFIG_AUDIT=false \
     NPM_CONFIG_PROGRESS=false
 
 # Copy package files
-# Copying package files first so we can install dependencies in the builder
 COPY package*.json ./
+COPY apps/web/package*.json ./apps/web/
 
-# Install ALL dependencies (including dev dependencies needed for the build)
-# Skip Chromium download during install to keep builder fast; visual tests can
-# install Chromium locally when needed. This is safe because Chromium is not
-# required for the production image.
+# Install dependencies
+# We need to install dependencies for both root and apps/web
 RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm ci --prefer-offline && \
     npm cache clean --force
 
 # Copy source code
-# Copy remaining source code
 COPY . .
 
-# Install frontend dependencies (Next.js) so `next` is available under apps/web
-RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm npm ci --prefer-offline --prefix apps/web
+# Build Express API
+RUN npm run build
 
-# Build TypeScript
+# Build Next.js App
+WORKDIR /app/apps/web
 RUN npm run build
 
 # Production stage
@@ -45,42 +43,46 @@ RUN addgroup -g 1001 -S nodejs && \
 # Set working directory
 WORKDIR /app
 
-# Copy package files (use the builder's package-lock.json so `npm ci` can run reproducibly)
+# Copy package files
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/apps/web/package*.json ./apps/web/
 
-# Install production dependencies only (omit dev dependencies)
-# Using `npm ci --omit=dev` here will use the lockfile produced in the builder stage.
+# Install production dependencies
 RUN --mount=type=cache,id=cache-npm-packages,target=/root/.npm npm ci --omit=dev && \
     npm cache clean --force
 
-# Copy built application from builder
+# Copy built Express API
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
-# Ensure compiled scripts (migrations/seeds) are available in the final image
-COPY --from=builder --chown=nodejs:nodejs /app/dist/scripts ./dist/scripts
-
-# Copy public folder (HTML, CSS, JS, images)
-COPY --from=builder --chown=nodejs:nodejs /app/public ./public
-
-# Copy migration and seed scripts
-COPY --from=builder --chown=nodejs:nodejs /app/src/database ./src/database
 COPY --from=builder --chown=nodejs:nodejs /app/src/scripts ./src/scripts
 
-# Create uploads and logs directories for local storage
+# Copy built Next.js App
+COPY --from=builder --chown=nodejs:nodejs /app/apps/web/.next ./apps/web/.next
+COPY --from=builder --chown=nodejs:nodejs /app/apps/web/public ./apps/web/public
+COPY --from=builder --chown=nodejs:nodejs /app/apps/web/next.config.ts ./apps/web/
+
+# Copy public folder (Express)
+COPY --from=builder --chown=nodejs:nodejs /app/public ./public
+
+# Copy start script
+COPY --from=builder --chown=nodejs:nodejs /app/scripts/start-prod.sh ./scripts/start-prod.sh
+RUN chmod +x ./scripts/start-prod.sh
+
+# Create uploads and logs directories
 RUN mkdir -p /app/uploads /app/logs && \
     chown -R nodejs:nodejs /app/uploads /app/logs
 
 # Switch to non-root user
 USER nodejs
 
-# Expose port
-EXPOSE 3000
+# Expose ports (3000 for Web, 3001 for API)
+EXPOSE 3000 3001
 
-# Health check - use the actual health route exposed by the app
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/api/v1/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+    CMD node -e "require('http').get('http://localhost:3001/api/v1/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Use dumb-init to handle signals properly
+# Use dumb-init
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start application
-CMD ["node", "dist/index.js"]
+# Start both applications
+CMD ["./scripts/start-prod.sh"]

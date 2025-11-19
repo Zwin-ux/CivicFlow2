@@ -23,22 +23,23 @@ export default function DemoLayout({ children }: DemoLayoutProps) {
     ]
 
     return (
-        <div className="min-h-screen bg-gray-50/50 flex">
-            {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col fixed h-full z-10">
-                <div className="p-6 border-b border-gray-100">
-                    <div className="flex items-center gap-2 font-semibold text-lg tracking-tight">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center text-white font-bold">
+        <div className="min-h-screen bg-background flex">
+            {/* Navigation Drawer (Sidebar) */}
+            <aside className="w-80 bg-surface-variant/30 border-r border-outline-variant hidden md:flex flex-col fixed h-full z-10">
+                <div className="p-6">
+                    <div className="flex items-center gap-3 font-semibold text-xl tracking-tight text-on-surface">
+                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-sm">
                             C
                         </div>
                         CivicFlow
                     </div>
-                    <div className="mt-2 inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-xs font-semibold text-violet-700">
-                        Demo Mode
+                    <div className="mt-4 inline-flex items-center rounded-full border border-outline-variant bg-surface px-3 py-1 text-xs font-medium text-on-surface-variant">
+                        <span className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" />
+                        Demo Mode Active
                     </div>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href
                         const Icon = item.icon
@@ -48,42 +49,36 @@ export default function DemoLayout({ children }: DemoLayoutProps) {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors relative",
+                                    "flex items-center gap-4 px-4 py-3.5 rounded-full text-sm font-medium transition-all relative overflow-hidden group",
                                     isActive
-                                        ? "text-violet-700 bg-violet-50"
-                                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                                        ? "text-on-secondary-container bg-secondary-container"
+                                        : "text-on-surface-variant hover:bg-on-surface/5 hover:text-on-surface"
                                 )}
                             >
-                                <Icon className="w-4 h-4" />
+                                {/* Ripple container */}
+                                <span className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-current transition-opacity" />
+
+                                <Icon className={cn("w-6 h-6", isActive ? "fill-current" : "")} />
                                 {item.label}
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="activeNav"
-                                        className="absolute left-0 w-1 h-6 bg-violet-600 rounded-r-full"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ duration: 0.2 }}
-                                    />
-                                )}
                             </Link>
                         )
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-gray-100">
-                    <div className="rounded-lg bg-gray-50 p-4">
-                        <p className="text-xs font-medium text-gray-500 mb-2">Session Status</p>
+                <div className="p-6 border-t border-outline-variant">
+                    <div className="rounded-[20px] bg-surface p-4 shadow-sm border border-outline-variant/50">
+                        <p className="text-xs font-medium text-on-surface-variant mb-2">Session Status</p>
                         <div className="flex items-center gap-2 text-sm text-green-600 font-medium">
                             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            Active
+                            System Operational
                         </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 md:ml-64 min-h-screen">
-                <div className="max-w-5xl mx-auto p-8">
+            <main className="flex-1 md:ml-80 min-h-screen transition-all duration-300 ease-in-out">
+                <div className="max-w-6xl mx-auto p-8 md:p-12">
                     {children}
                 </div>
             </main>
