@@ -1,23 +1,26 @@
 # syntax=docker/dockerfile:1.5
 
 # Multi-stage build for Node.js API server and Next.js Web app
-FROM node:20-alpine AS builder
+# Using slim image to avoid Alpine/musl compatibility issues with native modules
+FROM node:20-slim AS builder
 
 # Set working directory
 WORKDIR /app
-
-ENV NPM_CONFIG_AUDIT=false \
-    NPM_CONFIG_FUND=false \
-    NPM_CONFIG_PROGRESS=false
 
 # Copy package files
 COPY package*.json ./
 COPY apps/web/package*.json ./apps/web/
 
 # Install dependencies
-# We need to install dependencies for both root and apps/web
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm ci --prefer-offline && \
-    npm cache clean --force
+# Install root dependencies
+RUN npm ci --prefer-offline
+
+# Install web dependencies explicitly
+WORKDIR /app/apps/web
+RUN npm ci --prefer-offline
+
+# Return to root
+WORKDIR /app
 
 # Copy source code
 COPY . .
@@ -30,14 +33,15 @@ WORKDIR /app/apps/web
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine
+FROM node:20-slim
 
 # Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Debian/Ubuntu uses apt-get
+RUN apt-get update && apt-get install -y dumb-init && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+RUN groupadd -g 1001 nodejs && \
+    useradd -u 1001 -g nodejs -s /bin/sh -m nodejs
 
 # Set working directory
 WORKDIR /app
@@ -50,11 +54,21 @@ COPY --from=builder /app/apps/web/package*.json ./apps/web/
 RUN npm ci --omit=dev && \
     npm cache clean --force
 
+# Install web production dependencies
+WORKDIR /app/apps/web
+RUN npm ci --omit=dev && \
+    npm cache clean --force
+
+# Return to root
+WORKDIR /app
+
 # Copy built Express API
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /app/src/scripts ./src/scripts
 
 # Copy built Next.js App
+# Note: Even with standalone enabled, we copy the standard build output for now to ensure compatibility
+# with existing start scripts. If we want to use standalone fully, we'd need to adjust start-prod.sh
 COPY --from=builder --chown=nodejs:nodejs /app/apps/web/.next ./apps/web/.next
 COPY --from=builder --chown=nodejs:nodejs /app/apps/web/public ./apps/web/public
 COPY --from=builder --chown=nodejs:nodejs /app/apps/web/next.config.ts ./apps/web/
