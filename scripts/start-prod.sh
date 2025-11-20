@@ -10,9 +10,8 @@ echo "Waiting for API to start..."
 sleep 5
 
 # Start the Next.js app
-# Assuming we are in the root and apps/web/.next is available
-cd apps/web
-npm start &
+# Using standalone mode
+node apps/web/server.js &
 WEB_PID=$!
 
 # Handle shutdown
