@@ -103,10 +103,10 @@ export function IntakeFlow() {
                         exit={{ opacity: 0, y: -20 }}
                     >
                         <Card className="border-none shadow-xl shadow-gray-200/50 overflow-hidden">
-                            <CardHeader className="bg-gradient-to-b from-gray-50/50 to-white pb-8">
-                                <CardTitle className="text-2xl text-center">New Application Intake</CardTitle>
-                                <CardDescription className="text-center text-base">
-                                    Upload a loan application form, tax return, or financial statement to begin.
+                            <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6">
+                                <CardTitle className="text-xl font-semibold text-gray-900">Upload Application Packet</CardTitle>
+                                <CardDescription className="text-sm text-gray-500">
+                                    Supported formats: PDF, JPG, PNG. Max file size: 25MB.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="p-8">
@@ -153,28 +153,28 @@ export function IntakeFlow() {
                                     />
                                 </div>
 
-                                <h3 className="text-xl font-semibold text-gray-900 mb-8">Analyzing Document...</h3>
+                                <h3 className="text-lg font-medium text-gray-900 mb-8 font-mono">PROCESSING_DOCUMENT...</h3>
 
-                                <div className="w-full max-w-md space-y-3">
+                                <div className="w-full max-w-md space-y-2">
                                     {processingSteps.map((s) => (
-                                        <div key={s.id} className="flex items-center justify-between p-4 rounded-xl bg-white border border-gray-100 shadow-sm transition-all duration-300">
-                                            <div className="flex items-center gap-4">
+                                        <div key={s.id} className="flex items-center justify-between p-3 rounded-lg bg-white border border-gray-100 shadow-sm transition-all duration-300">
+                                            <div className="flex items-center gap-3">
                                                 <div className={cn(
-                                                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                                                    "w-6 h-6 rounded-full flex items-center justify-center transition-colors",
                                                     s.status === "complete" ? "bg-green-100 text-green-600" :
                                                         s.status === "processing" ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-400"
                                                 )}>
-                                                    {s.status === "complete" ? <CheckCircle2 className="w-5 h-5" /> :
-                                                        s.status === "processing" ? <Loader2 className="w-5 h-5 animate-spin" /> :
-                                                            <div className="w-2 h-2 rounded-full bg-current" />}
+                                                    {s.status === "complete" ? <CheckCircle2 className="w-4 h-4" /> :
+                                                        s.status === "processing" ? <Loader2 className="w-4 h-4 animate-spin" /> :
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-current" />}
                                                 </div>
                                                 <span className={cn(
-                                                    "font-medium",
+                                                    "text-sm font-medium",
                                                     s.status === "pending" ? "text-gray-400" : "text-gray-700"
                                                 )}>{s.label}</span>
                                             </div>
                                             {s.status === "processing" && (
-                                                <span className="text-xs font-bold text-primary uppercase tracking-wider animate-pulse">Processing</span>
+                                                <span className="text-[10px] font-bold text-primary uppercase tracking-wider animate-pulse">Running</span>
                                             )}
                                         </div>
                                     ))}
@@ -192,53 +192,44 @@ export function IntakeFlow() {
                         exit={{ opacity: 0, y: -20 }}
                     >
                         <Card className="border-none shadow-xl shadow-gray-200/50">
-                            <CardHeader className="border-b border-gray-100 pb-6">
+                            <CardHeader className="border-b border-gray-100 pb-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <CardTitle>Extraction Results</CardTitle>
-                                        <CardDescription>Please review the extracted data before proceeding.</CardDescription>
+                                        <CardTitle className="text-lg font-semibold">Data Verification</CardTitle>
+                                        <CardDescription className="text-xs">Confirm extracted entities below.</CardDescription>
                                     </div>
-                                    <div className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center gap-2">
+                                    <div className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold flex items-center gap-1.5 uppercase tracking-wide">
                                         <CheckCircle2 className="w-3 h-3" />
-                                        High Confidence
+                                        Confidence: 98.4%
                                     </div>
                                 </div>
                             </CardHeader>
-                            <CardContent className="p-8 space-y-8">
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="group p-5 rounded-2xl border border-gray-200 bg-gray-50/50 hover:bg-white hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 block">Applicant Name</label>
-                                        <div className="font-semibold text-lg text-gray-900">Acme Corp Inc.</div>
-                                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                                            98% MATCH
-                                        </div>
+                            <CardContent className="p-6 space-y-6">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="group p-4 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-white hover:border-primary/30 transition-all duration-200">
+                                        <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1 block">Applicant Name</label>
+                                        <div className="font-medium text-base text-gray-900">Acme Corp Inc.</div>
                                     </div>
-                                    <div className="group p-5 rounded-2xl border border-gray-200 bg-gray-50/50 hover:bg-white hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 block">Tax ID (EIN)</label>
-                                        <div className="font-semibold text-lg text-gray-900">12-3456789</div>
-                                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                                            99% MATCH
-                                        </div>
+                                    <div className="group p-4 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-white hover:border-primary/30 transition-all duration-200">
+                                        <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1 block">Tax ID (EIN)</label>
+                                        <div className="font-medium text-base text-gray-900">12-3456789</div>
                                     </div>
-                                    <div className="group p-5 rounded-2xl border border-gray-200 bg-gray-50/50 hover:bg-white hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 block">Annual Revenue</label>
-                                        <div className="font-semibold text-lg text-gray-900">$1,250,000</div>
-                                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                                            95% MATCH
-                                        </div>
+                                    <div className="group p-4 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-white hover:border-primary/30 transition-all duration-200">
+                                        <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1 block">Annual Revenue</label>
+                                        <div className="font-medium text-base text-gray-900">$1,250,000</div>
                                     </div>
-                                    <div className="group p-5 rounded-2xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-amber-700 mb-2 block">Missing Field</label>
-                                        <div className="font-semibold text-lg text-amber-900">Incorporation Date</div>
+                                    <div className="group p-4 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-300 transition-all duration-200">
+                                        <label className="text-[10px] font-bold uppercase tracking-wider text-amber-700 mb-1 block">Missing Field</label>
+                                        <div className="font-medium text-base text-amber-900">Incorporation Date</div>
                                         <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-amber-700">
                                             <AlertCircle className="w-3 h-3" /> ACTION REQUIRED
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-4 pt-6 border-t border-gray-100">
-                                    <Button variant="outline" size="lg" onClick={() => setStep("upload")}>Cancel</Button>
-                                    <Button size="lg" onClick={() => {
+                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                                    <Button variant="outline" onClick={() => setStep("upload")}>Cancel</Button>
+                                    <Button onClick={() => {
                                         triggerConfetti()
                                         setStep("complete")
                                     }}>
