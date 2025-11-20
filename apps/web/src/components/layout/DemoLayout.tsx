@@ -23,23 +23,32 @@ export default function DemoLayout({ children }: DemoLayoutProps) {
     ]
 
     return (
-        <div className="min-h-screen bg-background flex">
+        <div className="min-h-screen bg-background flex relative overflow-hidden">
+            {/* Background Ambience */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-3xl" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/5 blur-3xl" />
+            </div>
+
             {/* Navigation Drawer (Sidebar) */}
-            <aside className="w-80 bg-surface-variant/30 border-r border-outline-variant hidden md:flex flex-col fixed h-full z-10">
+            <aside className="w-80 bg-surface/80 backdrop-blur-xl border-r border-outline-variant/40 hidden md:flex flex-col fixed h-full z-20">
                 <div className="p-6">
                     <div className="flex items-center gap-3 font-semibold text-xl tracking-tight text-on-surface">
-                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center text-primary-foreground font-bold shadow-lg shadow-primary/20">
                             C
                         </div>
                         CivicFlow
                     </div>
-                    <div className="mt-4 inline-flex items-center rounded-full border border-outline-variant bg-surface px-3 py-1 text-xs font-medium text-on-surface-variant">
-                        <span className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" />
+                    <div className="mt-6 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+                        <span className="relative flex h-2 w-2 mr-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                        </span>
                         Demo Mode Active
                     </div>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+                <nav className="flex-1 px-4 space-y-2 overflow-y-auto mt-4">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href
                         const Icon = item.icon
@@ -49,17 +58,22 @@ export default function DemoLayout({ children }: DemoLayoutProps) {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-4 px-4 py-3.5 rounded-full text-sm font-medium transition-all relative overflow-hidden group",
+                                    "flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group relative overflow-hidden",
                                     isActive
-                                        ? "text-on-secondary-container bg-secondary-container"
-                                        : "text-on-surface-variant hover:bg-on-surface/5 hover:text-on-surface"
+                                        ? "text-primary bg-primary/10 shadow-sm"
+                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 )}
                             >
-                                {/* Ripple container */}
-                                <span className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-current transition-opacity" />
-
-                                <Icon className={cn("w-6 h-6", isActive ? "fill-current" : "")} />
-                                {item.label}
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeNav"
+                                        className="absolute inset-0 bg-primary/10 rounded-xl"
+                                        initial={false}
+                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    />
+                                )}
+                                <Icon className={cn("w-5 h-5 relative z-10", isActive ? "fill-current" : "")} />
+                                <span className="relative z-10">{item.label}</span>
                             </Link>
                         )
                     })}

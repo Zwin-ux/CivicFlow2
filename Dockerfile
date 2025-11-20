@@ -4,6 +4,11 @@
 # Using slim image to avoid Alpine/musl compatibility issues with native modules
 FROM node:20-slim AS builder
 
+# Disable telemetry during build
+ENV NEXT_TELEMETRY_DISABLED 1
+# Increase memory limit for build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 # Set working directory
 WORKDIR /app
 

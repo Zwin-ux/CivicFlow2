@@ -43,17 +43,28 @@ export function DocumentUpload({ onUpload }: DocumentUploadProps) {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
             className={cn(
-                "relative border-2 border-dashed rounded-xl p-12 text-center transition-colors cursor-pointer",
+                "relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 cursor-pointer group overflow-hidden",
                 isDragging
-                    ? "border-violet-500 bg-violet-50"
-                    : "border-gray-200 hover:border-violet-400 hover:bg-gray-50"
+                    ? "border-primary bg-primary/5 scale-[1.02] shadow-xl shadow-primary/10"
+                    : "border-gray-200 hover:border-primary/50 hover:bg-gray-50/50"
             )}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
         >
+            {/* Breathing Background Effect */}
+            {isDragging && (
+                <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5"
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                />
+            )}
+
             <input
                 type="file"
                 ref={fileInputRef}
@@ -62,25 +73,29 @@ export function DocumentUpload({ onUpload }: DocumentUploadProps) {
                 accept=".pdf,.doc,.docx,.jpg,.png"
             />
 
-            <div className="flex flex-col items-center gap-4">
+            <div className="relative z-10 flex flex-col items-center gap-6">
                 <div className={cn(
-                    "w-16 h-16 rounded-full flex items-center justify-center transition-colors",
-                    isDragging ? "bg-violet-100 text-violet-600" : "bg-gray-100 text-gray-500"
+                    "w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm",
+                    isDragging
+                        ? "bg-primary text-white shadow-lg shadow-primary/30 scale-110"
+                        : "bg-white text-gray-400 group-hover:text-primary group-hover:scale-110 group-hover:shadow-md"
                 )}>
-                    <UploadCloud className="w-8 h-8" />
+                    <UploadCloud className="w-10 h-10" />
                 </div>
-                <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                <div className="space-y-2">
+                    <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
                         Upload your documents
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                        Drag and drop or click to browse
+                    <p className="text-sm text-gray-500 max-w-xs mx-auto">
+                        Drag and drop your loan application, tax returns, or financial statements here
                     </p>
                 </div>
-                <div className="flex gap-2 mt-2">
-                    <span className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-600">PDF</span>
-                    <span className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-600">DOCX</span>
-                    <span className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-600">JPG</span>
+                <div className="flex gap-2">
+                    {["PDF", "DOCX", "JPG"].map((ext) => (
+                        <span key={ext} className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-500 border border-gray-200 group-hover:border-primary/20 group-hover:text-primary/70 transition-colors">
+                            {ext}
+                        </span>
+                    ))}
                 </div>
             </div>
         </motion.div>
