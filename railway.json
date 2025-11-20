@@ -4,8 +4,10 @@
     "builder": "DOCKERFILE"
   },
   "deploy": {
+    "runtime": "V2",
+    "numReplicas": 1,
+    "startCommand": "./scripts/start-prod.sh",
     "healthcheckPath": "/api/v1/health",
-    "restartPolicyType": "ON_FAILURE",
-    "numReplicas": 1
+    "restartPolicyType": "ON_FAILURE"
   }
 }

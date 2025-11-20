@@ -22,7 +22,7 @@ COPY apps/web/package.json ./apps/web/
 COPY apps/demo-ui/package.json ./apps/demo-ui/
 
 # Install dependencies (including devDependencies for build)
-RUN npm ci
+RUN npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
